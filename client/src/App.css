@@ -1,2 +1,4 @@
-
-
+:root {
+    --myColor: rgb(82, 167, 82);
+    --myColorShaded: rgb(128, 200, 128);
+}

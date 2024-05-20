@@ -1,0 +1,25 @@
+.footer {
+    background-color: var(--myColor);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 0;
+
+    ul {
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+        font-size: 16px;
+        margin: 0;
+    }
+    
+    .social-media {
+        gap: 40px;
+    }
+
+    .copyright {
+        font-size: 12px;
+    }
+}

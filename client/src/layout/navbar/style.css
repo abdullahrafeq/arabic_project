@@ -1,0 +1,25 @@
+.navbar {
+    background-color: var(--myColor);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    padding: 0 20px;
+    .navbar-info ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 20px;
+    }
+
+    .navbar-info ul li {
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    .navbar-info ul li:hover {
+        background-color: var(--myColorShaded);
+        cursor: pointer;
+    }
+}   
