@@ -1,3 +1,57 @@
 .home-page {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .search {
+        text-align: center;
+        margin: 100px;
+    }
+
+    .search h1 {
+        font-size: 70px;
+    }
+
+    .search input {
+        width: 500px;
+        height: 20px;
+        border-radius: 5px;
+        border-style: solid;
+        border-color: gray;
+        outline-color: green;
+        padding: 10px;
+    }
+
+    .scholars {
+        width: 80%;
+        text-align: center;
+    }
+
+    .scholars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .scholar-card {
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border-style: solid;
+        border-color: rgb(177, 177, 177);
+
+    }
+
+    .scholar-card p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .scholar-card img {
+        width: 100px;
+    }
+    .scholar-card hr {
+        width: 75%;
+    }
 }

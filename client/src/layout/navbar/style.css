@@ -1,14 +1,27 @@
 .navbar {
-    background-color: var(--myColor);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 80px;
-    padding: 0 20px;
-    .navbar-info ul {
+    .navbar-title {
+        width: 100%;
+        font-size: 60px;
         display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 0;
+    }
+    
+    .navbar-info {
+        background-color: var(--myColor);
+        height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-info ul {
+        width: 100%;
+        display: flex;
+        justify-content: center;
         list-style: none;
         padding: 0;
+        margin: 0;
         gap: 20px;
     }
 
