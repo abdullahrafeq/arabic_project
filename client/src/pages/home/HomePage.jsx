@@ -1,7 +1,8 @@
 import ScholarCard from "./components/scholar-card/ScholarCard";
 import "./style.css"
 import Sibawaihy from "../../sibawaihy.jpg"
-
+import BookCard from "./components/scholar-card/BookCard";
+import AlKitab from "../../alkitab.jpg"
 const HomePage = () => {
     return (
         <div className="home-page">
@@ -24,6 +25,14 @@ const HomePage = () => {
             </div>
             <div className="books">
                 <h1>Popular books</h1>
+                <div className="books-grid">
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                    <BookCard name={"Al-kitab"} author={"Sibawaihy"} img={AlKitab}/>
+                </div>
             </div>
             <div className="quotes">
                 <h1>Inspirational Quotes</h1>
