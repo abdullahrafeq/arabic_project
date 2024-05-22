@@ -49,7 +49,7 @@
 
     }
 
-    .scholar-card p {
+    .scholar-card p, .book-card p {
         margin: 0;
         padding: 0;
     }
@@ -62,4 +62,37 @@
     .scholar-card hr, .book-card hr {
         width: 75%;
     }
+
+    .books {
+        margin-bottom: 80px;
+    }
+
+    .quotes {
+        width: 60%;
+        text-align: center;
+        margin-bottom: 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .quotes .quotes-card-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .quotes .quote-container {
+        background-color: rgb(123, 192, 122);
+        color: rgb(19, 79, 18);
+        width: 100%;
+        padding: 20px;
+        border-radius: 8px; /* Optional: adds rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
+        text-align: center; /* Center align text */
+        overflow-wrap: break-word; /* Ensure long words break and do not overflow */
+    }
+    
+
 }

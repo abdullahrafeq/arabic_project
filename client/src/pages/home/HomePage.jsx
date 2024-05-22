@@ -1,8 +1,10 @@
 import ScholarCard from "./components/scholar-card/ScholarCard";
 import "./style.css"
 import Sibawaihy from "../../sibawaihy.jpg"
-import BookCard from "./components/scholar-card/BookCard";
+import BookCard from "./components/book-card/BookCard";
 import AlKitab from "../../alkitab.jpg"
+import Quote from "./components/quote/Quote";
+
 const HomePage = () => {
     return (
         <div className="home-page">
@@ -36,6 +38,12 @@ const HomePage = () => {
             </div>
             <div className="quotes">
                 <h1>Inspirational Quotes</h1>
+                <div className="quotes-card-container">
+                    <Quote quote={"My quote"} author={"Sibawaihy"}/>
+                    <Quote quote={"My quote"} author={"Sibawaihy"}/>
+                    <Quote quote={"My quote"} author={"Sibawaihy"}/>
+                    <Quote quote={"My quote"} author={"Sibawaihy"}/>
+                </div>
             </div>
         </div>
     )
