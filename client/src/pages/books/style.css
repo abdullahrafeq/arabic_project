@@ -1,8 +1,8 @@
-.scholars-page {
+.books-page {
     display: grid;
     grid-template-areas: 
         "search-container search-container"
-        "filter-scholar scholars-grid";
+        "filter-book books-grid";
     grid-template-columns: 1fr 3fr; /* Adjust columns as needed */
     padding: 20px; 
     padding-top: 0; 
@@ -23,37 +23,37 @@
         padding: 10px;
     }
 
-    .filter-scholar {
-        grid-area: filter-scholar;
+    .filter-book {
+        grid-area: filter-book;
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
 
-    .filter-scholar h1 {
+    .filter-book h1 {
         margin: 0;
         font-size: 40px;
     }
 
-    .filter-scholar hr {
+    .filter-book hr {
         width: 60%;
         margin-left: 0;
     }
 
-    .filter-scholar .category {
+    .filter-book .category {
         display: flex;
         flex-direction: column;
         gap: 20px;
     }
 
-    .scholars-grid {
-        grid-area: scholars-grid;
+    .books-grid {
+        grid-area: books-grid;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
         gap: 20px;
     }
     
-    .scholar-card {
+    .book-card {
         background-color: #f9f9f9;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -63,17 +63,17 @@
         padding: 10px;
     }
 
-    .scholar-card p {
+    .book-card p {
         margin: 0;
         padding: 0;
     }
 
-    .scholar-card img {
+    .book-card img {
         width: 100%;
         height: auto;
     }
 
-    .scholar-card hr {
+    .book-card hr {
         width: 75%;
     }
 }

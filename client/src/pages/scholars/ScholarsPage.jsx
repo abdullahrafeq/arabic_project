@@ -1,5 +1,6 @@
 import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import Sibawaihy from "../../sibawaihy.jpg"
+import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 
 const ScholarsPage = () => {
@@ -19,9 +20,11 @@ const ScholarsPage = () => {
         
     ]
     return (
-        <div className="scholars-page"> 
-            <div className="search-container">search</div>   
-            <FilterElement className={"filter-scholar"} categories={categories}/>
+        <div className="scholars-page">
+            <div className="search-container">
+                <input type="text" placeholder="Search..." />
+            </div>
+            <FilterElement className={"filter-scholar"} categories={categories} filtertype={"Scholars"}/>
             <main className="scholars-grid">
                 <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
                 <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
@@ -41,31 +44,6 @@ const ScholarsPage = () => {
     )
 }
 
-const FilterElement = ({className, categories}) => {
-    return (
-        <aside className={className}>
-            {categories.map((category, index) => {
-                return (
-                    <>
-                        <h2>{category.name}</h2>
-                        <form className="category" key={index}>
-                            {category.alternatives.map((alternative, index) => {
-                                return (
-                                    <label key={index} className="category-alternative">
-                                        <input 
-                                            type="checkbox"
-                                            key={index}
-                                        />
-                                        {alternative}
-                                    </label>                                
-                                )
-                            })}
-                        </form>
-                    </>
-                )
-            })}
-        </aside>
-    )
-}
+
 
 export default ScholarsPage;
