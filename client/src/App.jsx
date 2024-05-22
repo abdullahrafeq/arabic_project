@@ -6,6 +6,7 @@ import Footer from './layout/footer/Footer';
 import HomePage from './pages/home/HomePage';
 import FavouriteScholars from './pages/favourite-scholars/FavouriteScholars';
 import Account from './pages/account/Account';
+import ScholarsPage from './pages/scholars/ScholarsPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path='/login' element={<LoginPage/>}/>
             <Route path='/favourite-scholars' element={<FavouriteScholars/>}/>
             <Route path='/account' element={<Account/>}/>
+            <Route path='/scholars' element={<ScholarsPage/>}/>
           </Routes>
         <Footer/>
     </div>

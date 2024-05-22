@@ -12,9 +12,9 @@ const NavBar = () => {
                     <li><CustomLink to="/" children={<>Home</>}/></li>
                     <li><CustomLink to="/scholars" children={<>Scholars</>}/></li>
                     <li><CustomLink to="/books" children={<>Books</>}/></li>
+                    <li><CustomLink to="/favourite-scholars" children={<>Favoutite Scholars</>}/></li>
                     <li><CustomLink to="/account" children={<>Account</>}/></li>
                     <li><CustomLink to="/login" children={<>Login</>}/></li>
-                    <li><CustomLink to="/favourite-scholars" children={<>Favoutite Scholars</>}/></li>
                 </ul>
             </div>
         </nav>
