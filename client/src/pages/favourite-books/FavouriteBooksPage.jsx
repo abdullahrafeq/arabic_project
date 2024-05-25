@@ -28,15 +28,19 @@ const FavouriteBooksPage = () => {
 
 const BookCard = ({ img, name }) => {
     return (
-        <CustomLink to="/book-detail" children={<Content img={img} name={name}/>}/>
+        <Content img={img} name={name}/>
     )
 }
 
 const Content = ({ img, name }) => {
     return (
         <div className="card">
-            <img src={img} alt="" />
-            <p>{name}</p>
+            <CustomLink to="/book-detail" children={
+            <div className="link-container">
+                <img src={img} alt="" />
+                <p>{name}</p>
+            </div>
+            }/>
             <Button children={<>Remove</>}/>
         </div>
     )

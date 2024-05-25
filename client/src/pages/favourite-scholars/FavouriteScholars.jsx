@@ -29,17 +29,22 @@ const FavouriteScholarsPage = () => {
     )
 }
 
+
 const ScholarCard = ({ img, name }) => {
     return (
-        <CustomLink to="/scholar-detail" children={<Content img={img} name={name}/>}/>
+        <Content img={img} name={name}/>
     )
 }
 
 const Content = ({ img, name }) => {
     return (
         <div className="card">
-            <img src={img} alt="" />
-            <p>{name}</p>
+            <CustomLink to="/scholar-detail" children={
+            <div className="link-container">
+                <img src={img} alt="" />
+                <p>{name}</p>
+            </div>
+            }/>
             <Button children={<>Remove</>}/>
         </div>
     )
