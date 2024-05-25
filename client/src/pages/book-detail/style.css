@@ -1,0 +1,68 @@
+.book-details-page {
+    padding: 50px;
+    .book-details {
+        display: flex;
+        gap: 20px;
+
+        .image-container img {
+            width: 300px;
+        }
+
+        .description-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+                
+            h2 {
+                margin: 0;
+                margin-bottom: 30px;
+            }
+
+            em {
+                color: green;
+                margin-bottom: 20px;
+            }
+
+            em:hover {
+                text-decoration: underline;
+            }
+
+            hr {
+                border-style: solid;
+                border-color: grey;
+                width: 100%;
+            }
+        }
+    }
+
+    .reviews-title {
+        margin: 50px 0;
+        margin-bottom: 20px;
+    }
+    .reviews-container {
+        background-color: white;
+        padding: 10px;
+        border-style: solid;
+        border-radius: 5px;
+        border-width: 2px;
+        border-color: grey;
+        .previous-reviews {
+            height: 200px;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            .review {
+                
+            }
+        }
+
+        form {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+        }
+    }
+}

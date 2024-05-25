@@ -1,5 +1,5 @@
 import ScholarCard from "../home/components/scholar-card/ScholarCard";
-import Sibawaihy from "../../sibawaihy.jpg"
+import Sibawaihy from "../../assets/sibawaihy.jpg"
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 

@@ -1,6 +1,6 @@
 import BookCard from "../home/components/book-card/BookCard";
 import FilterElement from "../../components/filter-element/FilterElement";
-import AlKitab from "../../alkitab.jpg"
+import AlKitab from "../../assets/alkitab.jpg"
 import "./style.css"
 
 const BooksPage = () => {

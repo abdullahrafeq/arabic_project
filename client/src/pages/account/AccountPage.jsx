@@ -1,5 +1,5 @@
 import "./style.css"
-import Sibawaihy from "../../sibawaihy.jpg"
+import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
 
 const AccountPage = () => {

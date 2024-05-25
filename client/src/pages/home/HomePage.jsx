@@ -1,8 +1,8 @@
 import ScholarCard from "./components/scholar-card/ScholarCard";
 import "./style.css"
-import Sibawaihy from "../../sibawaihy.jpg"
+import Sibawaihy from "../../assets/sibawaihy.jpg"
 import BookCard from "./components/book-card/BookCard";
-import AlKitab from "../../alkitab.jpg"
+import AlKitab from "../../assets/alkitab.jpg"
 import Quote from "./components/quote/Quote";
 
 const HomePage = () => {

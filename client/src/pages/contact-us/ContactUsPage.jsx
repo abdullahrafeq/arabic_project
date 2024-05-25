@@ -63,7 +63,6 @@ const ContactForm = ({ title, isMessageForm, inputClassName, textAreaClassName})
     return (
         <form action="">
             <label>{title}:</label>
-            <br />
             {isMessageForm ? (
                 <>
                     <textarea className={textAreaClassName} rows="5" />
