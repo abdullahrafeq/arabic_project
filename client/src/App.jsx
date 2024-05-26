@@ -10,7 +10,8 @@ import BooksPage from './pages/books/BooksPage';
 import ContactUsPage from './pages/contact-us/ContactUsPage';
 import AboutUsPage from './pages/about-us/AboutUsPage';
 import FavouriteBooksPage from './pages/favourite-books/FavouriteBooksPage';
-import BookDetailsPage from './pages/book-detail/BookDetailsPage';
+import BookDetailPage from './pages/book-detail/BookDetailPage';
+import ScholarDetailPage from './pages/scholar-detail/ScholarDetailPage';
 import './App.css';
 
 function App() {
@@ -26,7 +27,8 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/scholars" element={<ScholarsPage />} />
             <Route path="/books" element={<BooksPage />} />
-            <Route path="/book-detail" element={<BookDetailsPage />} />
+            <Route path="/scholar-detail" element={<ScholarDetailPage />} />
+            <Route path="/book-detail" element={<BookDetailPage />} />
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
           </Routes>

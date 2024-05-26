@@ -2,7 +2,8 @@ import "./style.css"
 import Alkitab from "../../assets/alkitab.jpg"
 import Button from "../../components/button/Button"
 import CustomLink from "../../components/custom-link/CustomLink"
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faX } from '@fortawesome/free-solid-svg-icons';
 const FavouriteBooksPage = () => {
     return (
         <main className="favourite-books-page">
@@ -41,7 +42,7 @@ const Content = ({ img, name }) => {
                 <p>{name}</p>
             </div>
             }/>
-            <Button children={<>Remove</>}/>
+            <Button className="remove-button" children={<FontAwesomeIcon icon={faX}/>}/>
         </div>
     )
 }

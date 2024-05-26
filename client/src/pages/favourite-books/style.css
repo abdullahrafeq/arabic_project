@@ -25,6 +25,19 @@
                 align-items: center;
                 flex-direction: column;
             }
+
+            .remove-button {
+                background-color: inherit;
+                border-style: solid;
+                border-radius: 50%;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .remove-button:hover {
+                color: grey;
+                border-color: grey;
+            }
         }
     }
 }

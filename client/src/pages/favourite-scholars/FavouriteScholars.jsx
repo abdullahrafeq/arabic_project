@@ -2,6 +2,8 @@ import "./style.css"
 import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
 import CustomLink from "../../components/custom-link/CustomLink"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faX } from '@fortawesome/free-solid-svg-icons';
 
 const FavouriteScholarsPage = () => {
     return (
@@ -23,7 +25,6 @@ const FavouriteScholarsPage = () => {
                 <ScholarCard img={Sibawaihy} name={"Sibawaihy"}/>
                 <ScholarCard img={Sibawaihy} name={"Sibawaihy"}/>
                 <ScholarCard img={Sibawaihy} name={"Sibawaihy"}/>
-
             </section>
         </main>
     )
@@ -45,7 +46,7 @@ const Content = ({ img, name }) => {
                 <p>{name}</p>
             </div>
             }/>
-            <Button children={<>Remove</>}/>
+            <Button className="remove-button" children={<FontAwesomeIcon icon={faX}/>}/>
         </div>
     )
 }

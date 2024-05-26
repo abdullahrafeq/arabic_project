@@ -1,6 +1,6 @@
-.book-details-page {
+.scholar-details-page {
     padding: 50px;
-    .book-details {
+    .scholar-details {
         display: flex;
         gap: 20px;
 
@@ -40,7 +40,6 @@
                 }
             }
 
-
             em {
                 color: green;
                 margin-bottom: 20px;
@@ -55,54 +54,6 @@
                 border-color: grey;
                 width: 100%;
             }
-        }
-    }
-
-    .reviews-title {
-        margin: 50px 0;
-        margin-bottom: 20px;
-    }
-    
-    .reviews-container {
-        background-color: white;
-        .previous-reviews {
-            margin-top: 30px;
-            height: 200px;
-            overflow-y: scroll;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-
-            .review {
-                margin-bottom: 15px;
-                padding: 10px;
-                border-style: solid;
-                border-radius: 5px;
-                border-width: 1px;
-                border-color: #ddd;        
-            }
-        }
-
-        form {
-            margin-top: 50px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            
-            label {
-                margin-bottom: 15px;
-            }
-        }
-
-        .submit-button {
-            background-color: green;
-            color: white;
-            font-weight: normal;
-            box-shadow: none;
-            border-radius: 5px;
-            width: 150px;
-            padding: 20px 0;
-            cursor: pointer;
         }
     }
 }

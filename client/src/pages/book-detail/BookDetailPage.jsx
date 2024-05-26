@@ -2,8 +2,8 @@ import "./style.css"
 import Alkitab from "../../assets/alkitab.jpg"
 import CustomLink from "../../components/custom-link/CustomLink"
 import Button from "../../components/button/Button"
-
-const BookDetailsPage = () => {
+import HeartIcon from "../../components/heart/HeartIcon"
+const BookDetailPage = () => {
     return (
         <main className="book-details-page">
             <div className="book-details">
@@ -11,7 +11,10 @@ const BookDetailsPage = () => {
                     <img src={Alkitab} alt="" />
                 </div>
                 <div className="description-container">
-                    <h2>Al Kitab</h2>
+                    <div className="title-container">
+                        <h2>Al Kitab</h2>
+                        <Button className="add-scholar" children={<HeartIcon/>}/>
+                    </div>
                     <p>Author: <em><CustomLink to="/scholar-detail" children={<>Sibawaihy</>}/></em></p>
                     <strong>Reviews: 27</strong>
                     <hr />
@@ -19,6 +22,7 @@ const BookDetailsPage = () => {
                 </div>
             </div>
             <h2 className="reviews-title">Reviews</h2>
+            <hr />
             <div className="reviews-container">
                 <div className="previous-reviews">
                     <Review/>
@@ -32,7 +36,7 @@ const BookDetailsPage = () => {
                     <label htmlFor="">Submit review:</label>
                     <textarea name="" id="" rows={5}></textarea>
                 </form>
-                <Button children={<>Submit</>}/>
+                <Button className="submit-button" children={<>Submit</>}/>
             </div>
         </main>        
     )
@@ -43,9 +47,8 @@ const Review = () => {
         <div className="review">
             <p>Username</p>
             <p>Review...</p>
-            <hr />
         </div>
     )
 }
 
-export default BookDetailsPage;
+export default BookDetailPage;
