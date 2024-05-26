@@ -2,7 +2,6 @@ import React from 'react';
 
 const HeartIcon = () => (
   <svg
-
     viewBox="0 0 24 24"
     stroke="currentColor"
     strokeLinecap="round"

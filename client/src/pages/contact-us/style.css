@@ -3,13 +3,11 @@
     justify-content: center;
     flex-direction: column;
     min-height: 100vh;
-    background-color: white;
-    color: white;
 }
 
 .contact-us-page-container .title, 
 .contact-us-page-container .title-text {
-    color: rgb(29, 117, 48);
+    color: black;
 }
 
 .contact-us-page-container .container {
@@ -19,17 +17,21 @@
 
 .contact-us-container {
     display: flex;
+    border-radius: 5px;
 }
 
 .contact-us-container .left {
     flex-basis: 60%;
     padding: 40px 60px;
-    background-color: rgb(63, 178, 61);
     display: flex;
     flex-direction: column;
+    border-style: solid;
+    border-color: grey;
     border-radius: 10px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-width: 1px;
+    border-right: none;
 }
 
 .contact-us-container .right {
@@ -86,21 +88,18 @@
 }
 
 .submit-button {
-    background-color: white;
     width: 100px;
-    border-style: solid;
-    border-color: rgb(28, 138, 25);
     outline: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgb(54, 120, 61);
-    font-weight: bold;
+    background-color: rgb(54, 120, 61);
+    color: white;
+    border: none;
     padding: 0;
     height: 35px;
-    border-radius: 30px;
+    border-radius: 10px;
     margin-top: 20px;
-    box-shadow: 0px 5px 15px 0px rgba(27, 135, 47, 0.3);
 }
 
 .submit-button:hover {

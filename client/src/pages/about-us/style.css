@@ -1,0 +1,85 @@
+/* style.css */
+.about-us-page {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 75%;
+        max-width: 1200px;
+        text-align: left;
+        background-color: #ffffff; /* White background */
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+
+        .about-us-title {
+            margin-bottom: 30px;
+            text-align: center;
+
+            h1 {
+                font-size: 3rem;
+                color: #222;
+                margin-bottom: 10px;
+                border-bottom: 3px solid #333;
+                display: inline-block;
+                padding-bottom: 10px;
+            }
+        }
+
+        .team, .mission {
+            margin-top: 30px;
+            padding: 20px;
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .team {
+            background-color: #4CAF50; /* Clear green */
+
+            h2 {
+                font-size: 2rem;
+                color: #ffffff; /* White text for contrast */
+                margin-bottom: 15px;
+            }
+
+            p {
+                font-size: 1.125rem;
+                color: #ffffff; /* White text for contrast */
+                line-height: 1.8;
+            }
+        }
+    
+        .mission {
+            background-color: #388E3C; /* Darker clear green */
+
+            h2 {
+                font-size: 2rem;
+                color: #ffffff; /* White text for contrast */
+                margin-bottom: 15px;
+            }
+
+            p, ul {
+                font-size: 1.125rem;
+                color: #ffffff; /* White text for contrast */
+                line-height: 1.8;
+            }
+
+            ul {
+                list-style-type: disc;
+                padding-left: 20px;
+
+                li {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+}

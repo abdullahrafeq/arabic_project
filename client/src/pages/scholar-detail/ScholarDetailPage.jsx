@@ -2,7 +2,10 @@ import "./style.css"
 import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
 import HeartIcon from "../../components/heart/HeartIcon"
+import { useState } from "react"
 const ScholarDetailPage = () => {
+    const [isHeart, setHeart] = useState(false)
+
     return (
         <main className="scholar-details-page">
             <div className="scholar-details">
@@ -12,7 +15,7 @@ const ScholarDetailPage = () => {
                 <div className="description-container">
                     <div className="title-container">
                         <h2>Sibawaihy</h2>
-                        <Button className="add-scholar" children={<HeartIcon/>}/>
+                        <Button className={isHeart ? "add-scholar-focus" : "add-scholar"} children={<HeartIcon/>}/>
                     </div>
                     <p><strong>Born:</strong> 760 AD</p>
                     <p><strong>Died:</strong> 796 AD</p>

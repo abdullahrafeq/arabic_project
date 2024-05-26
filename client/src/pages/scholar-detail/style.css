@@ -27,7 +27,7 @@
                     margin: 0;
                 }
                 
-                .add-scholar {
+                .add-scholar, .add-scholar-focus {
                     border: none;
                     cursor: pointer;
                     fill: white;
@@ -37,6 +37,11 @@
                     height: fit-content;
                     padding: 0;
                     width: 40px;
+                }
+
+                .add-scholar-focus {
+                    fill: red;
+                    color: red;
                 }
             }
 
