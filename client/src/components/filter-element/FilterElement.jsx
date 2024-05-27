@@ -3,7 +3,7 @@ const FilterElement = ({className, categories, filtertype}) => {
         <aside className={className}>
             <h1>Filter {filtertype}</h1>
             <hr />
-                <h2>Book categories</h2>
+                <h2>{filtertype === "Books" ? <>Book</> : <>Scholar</>} categories</h2>
                 <form className="category">
                     {categories.map((category, index) => {
                         return (
