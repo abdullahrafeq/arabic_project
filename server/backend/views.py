@@ -5,12 +5,11 @@ from backend.models import Scholar
 from backend.models import Book
 
 def scholars(request):
-    #invoke serializer and return to client
     data = Scholar.objects.all()
-    serializer = ScholarSerializer(data, many=True)
+    serializer = ScholarSerializer(data, many=True, context={'request': request})
     return JsonResponse({'scholars': serializer.data})
 
 def books(request):
     data = Book.objects.all()
-    serializer = BookSerializer(data, many=True)
+    serializer = BookSerializer(data, many=True, context={'request': request})
     return JsonResponse({'books': serializer.data})

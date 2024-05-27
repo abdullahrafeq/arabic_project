@@ -1,8 +1,8 @@
 import CustomLink from "../../../../components/custom-link/CustomLink"
 
-const BookCard = ({img, name, author}) => {
+const BookCard = ({id, img, name, author}) => {
     return (
-        <CustomLink to="/book-detail" children={<Card img={img} name={name} author={author}/>}/>
+        <CustomLink to={`/book-detail/${id}`} children={<Card img={img} name={name} author={author}/>}/>
     )
 }
 

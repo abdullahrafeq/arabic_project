@@ -3,12 +3,14 @@ from backend.models import Scholar
 from backend.models import Book
 
 class ScholarSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField() 
     class Meta:
         model = Scholar
         fields = '__all__'
 
 class BookSerializer(serializers.ModelSerializer):
-    author = serializers.CharField(source='author.name')
+    author = ScholarSerializer()
+    image = serializers.ImageField() 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'author', 'image']
+        fields = '__all__'

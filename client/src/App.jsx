@@ -13,8 +13,34 @@ import FavouriteBooksPage from './pages/favourite-books/FavouriteBooksPage';
 import BookDetailPage from './pages/book-detail/BookDetailPage';
 import ScholarDetailPage from './pages/scholar-detail/ScholarDetailPage';
 import './App.css';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [books, setBooks] = useState([])
+  const [scholars, setScholars] = useState([])
+
+  useEffect(() => {
+      fetch("http://127.0.0.1:8000/api/books/")
+      .then((response) => response.json())
+      .then(data => {
+          setBooks(data.books)
+          console.log(data.books)
+      })
+      .catch((err) => {
+          console.log("Error fetching books: " + err)
+      })
+
+      fetch("http://127.0.0.1:8000/api/scholars/")
+      .then((response) => response.json())
+      .then(data => {
+          setScholars(data.scholars)
+          console.log(data.scholars)
+      })
+      .catch((err) => {
+          console.log("Error fetching scholars: " + err)
+      })
+  }, [])
+
   return (
     <div className="App">
         <NavBar/>
@@ -25,10 +51,10 @@ function App() {
             <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
             <Route path="/favourite-books" element={<FavouriteBooksPage />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/scholars" element={<ScholarsPage />} />
-            <Route path="/books" element={<BooksPage />} />
-            <Route path="/scholar-detail" element={<ScholarDetailPage />} />
-            <Route path="/book-detail" element={<BookDetailPage />} />
+            <Route path="/scholars" element={<ScholarsPage scholars={scholars}/>} />
+            <Route path="/books" element={<BooksPage books={books}/>} />
+            <Route path="/scholar-detail/:id" element={<ScholarDetailPage scholars={scholars}/>} />
+            <Route path="/book-detail/:id" element={<BookDetailPage books={books}/>} />
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
           </Routes>

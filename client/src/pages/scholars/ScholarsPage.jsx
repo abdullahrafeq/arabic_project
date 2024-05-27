@@ -2,8 +2,9 @@ import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import Sibawaihy from "../../assets/sibawaihy.jpg"
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
+import { useParams } from "react-router-dom";
 
-const ScholarsPage = () => {
+const ScholarsPage = ({ scholars }) => {
     const categories = [
         {
             name: "cat1",
@@ -19,6 +20,8 @@ const ScholarsPage = () => {
         },
         
     ]
+
+    console.log(scholars)
     return (
         <div className="scholars-page">
             <div className="search-container">
@@ -26,19 +29,18 @@ const ScholarsPage = () => {
             </div>
             <FilterElement className={"filter-scholar"} categories={categories} filtertype={"Scholars"}/>
             <main className="scholars-grid">
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
-                <ScholarCard img={Sibawaihy} birth={"148"} death={"180"} name={"Sibawaihy"}/>
+                {scholars?.map((scholar, index) => {
+                    return (
+                        <ScholarCard 
+                            key={index}
+                            id={scholar.id}
+                            img={scholar.image} 
+                            birth={scholar.birth_year} 
+                            death={scholar.death_year} 
+                            name={scholar.name}
+                        />
+                    )
+                })}
             </main>
         </div>
     )

@@ -1,29 +1,37 @@
 import "./style.css"
-import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
 import HeartIcon from "../../components/heart/HeartIcon"
 import { useState } from "react"
-const ScholarDetailPage = () => {
+import { useParams } from "react-router-dom"
+
+const ScholarDetailPage = ({ scholars }) => {
     const [isHeart, setHeart] = useState(false)
+
+    const { id } = useParams()
+
+    const scholar = scholars ? scholars.find((scholar) => scholar.id === parseInt(id)) : null
 
     return (
         <main className="scholar-details-page">
-            <div className="scholar-details">
-                <div className="image-container">
-                    <img src={Sibawaihy} alt="" />
-                </div>
-                <div className="description-container">
-                    <div className="title-container">
-                        <h2>Sibawaihy</h2>
-                        <Button className={isHeart ? "add-scholar-focus" : "add-scholar"} children={<HeartIcon/>}/>
+            {scholar ? (
+                <div className="scholar-details">
+                    <div className="image-container">
+                        <img src={scholar.image} alt="" />
                     </div>
-                    <p><strong>Born:</strong> 760 AD</p>
-                    <p><strong>Died:</strong> 796 AD</p>
-                    <p><strong>Specialized Science:</strong> Nahw (Arabic Grammar)</p>
-                    <p>Sibawaihy was a renowned Persian scholar of Arabic grammar, whose works have significantly influenced the field. His seminal work, "Kitab Sibawaih," is considered one of the most important contributions to Arabic linguistics, laying the foundations for Arabic syntax and grammar. Despite his early death, Sibawaihy's legacy endures in the study of the Arabic language.</p>
-                </div>
+                    <div className="description-container">
+                        <div className="title-container">
+                            <h2>{scholar.name}</h2>
+                            <Button className={isHeart ? "add-scholar-focus" : "add-scholar"} children={<HeartIcon/>}/>
+                        </div>
+                        <p><strong>Born: </strong>{scholar.birth_year}</p>
+                        <p><strong>Died: </strong>{scholar.death_year}</p>
+                        <p><strong>Specialized Science:</strong> Science...</p>
+                        <p>Description...</p>
+                    </div>
 
-            </div>
+                </div>):
+                (<h1>Scholar not found</h1>)
+                }
         </main>        
     )
 }
