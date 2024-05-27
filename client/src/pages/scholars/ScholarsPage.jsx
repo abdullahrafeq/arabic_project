@@ -1,8 +1,6 @@
 import ScholarCard from "../home/components/scholar-card/ScholarCard";
-import Sibawaihy from "../../assets/sibawaihy.jpg"
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
-import { useParams } from "react-router-dom";
 
 const ScholarsPage = ({ scholars }) => {
     const categories = [
@@ -34,10 +32,10 @@ const ScholarsPage = ({ scholars }) => {
                         <ScholarCard 
                             key={index}
                             id={scholar.id}
-                            img={scholar.image} 
                             birth={scholar.birth_year} 
                             death={scholar.death_year} 
                             name={scholar.name}
+                            arabic_name={scholar.arabic_name}
                         />
                     )
                 })}

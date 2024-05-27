@@ -2,10 +2,12 @@
     padding: 50px;
     .scholar-details {
         display: flex;
-        gap: 20px;
+        gap: 100px;
 
-        .image-container img {
+        .image-container > div {
             width: 300px;
+            height: 300px;
+            font-size: 50px;
         }
 
         .description-container {

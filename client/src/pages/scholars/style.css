@@ -51,6 +51,10 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
         gap: 20px;
+        align-items: start; /* Align items to the start to avoid extra space */
+        height: fit-content; /* Ensure the height fits the content */
+        padding-bottom: 20px; /* Add some padding at the bottom for spacing */
+        overflow: visible; /* Ensure content is visible and not clipped */
     }
     
     .scholar-card {
@@ -61,6 +65,9 @@
         transition: transform 0.3s ease;
         text-align: center;
         padding: 10px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
     }
 
     .scholar-card p {
@@ -68,12 +75,16 @@
         padding: 0;
     }
 
-    .scholar-card img {
-        width: 100%;
-        height: auto;
+    .scholar-card > div {
+        width: 150px;
+        height: 150px;
     }
 
     .scholar-card hr {
         width: 75%;
+    }
+
+    .scholar-link {
+        height: fit-content;
     }
 }

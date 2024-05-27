@@ -18,7 +18,8 @@ import { useState, useEffect } from 'react';
 function App() {
   const [books, setBooks] = useState([])
   const [scholars, setScholars] = useState([])
-
+  const [categories, setCategories] = useState([])
+  
   useEffect(() => {
       fetch("http://127.0.0.1:8000/api/books/")
       .then((response) => response.json())
@@ -39,6 +40,16 @@ function App() {
       .catch((err) => {
           console.log("Error fetching scholars: " + err)
       })
+
+      fetch("http://127.0.0.1:8000/api/book-categories/")
+      .then((response) => response.json())
+      .then(data => {
+          setCategories(data.book_categories)
+          console.log(data.book_categories)
+      })
+      .catch((err) => {
+          console.log("Error fetching categories: " + err)
+      })
   }, [])
 
   return (
@@ -52,7 +63,7 @@ function App() {
             <Route path="/favourite-books" element={<FavouriteBooksPage />} />
             <Route path="/account" element={<Account />} />
             <Route path="/scholars" element={<ScholarsPage scholars={scholars}/>} />
-            <Route path="/books" element={<BooksPage books={books}/>} />
+            <Route path="/books" element={<BooksPage books={books} categories={categories}/>} />
             <Route path="/scholar-detail/:id" element={<ScholarDetailPage scholars={scholars}/>} />
             <Route path="/book-detail/:id" element={<BookDetailPage books={books}/>} />
             <Route path="/contact-us" element={<ContactUsPage />} />
