@@ -2,8 +2,12 @@ import BookCard from "../home/components/book-card/BookCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 
-const BooksPage = ({ books, categories }) => {
+const BooksPage = ({ booksData, categoriesData }) => {
     
+    const books = booksData && booksData.books ? booksData.books : [];
+    const categories = categoriesData && categoriesData.book_categories ? categoriesData.book_categories : []
+
+    console.log(booksData)
     return (
         <div className="books-page">
             <div className="search-container">

@@ -13,55 +13,13 @@ import FavouriteBooksPage from './pages/favourite-books/FavouriteBooksPage';
 import BookDetailPage from './pages/book-detail/BookDetailPage';
 import ScholarDetailPage from './pages/scholar-detail/ScholarDetailPage';
 import './App.css';
-import { useState, useEffect } from 'react';
+import useFetch from './hooks/useFetch';
 
-function App() {
-  const [books, setBooks] = useState([])
-  const [scholars, setScholars] = useState([])
-  const [bookCategories, setBookCategories] = useState([])
-  const [scholarYearCategories, setScholarsYearCategories] = useState([])
-  
-  useEffect(() => {
-      fetch("http://127.0.0.1:8000/api/books/")
-      .then((response) => response.json())
-      .then(data => {
-          setBooks(data.books)
-          console.log(data.books)
-      })
-      .catch((err) => {
-          console.log("Error fetching books: " + err)
-      })
-
-      fetch("http://127.0.0.1:8000/api/scholars/")
-      .then((response) => response.json())
-      .then(data => {
-          setScholars(data.scholars)
-          console.log(data.scholars)
-      })
-      .catch((err) => {
-          console.log("Error fetching scholars: " + err)
-      })
-
-      fetch("http://127.0.0.1:8000/api/book-categories/")
-      .then((response) => response.json())
-      .then(data => {
-          setBookCategories(data.book_categories)
-          console.log(data.book_categories)
-      })
-      .catch((err) => {
-          console.log("Error fetching categories: " + err)
-      })
-
-      fetch("http://127.0.0.1:8000/api/scholar-year-categories/")
-      .then((response) => response.json())
-      .then(data => {
-          setScholarsYearCategories(data.scholar_year_categories)
-          console.log(data.scholar_year_categories)
-      })
-      .catch((err) => {
-          console.log("Error fetching categories: " + err)
-      })
-  }, [])
+function App() {  
+  const {data:booksData, setData:setBooksData, errorStatus: booksError} = useFetch("http://127.0.0.1:8000/api/books/")
+  const {data:scholarsData, setData:setScholarsData, errorStatus: scholarsError} = useFetch("http://127.0.0.1:8000/api/scholars/")
+  const {data:bookCategoriesData, setData:setBookCategoriesDataData, errorStatus: bookCategoriesError} = useFetch("http://127.0.0.1:8000/api/book-categories/")
+  const {data:scholarYearCategoriesData, setData:setScholarYearCategoriesData, errorStatus: scholarYearCategoriesError} = useFetch("http://127.0.0.1:8000/api/scholar-year-categories/")
 
   return (
     <div className="App">
@@ -73,10 +31,10 @@ function App() {
             <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
             <Route path="/favourite-books" element={<FavouriteBooksPage />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/scholars" element={<ScholarsPage scholars={scholars} categories={scholarYearCategories}/>} />
-            <Route path="/books" element={<BooksPage books={books} categories={bookCategories}/>} />
-            <Route path="/scholar-detail/:id" element={<ScholarDetailPage scholars={scholars}/>} />
-            <Route path="/book-detail/:id" element={<BookDetailPage books={books}/>} />
+            <Route path="/scholars" element={<ScholarsPage scholarsData={scholarsData} scholarYearCategoriesData={scholarYearCategoriesData}/>} />
+            <Route path="/books" element={<BooksPage booksData={booksData} categoriesData={bookCategoriesData}/>} />
+            <Route path="/scholar-detail/:id" element={<ScholarDetailPage scholarsData={scholarsData}/>} />
+            <Route path="/book-detail/:id" element={<BookDetailPage booksData={booksData}/>} />
             <Route path="/contact-us" element={<ContactUsPage />} />
             <Route path="/about-us" element={<AboutUsPage />} />
           </Routes>

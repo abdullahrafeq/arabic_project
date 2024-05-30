@@ -2,8 +2,10 @@ import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 
-const ScholarsPage = ({ scholars, categories }) => {
-    console.log(scholars)
+const ScholarsPage = ({ scholarsData, scholarYearCategoriesData }) => {
+    const scholars = scholarsData && scholarsData.scholars ? scholarsData.scholars : [];
+    const categories = scholarYearCategoriesData && scholarYearCategoriesData.scholar_year_categories ? scholarYearCategoriesData.scholar_year_categories : []
+
     return (
         <div className="scholars-page">
             <div className="search-container">
