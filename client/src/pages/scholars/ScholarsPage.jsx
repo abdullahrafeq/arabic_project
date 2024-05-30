@@ -2,23 +2,7 @@ import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 
-const ScholarsPage = ({ scholars }) => {
-    const categories = [
-        {
-            name: "cat1",
-            alternatives: ["alt1", "alt2", "alt3", "alt4", "alt5"]
-        },
-        {
-            name: "cat2",
-            alternatives: ["alt1", "alt2", "alt3"]
-        },
-        {
-            name: "cat3",
-            alternatives: ["alt1", "alt2", "alt3", "alt4"]
-        },
-        
-    ]
-
+const ScholarsPage = ({ scholars, categories }) => {
     console.log(scholars)
     return (
         <div className="scholars-page">

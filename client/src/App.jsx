@@ -18,7 +18,8 @@ import { useState, useEffect } from 'react';
 function App() {
   const [books, setBooks] = useState([])
   const [scholars, setScholars] = useState([])
-  const [categories, setCategories] = useState([])
+  const [bookCategories, setBookCategories] = useState([])
+  const [scholarYearCategories, setScholarsYearCategories] = useState([])
   
   useEffect(() => {
       fetch("http://127.0.0.1:8000/api/books/")
@@ -44,8 +45,18 @@ function App() {
       fetch("http://127.0.0.1:8000/api/book-categories/")
       .then((response) => response.json())
       .then(data => {
-          setCategories(data.book_categories)
+          setBookCategories(data.book_categories)
           console.log(data.book_categories)
+      })
+      .catch((err) => {
+          console.log("Error fetching categories: " + err)
+      })
+
+      fetch("http://127.0.0.1:8000/api/scholar-year-categories/")
+      .then((response) => response.json())
+      .then(data => {
+          setScholarsYearCategories(data.scholar_year_categories)
+          console.log(data.scholar_year_categories)
       })
       .catch((err) => {
           console.log("Error fetching categories: " + err)
@@ -62,8 +73,8 @@ function App() {
             <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
             <Route path="/favourite-books" element={<FavouriteBooksPage />} />
             <Route path="/account" element={<Account />} />
-            <Route path="/scholars" element={<ScholarsPage scholars={scholars}/>} />
-            <Route path="/books" element={<BooksPage books={books} categories={categories}/>} />
+            <Route path="/scholars" element={<ScholarsPage scholars={scholars} categories={scholarYearCategories}/>} />
+            <Route path="/books" element={<BooksPage books={books} categories={bookCategories}/>} />
             <Route path="/scholar-detail/:id" element={<ScholarDetailPage scholars={scholars}/>} />
             <Route path="/book-detail/:id" element={<BookDetailPage books={books}/>} />
             <Route path="/contact-us" element={<ContactUsPage />} />

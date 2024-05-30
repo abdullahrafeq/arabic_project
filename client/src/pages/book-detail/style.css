@@ -46,12 +46,12 @@
             }
 
 
-            em {
+            .author-title {
                 color: green;
                 margin-bottom: 20px;
             }
 
-            em:hover {
+            .author-title:hover {
                 text-decoration: underline;
             }
 

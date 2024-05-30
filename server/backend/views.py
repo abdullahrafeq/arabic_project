@@ -1,6 +1,11 @@
 from django.http import JsonResponse
-from backend.models import Scholar, BookCategory, Book
-from backend.serializers import ScholarSerializer, BookCategorySerializer, BookSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer
+
+def scholar_year_categories(request):
+    data = ScholarYearCategory.objects.all()
+    serializer = ScholarYearCategorySerializer(data, many=True, context={'request': request})
+    return JsonResponse({'scholar_year_categories': serializer.data})
 
 def scholars(request):
     data = Scholar.objects.all()

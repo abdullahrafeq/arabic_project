@@ -1,8 +1,13 @@
 from rest_framework import serializers
-from backend.models import Scholar, BookCategory, Book
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book
+
+class ScholarYearCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScholarYearCategory
+        fields = '__all__'
 
 class ScholarSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField() 
+    year_category = ScholarYearCategorySerializer()
     class Meta:
         model = Scholar
         fields = '__all__'
@@ -12,11 +17,9 @@ class BookCategorySerializer(serializers.ModelSerializer):
         model = BookCategory
         fields = '__all__'
 
-
 class BookSerializer(serializers.ModelSerializer):
     author = ScholarSerializer()
-    category = BookCategorySerializer()
-    arabic_category = BookCategorySerializer()  # Use BookCategorySerializer for arabic_category
+    categories = BookCategorySerializer(many=True)
     image = serializers.ImageField() 
     class Meta:
         model = Book

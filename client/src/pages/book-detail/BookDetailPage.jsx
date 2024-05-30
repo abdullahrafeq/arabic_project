@@ -24,7 +24,14 @@ const BookDetailPage = ({ books }) => {
                                 <h2>{book.name}</h2>
                                 <Button className={isHeart ? "add-book-focus" : "add-book"} children={<HeartIcon/>}/>
                             </div>
-                            <p>Author: <em><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
+                            <p>Author: <em className="author-title"><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
+                            <p>Categories: {book.categories.map((category, index) => {
+                                return (
+                                    <em key={index}>{category.name}{index !== book.categories.length -1 && <>, </>} </em>
+                                )
+                            })}
+
+                            </p>
                             <strong>Reviews: 27</strong>
                             <hr />
                             <p>Description of the book...</p>
