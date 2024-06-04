@@ -2,18 +2,33 @@ import "./style.css"
 import CustomLink from "../../components/custom-link/CustomLink"
 import Button from "../../components/button/Button"
 import HeartIcon from "../../components/heart/HeartIcon"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import useFetch from "../../hooks/useFetch"
 
-const BookDetailPage = ({ books }) => {
+const BookDetailPage = () => {
     const [isHeart, setHeart] = useState(false)
     const { id } = useParams()
+    const {
+        request: requestBook, 
+        appendData: appendFavouriteBook, 
+        data: {book = {}} = {},
+        errorStatus: errorStatusBooks
+      } = useFetch(`http://127.0.0.1:8000/api/books/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + localStorage.getItem('access'),
+        },
+    })
 
-    const book = books ? books.find((book) => parseInt(id) === parseInt(book.id)) : null
+    useEffect(() => {
+        requestBook()
+    }, [])
 
     return (
         <main className="book-details-page">
-            {book ? (
+            {book && book.author ? (
                 <>
                     <div className="book-details">
                         <div className="image-container">

@@ -7,7 +7,7 @@ class ScholarYearCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ScholarSerializer(serializers.ModelSerializer):
-    year_category = ScholarYearCategorySerializer()
+    year_category = ScholarYearCategorySerializer(read_only=True)
     class Meta:
         model = Scholar
         fields = '__all__'

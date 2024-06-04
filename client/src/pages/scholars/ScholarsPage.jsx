@@ -1,10 +1,40 @@
 import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
+import { useEffect } from "react";
+import useFetch from "../../hooks/useFetch";
 
-const ScholarsPage = ({ scholarsData, scholarYearCategoriesData }) => {
-    const scholars = scholarsData && scholarsData.scholars ? scholarsData.scholars : [];
-    const categories = scholarYearCategoriesData && scholarYearCategoriesData.scholar_year_categories ? scholarYearCategoriesData.scholar_year_categories : []
+const ScholarsPage = () => {
+
+    const {
+        request: requestScholars, 
+        appendData: appendScholars, 
+        data: {scholars = []} = {},
+        errorStatus: errorStatusScholars
+      } = useFetch("http://127.0.0.1:8000/api/scholars", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + localStorage.getItem('access'),
+        },
+    })
+
+    const {
+        request: requestCategories, 
+        data: {scholar_year_categories: categories = []} = {},
+        errorStatus: errorStatusCategories
+      } = useFetch("http://127.0.0.1:8000/api/scholar-year-categories", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + localStorage.getItem('access'),
+        },
+    })
+    
+    useEffect(() => {
+        requestScholars()
+        requestCategories()
+    }, [])
 
     return (
         <div className="scholars-page">

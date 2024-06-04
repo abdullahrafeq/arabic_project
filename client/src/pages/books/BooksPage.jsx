@@ -1,13 +1,41 @@
 import BookCard from "../home/components/book-card/BookCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
+import useFetch from "../../hooks/useFetch";
+import { useEffect } from "react";
 
-const BooksPage = ({ booksData, categoriesData }) => {
-    
-    const books = booksData && booksData.books ? booksData.books : [];
-    const categories = categoriesData && categoriesData.book_categories ? categoriesData.book_categories : []
+const BooksPage = () => {
+    const {
+        request: requestBooks, 
+        appendData: appendBooks, 
+        data: {books = []} = {},
+        errorStatus: errorStatusBooks
+      } = useFetch("http://127.0.0.1:8000/api/books", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + localStorage.getItem('access'),
+        },
+    })
 
-    console.log(booksData)
+    const {
+        request: requestCategories, 
+        data: {book_categories: categories = []} = {},
+        errorStatus: errorStatusCategories
+      } = useFetch("http://127.0.0.1:8000/api/book-categories", {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer' + localStorage.getItem('access'),
+        },
+    })
+
+    useEffect(() => {
+        requestBooks()
+        requestCategories()
+    }, [])
+
+
     return (
         <div className="books-page">
             <div className="search-container">

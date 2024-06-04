@@ -24,6 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/scholar-year-categories/', views.scholar_year_categories, name='scholar_year_categories'),
     path('api/scholars/', views.scholars, name='scholars'),
+    path('api/scholars/<int:id>', views.scholar, name='scholar'),
     path('api/book-categories/', views.book_categories, name='book_categories'),
     path('api/books/', views.books, name='books'),
+    path('api/books/<int:id>', views.book, name='book'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
