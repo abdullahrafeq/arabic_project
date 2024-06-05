@@ -1,5 +1,4 @@
 import "./style.css"
-import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
 import CustomLink from "../../components/custom-link/CustomLink"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +6,7 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
 import useFetch from "../../hooks/useFetch";
 import { useEffect, useState } from "react";
 import useFavourite from "../../hooks/useFavourite";
+import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle";
 
 const FavouriteScholarsPage = () => {   
     const [favScholars, setFavScholars] = useState([]);
@@ -41,7 +41,6 @@ const FavouriteScholarsPage = () => {
                     return (
                         <ScholarCard 
                             key={index} 
-                            img={Sibawaihy} 
                             scholar={scholar}
                             onRemove={() => removeScholarFromFavorites(scholar)}
                         />
@@ -53,13 +52,13 @@ const FavouriteScholarsPage = () => {
 }
 
 
-const ScholarCard = ({ img, scholar, onRemove }) => {
+const ScholarCard = ({ scholar, onRemove }) => {
     return (
-        <Content img={img} scholar={scholar} onRemove={onRemove}/>
+        <Content scholar={scholar} onRemove={onRemove}/>
     )
 }
 
-const Content = ({ img, scholar, onRemove }) => {
+const Content = ({ scholar, onRemove }) => {
     const { 
         removeFromFavourite
     } = useFavourite("http://127.0.0.1:8000/api/scholars/", scholar)
@@ -68,12 +67,14 @@ const Content = ({ img, scholar, onRemove }) => {
         removeFromFavourite()
         onRemove()
     }
-     
+
     return (
         <div className="card">
             <CustomLink to={`/scholar-detail/${scholar.id}`} children={
                 <div className="link-container">
-                    <img src={img} alt="" />
+                    <div className="image-container">
+                        <ZigZagCircle children={<>{scholar.arabic_name}</>}/>
+                    </div>
                     <p>{scholar.name}</p>
                 </div>
             }/>
