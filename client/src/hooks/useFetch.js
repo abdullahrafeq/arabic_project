@@ -5,7 +5,6 @@ const useFetch = (url, { method, headers, body } = {}) => {
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState()
     const [errorStatus, setErrorStatus] = useState()
-    const [responseId, setResponseId] = useState()
     
     const navigate = useNavigate()
     const location = useLocation()
@@ -64,6 +63,7 @@ const useFetch = (url, { method, headers, body } = {}) => {
     }
 
     const updateData = (url, updatedData) => {
+        console.log(updatedData)
         fetch(url, {
             method: 'PUT',
             headers: headers,
@@ -76,7 +76,7 @@ const useFetch = (url, { method, headers, body } = {}) => {
             return response.json();
         })
         .then((data) => {
-            console.log('Update successful:', data); // Log success message or data
+            console.log('Update successful:', data);
         })
         .catch((err) => {
             console.log(err);

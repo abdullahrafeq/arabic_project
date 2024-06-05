@@ -5,7 +5,7 @@ import HeartIcon from "../../components/heart/HeartIcon"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
-
+import useFavourite from "../../hooks/useFavourite"
 const BookDetailPage = () => {
     const [isHeart, setHeart] = useState(false)
     const { id } = useParams()
@@ -22,9 +22,28 @@ const BookDetailPage = () => {
         },
     })
 
+    const { 
+        addToFavourite: addToFavouriteBook, 
+        removeFromFavourite: removeFromFavouriteBook,
+    } = useFavourite("http://127.0.0.1:8000/api/books/", book)
+    
     useEffect(() => {
         requestBook()
     }, [])
+
+    useEffect(() => {
+        const isFavourite = book.is_favourite
+        setHeart(isFavourite)
+    }, [book])
+
+    const handleFavouriteClick = () => {
+        if (isHeart) {
+            removeFromFavouriteBook()
+        } else {
+            addToFavouriteBook()
+        }
+        setHeart(!isHeart)
+    }
 
     return (
         <main className="book-details-page">
@@ -32,12 +51,16 @@ const BookDetailPage = () => {
                 <>
                     <div className="book-details">
                         <div className="image-container">
-                            <img src={book.image} alt="" />
+                            <img src={"http://127.0.0.1:8000/"+book.image_url} alt="" />
                         </div>
                         <div className="description-container">
                             <div className="title-container">
                                 <h2>{book.name}</h2>
-                                <Button className={isHeart ? "add-book-focus" : "add-book"} children={<HeartIcon/>}/>
+                                <Button 
+                                    className={isHeart ? "add-book-focus" : "add-book"} 
+                                    children={<HeartIcon/>}
+                                    onClick={handleFavouriteClick}
+                                />
                             </div>
                             <p>Author: <em className="author-title"><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
                             <p>Categories: {book.categories.map((category, index) => {

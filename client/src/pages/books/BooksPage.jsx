@@ -48,7 +48,7 @@ const BooksPage = () => {
                         <BookCard 
                             key={index} 
                             id={book.id} 
-                            img={book.image} 
+                            img={"http://127.0.0.1:8000/"+book.image_url} 
                             name={book.name} 
                             author={book.author.name}
                         />

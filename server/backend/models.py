@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
-from .utils import convert_to_arabic_numerals  # Adjust the import as needed
+from urllib.parse import urljoin
+from .utils import convert_to_arabic_numerals
 
 class ScholarYearCategory(models.Model):
     start_year = models.IntegerField()
@@ -23,7 +25,7 @@ class Scholar(models.Model):
     arabic_birth_year = models.CharField(max_length=200, null=True)
     arabic_death_year = models.CharField(max_length=200, null=True)
     year_category = models.ForeignKey(ScholarYearCategory, on_delete=models.CASCADE, related_name="scholars", blank=True, null=True)
-    arabic_year_category = models.CharField(max_length=200, null=True)
+    arabic_year_category = models.CharField(max_length=200, blank=True, null=True)
     is_favourite = models.BooleanField(default=False)
     
     def __str__(self):
@@ -38,6 +40,8 @@ class Scholar(models.Model):
             year_category = ScholarYearCategory.objects.filter(start_year__lte=self.birth_year, end_year__gte=self.birth_year).first()
             if year_category:
                 self.year_category = year_category
+                self.arabic_year_category = year_category.arabic_name
+
 
         super(Scholar, self).save(*args, **kwargs)
 
@@ -53,8 +57,17 @@ class Book(models.Model):
     arabic_name = models.CharField(max_length=200, default="")
     author = models.ForeignKey(Scholar, on_delete=models.CASCADE, related_name='books')
     categories = models.ManyToManyField(BookCategory, related_name='books', blank=True)
-    image = models.ImageField(upload_to='book_images/', blank=True, null=True)
+    image = models.ImageField(max_length=200, default="")
+    image_url = models.CharField(max_length=200, default="", blank=True, null=True)
     is_favourite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super(Book, self).save(*args, **kwargs)
+        if self.image:
+            full_url = urljoin(settings.BASE_DIR, self.image.url)
+            print(full_url)
+            self.image_url = full_url
+            super(Book, self).save(update_fields=['image_url'])

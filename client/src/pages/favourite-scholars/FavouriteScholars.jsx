@@ -54,6 +54,12 @@ const FavouriteScholarsPage = () => {
 
 
 const ScholarCard = ({ img, scholar, onRemove }) => {
+    return (
+        <Content img={img} scholar={scholar} onRemove={onRemove}/>
+    )
+}
+
+const Content = ({ img, scholar, onRemove }) => {
     const { 
         removeFromFavourite
     } = useFavourite("http://127.0.0.1:8000/api/scholars/", scholar)
@@ -61,17 +67,11 @@ const ScholarCard = ({ img, scholar, onRemove }) => {
     const handleRemove = () => {
         removeFromFavourite()
         onRemove()
-    } 
-
-    return (
-        <Content img={img} scholar={scholar} onClick={handleRemove}/>
-    )
-}
-
-const Content = ({ img, scholar, onClick }) => {
+    }
+     
     return (
         <div className="card">
-            <CustomLink to="/scholar-detail" children={
+            <CustomLink to={`/scholar-detail/${scholar.id}`} children={
                 <div className="link-container">
                     <img src={img} alt="" />
                     <p>{scholar.name}</p>
@@ -80,7 +80,7 @@ const Content = ({ img, scholar, onClick }) => {
             <Button 
                 className="remove-button" 
                 children={<FontAwesomeIcon icon={faX}/>}
-                onClick={onClick}
+                onClick={() => handleRemove(scholar)}
             />
         </div>
     )
