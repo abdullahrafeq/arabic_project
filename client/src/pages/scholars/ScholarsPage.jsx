@@ -3,6 +3,7 @@ import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
+import useSearch from "../../hooks/useSearch";
 
 const ScholarsPage = () => {
 
@@ -32,7 +33,16 @@ const ScholarsPage = () => {
     })
 
     const [selected, setSelected] = useState([])
+    const { query, setSearch } = useSearch()
+
+    const filteredScholars = scholars.filter(scholar => 
+        scholar.name.toLowerCase().includes(query.toLowerCase()) &&
+        (selected.length === 0 || selected.some(selectedCategory =>
+                selectedCategory.id === scholar.year_category.id
+            )
+        ))
     
+
     useEffect(() => {
         requestScholars()
         requestCategories()
@@ -44,15 +54,22 @@ const ScholarsPage = () => {
     return (
         <div className="scholars-page">
             <div className="search-container">
-                <input type="text" placeholder="Search..." />
+                <input 
+                    type="text" 
+                    placeholder="Search..." 
+                    value={query}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
             </div>
-            <FilterElement className={"filter-scholar"} categories={categories} selected={selected} setSelected={setSelected} filtertype={"Scholars"}/>
+            <FilterElement 
+                className={"filter-scholar"} 
+                categories={categories} 
+                selected={selected} 
+                setSelected={setSelected} 
+                filtertype={"Scholars"}
+            />
             <main className="scholars-grid">
-                {scholars.filter((scholar) =>
-                    selected.some((category) =>
-                        category.id === scholar.year_category.id
-                    )
-                ).map((scholar, index) => {
+                {filteredScholars.map((scholar, index) => {
                     return (
                         <ScholarCard 
                             key={index}
