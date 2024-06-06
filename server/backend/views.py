@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -66,7 +66,6 @@ def books(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def book(request, id):
-    print(request.data)  # Print request data to console for inspection
     try:
         book = Book.objects.get(pk=id)
     except Book.DoesNotExist:
@@ -83,4 +82,37 @@ def book(request, id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         book.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)    
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'POST'])
+def quotes(request):
+    if request.method == 'GET':
+        data = Quote.objects.all()
+        serializer = QuoteSerializer(data, many=True, context={'request': request})
+        return Response({'quotes': serializer.data})
+    elif request.method == 'POST':
+        serializer = QuoteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'quotes': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def quote(request, id):
+    try:
+        quote = Quote.objects.get(pk=id)
+    except Book.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = QuoteSerializer(quote, context={'request': request})
+        return Response({'quote': serializer.data})
+    elif request.method == 'PUT':
+        serializer = QuoteSerializer(quote, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'quote': serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        quote.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -46,9 +46,12 @@
         transition: transform 0.3s ease;
         text-align: center;
         padding: 10px;
-
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
-
+    
     .scholar-card p, .book-card p {
         margin: 0;
         padding: 0;

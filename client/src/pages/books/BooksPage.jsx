@@ -2,7 +2,7 @@ import BookCard from "../home/components/book-card/BookCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
 import useFetch from "../../hooks/useFetch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const BooksPage = () => {
     const {
@@ -30,20 +30,27 @@ const BooksPage = () => {
         },
     })
 
+    const [selected, setSelected] = useState([])
+
     useEffect(() => {
         requestBooks()
         requestCategories()
     }, [])
-
 
     return (
         <div className="books-page">
             <div className="search-container">
                 <input type="text" placeholder="Search..." />
             </div>
-            <FilterElement className={"filter-book"} categories={categories} filtertype={"Books"}/>
+            <FilterElement className={"filter-book"} categories={categories} selected={selected} setSelected={setSelected} filtertype={"Books"}/>
             <main className="books-grid">
-                 {books?.map((book, index) => {
+                 {books.filter((book) =>
+                    book.categories.some((bookCategory) =>
+                        selected.some((selectedCategory) =>
+                            selectedCategory.id === bookCategory.id
+                        )
+                    )
+                ).map((book, index) => {
                     return (
                         <BookCard 
                             key={index} 

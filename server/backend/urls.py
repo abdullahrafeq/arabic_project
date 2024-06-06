@@ -28,4 +28,6 @@ urlpatterns = [
     path('api/book-categories/', views.book_categories, name='book_categories'),
     path('api/books/', views.books, name='books'),
     path('api/books/<int:id>', views.book, name='book'),
+    path('api/quotes/', views.quotes, name='quotes'),
+    path('api/quotes/<int:id>', views.quote, name='quote'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 import ScholarCard from "../home/components/scholar-card/ScholarCard";
 import FilterElement from "../../components/filter-element/FilterElement";
 import "./style.css"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 
 const ScholarsPage = () => {
@@ -30,20 +30,29 @@ const ScholarsPage = () => {
           Authorization: 'Bearer' + localStorage.getItem('access'),
         },
     })
+
+    const [selected, setSelected] = useState([])
     
     useEffect(() => {
         requestScholars()
         requestCategories()
     }, [])
 
+
+
+
     return (
         <div className="scholars-page">
             <div className="search-container">
                 <input type="text" placeholder="Search..." />
             </div>
-            <FilterElement className={"filter-scholar"} categories={categories} filtertype={"Scholars"}/>
+            <FilterElement className={"filter-scholar"} categories={categories} selected={selected} setSelected={setSelected} filtertype={"Scholars"}/>
             <main className="scholars-grid">
-                {scholars?.map((scholar, index) => {
+                {scholars.filter((scholar) =>
+                    selected.some((category) =>
+                        category.id === scholar.year_category.id
+                    )
+                ).map((scholar, index) => {
                     return (
                         <ScholarCard 
                             key={index}

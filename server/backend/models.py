@@ -27,6 +27,7 @@ class Scholar(models.Model):
     year_category = models.ForeignKey(ScholarYearCategory, on_delete=models.CASCADE, related_name="scholars", blank=True, null=True)
     arabic_year_category = models.CharField(max_length=200, blank=True, null=True)
     is_favourite = models.BooleanField(default=False)
+    is_on_home_page = models.BooleanField(default=False)
     
     def __str__(self):
         return self.name
@@ -60,6 +61,7 @@ class Book(models.Model):
     image = models.ImageField(max_length=200, default="")
     image_url = models.CharField(max_length=200, default="", blank=True, null=True)
     is_favourite = models.BooleanField(default=False)
+    is_on_home_page = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -71,3 +73,12 @@ class Book(models.Model):
             print(full_url)
             self.image_url = full_url
             super(Book, self).save(update_fields=['image_url'])
+
+class Quote(models.Model):
+    quote = models.CharField(max_length=200)
+    arabic_quote = models.CharField(max_length=200)
+    author = models.ForeignKey(Scholar, on_delete=models.CASCADE, related_name='quotes')
+    is_on_home_page = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Quote(id={self.id}, author={self.author.name}, quote="{self.quote}")'
