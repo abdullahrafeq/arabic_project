@@ -1,13 +1,17 @@
 from django.http import JsonResponse
 from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer
-from rest_framework.decorators import api_view
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-import os
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
 def scholar_year_categories(request):
     data = ScholarYearCategory.objects.all()
     serializer = ScholarYearCategorySerializer(data, many=True, context={'request': request})
@@ -27,6 +31,7 @@ def scholars(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+#@permission_classes([IsAuthenticated])
 def scholar(request, id):
     try:
         scholar = Scholar.objects.get(pk=id)
@@ -116,3 +121,67 @@ def quote(request, id):
     elif request.method == 'DELETE':
         quote.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+@api_view(['POST'])
+def register(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    confirm_password = request.data.get('confirm_password')  # Ensure you're getting confirmPassword correctly
+    password = request.data.get('password')
+    errors = {}
+        # Check if any of the fields are empty
+    if not username:
+        errors['username'] = 'Username is required'
+    if not email:
+        errors['email'] = 'Email is required'
+    if not password:
+        errors['password'] = 'Password is required'
+    if not confirm_password:
+        errors['confirm_password'] = 'Confirm Password is required'
+    
+    # Check if the username exists
+    if User.objects.filter(username=username).exists():
+        errors['username'] = 'Username already exists'
+    
+    # Check if the email exists
+    if User.objects.filter(email=email).exists():
+        errors['email'] = 'Email already exists'
+
+    # Check if the passwords match
+    if password != confirm_password:
+        errors['password'] = 'Passwords do not match'
+
+
+    # If there are any errors, return them
+    if errors:
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+        return Response(tokens, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    # Authenticate the user
+    user = authenticate(username=username, password=password)
+    if user is None:
+        return Response({'error': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # User authenticated successfully
+    refresh = RefreshToken.for_user(user)
+    tokens = {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token)
+    }
+    return Response(tokens, status=status.HTTP_200_OK)

@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
-const useFetch = (url, { method, headers, body } = {}) => {
+const useFetch = (url, { headers, body } = {}) => {
     const [isLoading, setIsLoading] = useState(true)
-    const [data, setData] = useState()
+    const [data, setData] = useState(null)
     const [errorStatus, setErrorStatus] = useState()
+    const [response, setResponse] = useState()
     
     const navigate = useNavigate()
-    const location = useLocation()
 
     const request = () => {
         fetch(url, {
-            method: method,
+            method: 'GET',
             headers: headers,
             body: body,
         })
         .then((response) => {
             console.log(response)
-            if (response.status === 401) {
-                navigate("/")
-            }
-
             if (!response.ok) {
                 throw response.status
             }
@@ -46,18 +42,27 @@ const useFetch = (url, { method, headers, body } = {}) => {
             headers: headers,
             body: JSON.stringify(newData)
         })
-        .then((response) => {
+        .then(response => {
             console.log("in first then...", response)
             if (!response.ok) {
-                throw response.status
+                return response.json().then(err => {
+                    console.log(err)
+                    setErrorStatus(err)
+                    throw err
+                })
+            }
+
+            if (response.status === 200) {
+                navigate('/')
             }
             return response.json()
         })
         .then((d) => {
-            console.log("in the then...", d)
-            console.log(d)
+            setData(d)
+            console.log("in the second then...", d)
         })
         .catch((e) => {
+            setErrorStatus(e)
             console.log(e)
         })      
     }
@@ -99,7 +104,7 @@ const useFetch = (url, { method, headers, body } = {}) => {
         })
     }
 
-    return { request, appendData, updateData, deleteData, data, isLoading, errorStatus }
+    return { request, appendData, updateData, deleteData, setErrorStatus, setData, data, isLoading, response, errorStatus }
 }
 
 export default useFetch;

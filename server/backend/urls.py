@@ -19,8 +19,11 @@ from django.urls import path
 from backend import views
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/', admin.site.urls),
     path('api/scholar-year-categories/', views.scholar_year_categories, name='scholar_year_categories'),
     path('api/scholars/', views.scholars, name='scholars'),
@@ -30,4 +33,5 @@ urlpatterns = [
     path('api/books/<int:id>', views.book, name='book'),
     path('api/quotes/', views.quotes, name='quotes'),
     path('api/quotes/<int:id>', views.quote, name='quote'),
+    path('api/register/', views.register, name='register'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

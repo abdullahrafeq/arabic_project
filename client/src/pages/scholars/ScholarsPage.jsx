@@ -48,9 +48,6 @@ const ScholarsPage = () => {
         requestCategories()
     }, [])
 
-
-
-
     return (
         <div className="scholars-page">
             <div className="search-container">

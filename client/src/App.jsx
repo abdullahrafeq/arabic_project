@@ -16,7 +16,6 @@ import './App.css';
 import {SearchProvider} from './contexts/SearchContext';
 
 function App() {  
-  
   return (
     <div className="App">
       <SearchProvider>
@@ -24,14 +23,14 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
               <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
               <Route path="/favourite-books" element={<FavouriteBooksPage />} />
-              <Route path="/account" element={<Account />} />
               <Route path="/scholars" element={<ScholarsPage/>} />
               <Route path="/books" element={<BooksPage/>} />
               <Route path="/scholar-detail/:id" element={<ScholarDetailPage/>} />
               <Route path="/book-detail/:id" element={<BookDetailPage/>} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/contact-us" element={<ContactUsPage />} />
               <Route path="/about-us" element={<AboutUsPage />} />
             </Routes>
