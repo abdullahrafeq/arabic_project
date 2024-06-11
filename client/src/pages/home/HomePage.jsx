@@ -9,36 +9,34 @@ import { useEffect } from "react";
 const HomePage = () => {
     const { 
         request: requestScholars, 
-        data: {scholars = []} = {}, 
+        data: scholarsData, 
         isLoading: isLoadingScholars, 
         errorStatus: errorStatusScholars
-    } = useFetch("http://127.0.0.1:8000/api/scholars/")
+    } = useFetch("http://127.0.0.1:8000/api/scholars/");
 
     const { 
         request: requestBooks, 
-        data: {books = []} = {}, 
+        data: booksData, 
         isLoading: isLoadingBooks, 
         errorStatus: errorStatusBooks
-    } = useFetch("http://127.0.0.1:8000/api/books/")
+    } = useFetch("http://127.0.0.1:8000/api/books/");
 
     const { 
         request: requestQuotes, 
-        data: {quotes = []} = {}, 
+        data: quotesData, 
         isLoading: isLoadingQuotes, 
         errorStatus: errorStatusQuotes
-    } = useFetch("http://127.0.0.1:8000/api/quotes/")
+    } = useFetch("http://127.0.0.1:8000/api/quotes/");
 
     useEffect(() => {
-        requestScholars()
-    }, [])
+        requestScholars();
+        requestBooks();
+        requestQuotes();
+    }, []);
 
-    useEffect(() => {
-        requestBooks()
-    }, [])
-
-    useEffect(() => {
-        requestQuotes()
-    }, [])
+    const scholars = scholarsData?.scholars || [];
+    const books = booksData?.books || [];
+    const quotes = quotesData?.quotes || [];
 
     return (
         <div className="home-page">

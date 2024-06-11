@@ -12,15 +12,17 @@ const BookDetailPage = () => {
     const {
         request: requestBook, 
         appendData: appendFavouriteBook, 
-        data: {book = {}} = {},
+        data: bookData,
         errorStatus: errorStatusBooks
       } = useFetch(`http://127.0.0.1:8000/api/books/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer' + localStorage.getItem('access'),
+          Authorization: 'Bearer ' + localStorage.getItem('token'),  // Note: Fixed the key from 'access' to 'token'
         },
     })
+
+    const book = bookData?.book || []
 
     const { 
         addToFavourite: addToFavouriteBook, 

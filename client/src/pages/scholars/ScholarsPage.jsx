@@ -10,7 +10,7 @@ const ScholarsPage = () => {
     const {
         request: requestScholars, 
         appendData: appendScholars, 
-        data: {scholars = []} = {},
+        data: scholarsData,
         errorStatus: errorStatusScholars
       } = useFetch("http://127.0.0.1:8000/api/scholars", {
         method: 'GET',
@@ -20,9 +20,10 @@ const ScholarsPage = () => {
         },
     })
 
+    
     const {
         request: requestCategories, 
-        data: {scholar_year_categories: categories = []} = {},
+        data: categoriesData,
         errorStatus: errorStatusCategories
       } = useFetch("http://127.0.0.1:8000/api/scholar-year-categories", {
         method: 'GET',
@@ -31,6 +32,8 @@ const ScholarsPage = () => {
           Authorization: 'Bearer' + localStorage.getItem('access'),
         },
     })
+    const scholars = scholarsData?.scholars || [];
+    const categories = categoriesData?.scholar_year_categories || []
 
     const [selected, setSelected] = useState([])
     const { query, setSearch } = useSearch()

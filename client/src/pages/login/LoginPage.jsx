@@ -7,7 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import useFetch from "../../hooks/useFetch";
 
 const LoginPage = () => {
-    //const { authUser, setAuthUser, isLoggedIn, setIsLoggedIn } = useAuth()
+    const { setAuthUser, setIsLoggedIn } = useAuth()
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
@@ -136,6 +136,14 @@ const LoginPage = () => {
 
         resetValues()
         setIsCorrectLogin(true)
+        setIsLoggedIn(true)
+        console.log("data: ", data)
+
+
+        setAuthUser({
+            username: username,
+            email: email, 
+        })
     }
         
     const handleClick = (event, clickAction) => {

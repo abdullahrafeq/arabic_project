@@ -13,7 +13,7 @@ const ScholarDetailPage = () => {
     const { id } = useParams()
     const {
         request: requestScholar, 
-        data: {scholar = {}} = {},
+        data: scholarData,
         errorStatus: errorStatusScholars,
       } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}`, {
         method: 'GET',
@@ -23,6 +23,8 @@ const ScholarDetailPage = () => {
         },
     })
 
+    const scholar = scholarData?.scholar || {}
+    
     const { 
         addToFavourite: addToFavouriteScholar, 
         removeFromFavourite: removeFromFavouriteScholar,

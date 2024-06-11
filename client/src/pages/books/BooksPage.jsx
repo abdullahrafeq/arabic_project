@@ -9,7 +9,7 @@ const BooksPage = () => {
     const {
         request: requestBooks, 
         appendData: appendBooks, 
-        data: {books = []} = {},
+        data: booksData,
         errorStatus: errorStatusBooks
       } = useFetch("http://127.0.0.1:8000/api/books", {
         method: 'GET',
@@ -19,9 +19,10 @@ const BooksPage = () => {
         },
     })
 
+    
     const {
         request: requestCategories, 
-        data: {book_categories: categories = []} = {},
+        data: categoriesData,
         errorStatus: errorStatusCategories
       } = useFetch("http://127.0.0.1:8000/api/book-categories", {
         method: 'GET',
@@ -30,6 +31,9 @@ const BooksPage = () => {
           Authorization: 'Bearer' + localStorage.getItem('access'),
         },
     })
+
+    const books = booksData?.books || []
+    const categories = categoriesData?.book_categories || []
 
     const [selected, setSelected] = useState([])
 

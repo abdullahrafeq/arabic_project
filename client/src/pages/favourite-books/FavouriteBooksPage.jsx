@@ -14,10 +14,12 @@ const FavouriteBooksPage = () => {
     const { 
         request, 
         deleteData, 
-        data: {books = []} = {}, 
+        data: booksData, 
         isLoading, 
         errorStatus
     } = useFetch("http://127.0.0.1:8000/api/books/")    
+
+    const books = booksData?.books || []
     
     const removeBookFromFavorites = (bookToRemove) => {
         setFavBooks((prevFavBooks) =>

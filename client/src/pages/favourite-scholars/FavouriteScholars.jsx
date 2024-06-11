@@ -14,7 +14,7 @@ const FavouriteScholarsPage = () => {
     const { 
         request, 
         deleteData, 
-        data: {scholars = []} = {}, 
+        data: scholarsData, 
         isLoading, 
         errorStatus
     } = useFetch("http://127.0.0.1:8000/api/scholars/")    
@@ -23,6 +23,7 @@ const FavouriteScholarsPage = () => {
         setFavScholars((prevFavScholars) =>
             prevFavScholars.filter((scholar) => scholar.id !== scholarToRemove.id))
     }
+    const scholars = scholarsData?.scholars || [];
 
     useEffect(() => {
         const favoriteScholars = scholars?.filter((scholar) => scholar.is_favourite) || []
