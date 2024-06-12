@@ -8,7 +8,7 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom"
 
 const LoginPage = () => {
-    const { setAuthUser, setIsLoggedIn } = useAuth()
+    const { isLoggedIn, setAuthUser, login, logout } = useAuth()
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
@@ -136,14 +136,13 @@ const LoginPage = () => {
                 return
             }
         }
-        resetValues()
-        setIsCorrectLogin(true)
-        setIsLoggedIn(true)
-        console.log("data: ", data)
-        setAuthUser({ username: username, email: email, })
-
-        // Save the access token to localStorage
+        
+        // Save the access token to localStorage and login
         if (data?.access) {
+            resetValues()
+            login()
+            console.log("data: ", data)
+            setAuthUser({ username: username, email: email, })
             localStorage.setItem('accessToken', data.access);
             console.log("Access token saved to localStorage:", data.access);
             navigate('/')
