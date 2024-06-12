@@ -6,8 +6,10 @@ import { useParams, useNavigate } from "react-router-dom"
 import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
+import useAuth from "../../hooks/useAuth"
 
 const ScholarDetailPage = () => {
+    const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const { id } = useParams()
@@ -56,7 +58,9 @@ const ScholarDetailPage = () => {
         } else {
             addToFavouriteScholar()
         }
-        setHeart(!isHeart)
+        if (isLoggedIn) {
+            setHeart(!isHeart)
+        }
     }
 
     return (

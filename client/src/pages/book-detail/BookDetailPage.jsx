@@ -6,7 +6,9 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
+import useAuth from "../../hooks/useAuth"
 const BookDetailPage = () => {
+    const { isLoggedIn } = useAuth
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const { id } = useParams()
@@ -53,7 +55,9 @@ const BookDetailPage = () => {
         } else {
             addToFavouriteBook()
         }
-        setHeart(!isHeart)
+        if (isLoggedIn) {
+            setHeart(!isHeart)
+        }
     }
 
     return (
