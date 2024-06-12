@@ -2,14 +2,14 @@ import "./style.css"
 import Button from "../../components/button/Button"
 import HeartIcon from "../../components/heart/HeartIcon"
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 
 const ScholarDetailPage = () => {
     const [isHeart, setHeart] = useState(false)
-
+    const [loaded, setLoaded] = useState(false)
     const { id } = useParams()
     const {
         request: requestScholar, 
@@ -19,15 +19,16 @@ const ScholarDetailPage = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer' + localStorage.getItem('access'),
         },
     })
 
     const scholar = scholarData?.scholar || {}
-    
+    const navigate = useNavigate()
+
     const { 
         addToFavourite: addToFavouriteScholar, 
         removeFromFavourite: removeFromFavouriteScholar,
+        errorStatus: errorStatusFavouriteScholar
     } = useFavourite("http://127.0.0.1:8000/api/scholars/", scholar)
 
     useEffect(() => {
@@ -35,9 +36,19 @@ const ScholarDetailPage = () => {
     }, [])
 
     useEffect(() => {
-        const isFavourite = scholar.is_favourite
-        setHeart(isFavourite)
-    }, [scholar])
+        if (errorStatusFavouriteScholar === null) {
+            const isFavourite = scholar.is_favourite
+            setHeart(isFavourite)
+            setLoaded(true)
+        }
+    }, [scholar, errorStatusFavouriteScholar])
+
+    useEffect(() => {
+        if (errorStatusFavouriteScholar !== null) {
+            console.log("error: " + errorStatusFavouriteScholar)
+            navigate("/login")
+        }
+    }, [errorStatusFavouriteScholar])
 
     const handleFavouriteClick = () => {
         if (isHeart) {

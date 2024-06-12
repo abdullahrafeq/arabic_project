@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import useAuth from "../../hooks/useAuth";
 import useFetch from "../../hooks/useFetch";
+import { useNavigate } from "react-router-dom"
 
 const LoginPage = () => {
     const { setAuthUser, setIsLoggedIn } = useAuth()
@@ -80,6 +81,7 @@ const LoginPage = () => {
             password: password 
         })
     }
+    const navigate = useNavigate()
 
     const handleSignUpResponse = (data) => {
         console.log("in handle signup response")
@@ -126,6 +128,7 @@ const LoginPage = () => {
     }
 
     const handleLoginResponse = (data) => {
+        console.log("here")
         if (data === null) {
             if (errorStatus?.detail === "No active account found with the given credentials") {
                 console.log("invalid login")
@@ -133,17 +136,18 @@ const LoginPage = () => {
                 return
             }
         }
-
         resetValues()
         setIsCorrectLogin(true)
         setIsLoggedIn(true)
         console.log("data: ", data)
+        setAuthUser({ username: username, email: email, })
 
-
-        setAuthUser({
-            username: username,
-            email: email, 
-        })
+        // Save the access token to localStorage
+        if (data?.access) {
+            localStorage.setItem('accessToken', data.access);
+            console.log("Access token saved to localStorage:", data.access);
+            navigate('/')
+        }
     }
         
     const handleClick = (event, clickAction) => {

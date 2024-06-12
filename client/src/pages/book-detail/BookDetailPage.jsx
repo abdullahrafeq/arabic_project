@@ -3,11 +3,12 @@ import CustomLink from "../../components/custom-link/CustomLink"
 import Button from "../../components/button/Button"
 import HeartIcon from "../../components/heart/HeartIcon"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 const BookDetailPage = () => {
     const [isHeart, setHeart] = useState(false)
+    const [loaded, setLoaded] = useState(false)
     const { id } = useParams()
     const {
         request: requestBook, 
@@ -18,15 +19,16 @@ const BookDetailPage = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + localStorage.getItem('token'),  // Note: Fixed the key from 'access' to 'token'
         },
     })
 
     const book = bookData?.book || []
-
+    const navigate = useNavigate()
+    
     const { 
         addToFavourite: addToFavouriteBook, 
         removeFromFavourite: removeFromFavouriteBook,
+        errorStatus: errorStatusFavouriteBook
     } = useFavourite("http://127.0.0.1:8000/api/books/", book)
     
     useEffect(() => {
@@ -37,6 +39,13 @@ const BookDetailPage = () => {
         const isFavourite = book.is_favourite
         setHeart(isFavourite)
     }, [book])
+
+    useEffect(() => {
+        if (errorStatusFavouriteBook !== null) {
+            console.log("error: " + errorStatusFavouriteBook)
+            navigate("/login")
+        }
+    }, [errorStatusFavouriteBook])
 
     const handleFavouriteClick = () => {
         if (isHeart) {

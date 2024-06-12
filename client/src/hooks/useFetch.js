@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 const useFetch = (url, { headers, body } = {}) => {
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState(null)
-    const [errorStatus, setErrorStatus] = useState()
+    const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
     
     const navigate = useNavigate()
@@ -52,14 +52,11 @@ const useFetch = (url, { headers, body } = {}) => {
                 })
             }
 
-            if (response.status === 200) {
-                navigate('/')
-            }
             return response.json()
         })
-        .then((d) => {
-            setData(d)
-            console.log("in the second then...", d)
+        .then((data) => {
+            setData(data)
+            console.log("in the second then...", data)
         })
         .catch((e) => {
             setErrorStatus(e)
@@ -81,9 +78,11 @@ const useFetch = (url, { headers, body } = {}) => {
             return response.json();
         })
         .then((data) => {
+            setData(data)
             console.log('Update successful:', data);
         })
         .catch((err) => {
+            setErrorStatus(err)
             console.log(err);
         });
     }
