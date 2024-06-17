@@ -1,17 +1,51 @@
 import "./style.css"
 import Sibawaihy from "../../assets/sibawaihy.jpg"
 import Button from "../../components/button/Button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import useAuth from "../../hooks/useAuth"
+import { useNavigate } from "react-router-dom"
+import useCurrentUser from "../../hooks/useCurrentUser"
 
 const AccountPage = () => {
+    const { isLoggedIn } = useAuth()
     const [username, setUsername] = useState()
     const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const [confirmPassword, setConfirmPassword] = useState()
-
+    const [oldPassword, setOldPassword] = useState()
+    const [newPassword, setNewPassword] = useState()
+    
+    const navigate = useNavigate()
+    const { currentUser, requestUser, updateUser } = useCurrentUser()
+    
+    const user = currentUser?.user || {}
     const handleUpdate = () => {
+        updateUser("http://localhost:8000/api/current-user/", {
+            email: email,
+            username: username,
+            old_password: oldPassword,
+            new_password: newPassword
+        })
+    }
 
-    } 
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/login")
+        }
+    }, [])
+
+    useEffect(() => {
+        requestUser()
+    }, [])
+
+    useEffect(() => {
+        setOldPassword("")
+        setNewPassword("")
+    }, [username, email])
+
+    useEffect(() => {
+        console.log(user)
+        setUsername(user.username)
+        setEmail(user.email)
+    }, [user])
 
     return (
         <div className="account-page">
@@ -21,7 +55,7 @@ const AccountPage = () => {
                     <div className="settings">
                         <div>
                             <img src={Sibawaihy} alt="" />
-                            <strong>Abdullah Rafeq</strong>
+                            <strong>{user?.username}</strong>
                             <em>Student of the Arabic Language</em>
                         </div>
                         <ul>
@@ -55,19 +89,19 @@ const AccountPage = () => {
                                 />
                             </form>
                             <form action="">
-                                <label htmlFor="">Password</label>
+                                <label htmlFor="">Old Password</label>
                                 <input 
                                     type="text" 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={oldPassword}
+                                    onChange={(e) => setOldPassword(e.target.value)}
                                 />
                             </form>
                             <form action="">
-                                <label htmlFor="">Confirm Password</label>
+                                <label htmlFor="">New Password</label>
                                 <input 
                                     type="text" 
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
                                 />
                             </form>
                         </div>

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 
 const useFetch = (url, { headers, body } = {}) => {
     const [isLoading, setIsLoading] = useState(true)
@@ -7,8 +6,6 @@ const useFetch = (url, { headers, body } = {}) => {
     const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
     
-    const navigate = useNavigate()
-
     const request = () => {
         fetch(url, {
             method: 'GET',

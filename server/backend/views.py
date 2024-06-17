@@ -139,19 +139,6 @@ def register(request):
         errors['password'] = 'Password is required'
     if not confirm_password:
         errors['confirm_password'] = 'Confirm Password is required'
-    
-    # Check if the username exists
-    if User.objects.filter(username=username).exists():
-        errors['username'] = 'Username already exists'
-    
-    # Check if the email exists
-    if User.objects.filter(email=email).exists():
-        errors['email'] = 'Email already exists'
-
-    # Check if the passwords match
-    if password != confirm_password:
-        errors['password'] = 'Passwords do not match'
-
 
     # If there are any errors, return them
     if errors:
@@ -185,3 +172,25 @@ def login(request):
         'access': str(refresh.access_token)
     }
     return Response(tokens, status=status.HTTP_200_OK)
+
+# View to get current user
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    try:
+        user = request.user
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = UserSerializer(user, context={'request': request})
+        return Response({'user': serializer.data})
+    elif request.method == 'PUT':
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

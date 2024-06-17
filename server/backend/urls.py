@@ -34,4 +34,5 @@ urlpatterns = [
     path('api/quotes/', views.quotes, name='quotes'),
     path('api/quotes/<int:id>', views.quote, name='quote'),
     path('api/register/', views.register, name='register'),
+    path('api/current-user/', views.current_user, name='current_user'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
