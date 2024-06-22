@@ -7,10 +7,12 @@ import { useEffect } from "react";
 const NavBar = () => {
     const { isLoggedIn, logout } = useAuth()
     const navigate = useNavigate()
+    
     const handleLogout = () => {
         logout()
         navigate("/login")
     }
+    
     useEffect(() => {
         console.log("isLoggedIn: " + isLoggedIn)
     }, [isLoggedIn])

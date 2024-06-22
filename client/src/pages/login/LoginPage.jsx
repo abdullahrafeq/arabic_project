@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import useAuth from "../../hooks/useAuth";
-import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom"
 
 const LoginPage = () => {
-    const { isLoggedIn, setAuthUser, login, logout } = useAuth()
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
@@ -26,6 +24,8 @@ const LoginPage = () => {
     const [isEmailError, setIsEmailError] = useState(false)
     const [isPasswordError, setIsPasswordError] = useState(false)
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
+    const { signup, getTokens, login, userData, setUserData, errorStatusUser } = useAuth()
+    const navigate = useNavigate()
 
     const resetValues = () => {
         setUsername("")
@@ -44,81 +44,65 @@ const LoginPage = () => {
         setIsConfirmPasswordError(false)
     }
 
-    const { appendData: registerUser, data, setData, errorStatus, setErrorStatus } = useFetch("http://localhost:8000/api/register/", {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: email,
-            username: username,
-            password: password,
-            confirm_password: confirmPassword
-        }),
-    })
-    
     useEffect(() => {
-        console.log("useEffect triggered:", { data, errorStatus, action });
+        console.log("useEffect triggered:", { userData, errorStatusUser, action })
         if (action === "signup") {
-            handleSignUpResponse(data);
+            handleSignUpResponse(userData)
         } else if (action === "login") {
-            handleLoginResponse(data);
+            handleLoginResponse(userData)
         }
-    }, [data, errorStatus, action, userNameErrorMessage, emailErrorMessage, passwordErrorMessage, confirmPasswordErrorMessage]);
+    }, [userData, errorStatusUser, action, userNameErrorMessage, emailErrorMessage, passwordErrorMessage, confirmPasswordErrorMessage]);
 
     const handleSignUp = () => {
-        registerUser("http://localhost:8000/api/register/", { 
-            email: email, 
-            username: username, 
-            password: password ,
-            confirm_password: confirmPassword
+        signup("http://localhost:8000/api/register/", { 
+            email, 
+            username, 
+            password,
+            confirmPassword
         })
     }
 
     const handleLogin = () => {
         console.log(username, password)
-        registerUser("http://localhost:8000/api/token/", { 
-            username: username, 
-            password: password 
+        getTokens("http://localhost:8000/api/token/", { 
+            username, 
+            password 
         })
     }
-    const navigate = useNavigate()
 
-    const handleSignUpResponse = (data) => {
-        console.log("in handle signup response")
-        console.log("data: ", data)
-        if (data === null) {
-            if (errorStatus?.username) {
+
+    const handleSignUpResponse = (userData) => {
+        console.log("userData: ", userData)
+        if (userData === null) {
+            if (errorStatusUser?.username) {
                 setIsUserError(true)
-                if (errorStatus.username === "Username already exists") {
-                    console.log("existing username")
+                if (errorStatusUser.username === "Username already exists") {
                     setIsUsernameExisting(true)
                 }
-                setUsernameErrorMessage(errorStatus.username)
+                setUsernameErrorMessage(errorStatusUser.username)
             } 
                 
-            if (errorStatus?.email) {
+            if (errorStatusUser?.email) {
                 setIsEmailError(true)
-                if (errorStatus.email === "Email already exists") {
-                    console.log("existing email")
+                if (errorStatusUser.email === "Email already exists") {
                     setIsEmailExisting(true)
                 }
-                setEmailErrorMessage(errorStatus.email)
+                setEmailErrorMessage(errorStatusUser.email)
             }
 
-            if (errorStatus?.password) {
+            if (errorStatusUser?.password) {
                 setIsPasswordError(true)
                 setIsConfirmPasswordError(true)
-                if (errorStatus?.password === "Passwords do not match") {
-                    console.log("passwords dont match")
+                if (errorStatusUser?.password === "Passwords do not match") {
                     setIsMatchingPassword(false)
                 }
-                setConfirmPasswordErrorMessage(errorStatus.password)
-                setPasswordErrorMessage(errorStatus.password)
+                setConfirmPasswordErrorMessage(errorStatusUser.password)
+                setPasswordErrorMessage(errorStatusUser.password)
             }
 
-            if (errorStatus?.confirm_password) {
+            if (errorStatusUser?.confirm_password) {
                 setIsConfirmPasswordError(true)
-                setConfirmPasswordErrorMessage(errorStatus.confirm_password)
+                setConfirmPasswordErrorMessage(errorStatusUser.confirm_password)
             }
             return
         }
@@ -127,24 +111,19 @@ const LoginPage = () => {
         console.log("successfull")
     }
 
-    const handleLoginResponse = (data) => {
+    const handleLoginResponse = (userData) => {
         console.log("here")
-        if (data === null) {
-            if (errorStatus?.detail === "No active account found with the given credentials") {
-                console.log("invalid login")
+        if (userData === null) {
+            if (errorStatusUser?.detail === "No active account found with the given credentials") {
                 setIsCorrectLogin(false)
                 return
             }
         }
         
-        // Save the access token to localStorage and login
-        if (data?.access) {
+        if (userData?.access) {
             resetValues()
-            login()
-            console.log("data: ", data)
-            setAuthUser({ username: username, email: email, })
-            localStorage.setItem('accessToken', data.access);
-            console.log("Access token saved to localStorage:", data.access);
+            login({ username, email })
+            console.log("userData: ", userData)
             navigate('/')
         }
     }
@@ -161,7 +140,7 @@ const LoginPage = () => {
             console.log("in login")
             handleLogin()
         }
-        setData(null)
+        setUserData(null)
     }
 
     return (

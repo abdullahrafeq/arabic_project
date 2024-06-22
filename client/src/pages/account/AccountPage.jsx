@@ -12,11 +12,11 @@ const AccountPage = () => {
     const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
+    const [user, setUser] = useState(null)
     
     const navigate = useNavigate()
     const { currentUser, requestUser, updateUser } = useCurrentUser()
-    
-    const user = currentUser?.user || {}
+
     const handleUpdate = () => {
         updateUser("http://localhost:8000/api/current-user/", {
             email: email,
@@ -24,6 +24,15 @@ const AccountPage = () => {
             old_password: oldPassword,
             new_password: newPassword
         })
+    }
+
+    const handleUpdateValues = (user) => {
+        console.log(user)
+        setUser(user?.user)
+        setUsername(user?.username)
+        setEmail(user?.email)
+        setOldPassword("")
+        setNewPassword("")
     }
 
     useEffect(() => {
@@ -34,17 +43,11 @@ const AccountPage = () => {
 
     useEffect(() => {
         requestUser()
-    }, [])
-
-    useEffect(() => {
-        setOldPassword("")
-        setNewPassword("")
-    }, [username, email])
-
-    useEffect(() => {
         console.log(user)
-        setUsername(user.username)
-        setEmail(user.email)
+        if (currentUser) {
+            console.log(currentUser?.user)
+            handleUpdateValues(currentUser?.user)
+        }
     }, [user])
 
     return (
