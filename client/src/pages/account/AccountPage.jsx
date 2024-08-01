@@ -12,13 +12,11 @@ const AccountPage = () => {
     const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
-    const [user, setUser] = useState(null)
     
     const navigate = useNavigate()
-    const { currentUser, requestUser, updateUser } = useCurrentUser()
-
+    const { currentUser, requestCurrentUser, updateCurrentUser } = useCurrentUser()
     const handleUpdate = () => {
-        updateUser("http://localhost:8000/api/current-user/", {
+        updateCurrentUser("http://localhost:8000/api/current-user/", {
             email: email,
             username: username,
             old_password: oldPassword,
@@ -28,9 +26,6 @@ const AccountPage = () => {
 
     const handleUpdateValues = (user) => {
         console.log(user)
-        setUser(user?.user)
-        setUsername(user?.username)
-        setEmail(user?.email)
         setOldPassword("")
         setNewPassword("")
     }
@@ -42,13 +37,11 @@ const AccountPage = () => {
     }, [])
 
     useEffect(() => {
-        requestUser()
-        console.log(user)
-        if (currentUser) {
-            console.log(currentUser?.user)
-            handleUpdateValues(currentUser?.user)
-        }
-    }, [user])
+        requestCurrentUser()
+        console.log(currentUser)
+        setEmail(currentUser?.user?.email)
+        setUsername(currentUser?.user?.username)
+    }, [])
 
     return (
         <div className="account-page">
@@ -58,7 +51,7 @@ const AccountPage = () => {
                     <div className="settings">
                         <div>
                             <img src={Sibawaihy} alt="" />
-                            <strong>{user?.username}</strong>
+                            <strong>{currentUser?.user?.username}</strong>
                             <em>Student of the Arabic Language</em>
                         </div>
                         <ul>
@@ -111,7 +104,10 @@ const AccountPage = () => {
                         <Button 
                             className="update-button" 
                             children={<>Update</>}
-                            onClick={handleUpdate}
+                            onClick={() => {
+                                handleUpdate()
+                                handleUpdateValues(currentUser)
+                            }}
                         />
                     </div>
                 </div>

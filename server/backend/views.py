@@ -125,26 +125,7 @@ def quote(request, id):
 
 @api_view(['POST'])
 def register(request):
-    username = request.data.get('username')
-    email = request.data.get('email')
-    confirm_password = request.data.get('confirm_password')  # Ensure you're getting confirmPassword correctly
-    password = request.data.get('password')
-    errors = {}
-        # Check if any of the fields are empty
-    if not username:
-        errors['username'] = 'Username is required'
-    if not email:
-        errors['email'] = 'Email is required'
-    if not password:
-        errors['password'] = 'Password is required'
-    if not confirm_password:
-        errors['confirm_password'] = 'Confirm Password is required'
-
-    # If there are any errors, return them
-    if errors:
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-    serializer = UserSerializer(data=request.data)
+    serializer = UserSerializer(data=request.data, context={'action': 'signup'})
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
@@ -157,21 +138,27 @@ def register(request):
 
 @api_view(['POST'])
 def login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+    serializer = UserSerializer(data=request.data, context={'action': 'login'})
+    if serializer.is_valid(raise_exception=True):
+        user = User.objects.get(username=request.data['username'])
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+        return Response(tokens, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Authenticate the user
-    user = authenticate(username=username, password=password)
-    if user is None:
-        return Response({'error': 'Invalid username or password'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # User authenticated successfully
-    refresh = RefreshToken.for_user(user)
-    tokens = {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token)
-    }
-    return Response(tokens, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data["refresh_token"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+    except Exception as e:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # View to get current user
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -179,6 +166,8 @@ def login(request):
 def current_user(request):
     try:
         user = request.user
+        print(f"Authenticated user: {user.username}")  # Debugging line
+        print(f"Request headers: {request.headers}")  # Debugging line
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     

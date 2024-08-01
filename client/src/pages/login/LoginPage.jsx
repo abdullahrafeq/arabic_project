@@ -11,11 +11,8 @@ const LoginPage = () => {
     const [password, setPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
     const [email, setEmail] = useState()
-    const [action, setAction] = useState("login");
-    const [isUsernameExisting, setIsUsernameExisting] = useState(false)
-    const [isEmailExisting, setIsEmailExisting] = useState(false)
+    const [action, setAction] = useState("login")
     const [isCorrectLogin, setIsCorrectLogin] = useState(true)
-    const [isMatchingPassowrd, setIsMatchingPassword] = useState(true)
     const [userNameErrorMessage, setUsernameErrorMessage] = useState()
     const [emailErrorMessage, setEmailErrorMessage] = useState()
     const [passwordErrorMessage, setPasswordErrorMessage] = useState()
@@ -35,14 +32,16 @@ const LoginPage = () => {
     }
         
     const resetIncorrectValues = () => {
-        setIsUsernameExisting(false)
-        setIsEmailExisting(false)
-        setIsMatchingPassword(true)
         setIsUserError(false)
         setIsEmailError(false)
         setIsPasswordError(false)
         setIsConfirmPasswordError(false)
+        setIsCorrectLogin(true)
     }
+
+    useEffect(() => {
+        resetIncorrectValues()
+    }, [])
 
     useEffect(() => {
         console.log("useEffect triggered:", { userData, errorStatusUser, action })
@@ -70,40 +69,25 @@ const LoginPage = () => {
         })
     }
 
-
     const handleSignUpResponse = (userData) => {
-        console.log("userData: ", userData)
         if (userData === null) {
             if (errorStatusUser?.username) {
                 setIsUserError(true)
-                if (errorStatusUser.username === "Username already exists") {
-                    setIsUsernameExisting(true)
-                }
                 setUsernameErrorMessage(errorStatusUser.username)
-            } 
-                
+            }
+
             if (errorStatusUser?.email) {
                 setIsEmailError(true)
-                if (errorStatusUser.email === "Email already exists") {
-                    setIsEmailExisting(true)
-                }
                 setEmailErrorMessage(errorStatusUser.email)
             }
 
             if (errorStatusUser?.password) {
                 setIsPasswordError(true)
                 setIsConfirmPasswordError(true)
-                if (errorStatusUser?.password === "Passwords do not match") {
-                    setIsMatchingPassword(false)
-                }
                 setConfirmPasswordErrorMessage(errorStatusUser.password)
                 setPasswordErrorMessage(errorStatusUser.password)
             }
 
-            if (errorStatusUser?.confirm_password) {
-                setIsConfirmPasswordError(true)
-                setConfirmPasswordErrorMessage(errorStatusUser.confirm_password)
-            }
             return
         }
 
@@ -129,15 +113,13 @@ const LoginPage = () => {
     }
         
     const handleClick = (event, clickAction) => {
-        event.preventDefault();
+        event.preventDefault()
         resetIncorrectValues()
         setAction(clickAction)
-
+        
         if (clickAction === "signup") {
-            console.log("in signup")
             handleSignUp()
-        } else {
-            console.log("in login")
+        } else if (clickAction === "login") {
             handleLogin()
         }
         setUserData(null)
@@ -169,17 +151,18 @@ const LoginPage = () => {
                         {action === 'login' && !isCorrectLogin && <p>invalid input</p>}
                         {action === 'signup' && isUserError && <p>{userNameErrorMessage}</p>}
                     </div>
-                    {action==="signup" &&
-                    <div className="input">
-                        <FontAwesomeIcon icon={faEnvelope} />
-                        <input 
-                            type ="email" 
-                            placeholder="E-mail"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        {action === 'signup' && isEmailError && <p>{emailErrorMessage}</p>}
-                    </div>}
+                    {action === "signup" &&
+                        <div className="input">
+                            <FontAwesomeIcon icon={faEnvelope} />
+                            <input 
+                                type ="email" 
+                                placeholder="E-mail"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            {action === 'signup' && isEmailError && <p>{emailErrorMessage}</p>}
+                        </div>
+                    }
                     <div className="input">
                         <FontAwesomeIcon icon={faLock} />
                         <input 
@@ -191,17 +174,18 @@ const LoginPage = () => {
                         {action === 'login' && !isCorrectLogin && <p>invalid input</p>}
                         {action === 'signup' && isPasswordError && <p>{passwordErrorMessage}</p>}
                     </div>
-                    {action==="signup"&&
-                    <div className="input">
-                        <FontAwesomeIcon icon={faLock} />
-                        <input 
-                            type ="text" 
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                        {action === 'signup' && isConfirmPasswordError && <p>{confirmPasswordErrorMessage}</p>}
-                    </div>}
+                    {action==="signup" &&
+                        <div className="input">
+                            <FontAwesomeIcon icon={faLock} />
+                            <input 
+                                type ="text" 
+                                placeholder="Confirm Password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                            {action === 'signup' && isConfirmPasswordError && <p>{confirmPasswordErrorMessage}</p>}
+                        </div>
+                    }
                 </div>
                 <div className="submit-container">
                     <Button 

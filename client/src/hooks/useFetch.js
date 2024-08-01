@@ -6,7 +6,7 @@ const useFetch = (url, { headers, body } = {}) => {
     const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
     
-    const request = ({ headers, body } = {}) => {
+    const request = () => {
         fetch(url, {
             method: 'GET',
             headers: headers,

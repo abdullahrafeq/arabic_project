@@ -3,9 +3,9 @@ import useFetch from "./useFetch";
 const useCurrentUser = () => {
     const { 
         data: currentUser,
-        request: requestUser,
-        updateData: updateUser,
-        errorStatus: errorStatusUser 
+        request: requestCurrentUser,
+        updateData: updateCurrentUser,
+        errorStatus: errorStatusCurrentUser 
     } = useFetch("http://localhost:8000/api/current-user/", {
             headers: {
                 'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ const useCurrentUser = () => {
             }
         })
     
-    return { currentUser, requestUser, updateUser, errorStatusUser }
+    return { currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser }
 }
 
 export default useCurrentUser

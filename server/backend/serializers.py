@@ -50,67 +50,108 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password', 'old_password', 'new_password']
+        extra_kwargs = {
+            'email': {'required': False},
+            'username': {'required': False},
+            'password': {'required': False}
+        }
 
     def validate(self, data):
-        # Check if username exists
-        if 'username' in data and User.objects.filter(username=data['username']).exists():
-            if not self.instance or self.instance.username != data['username']:
-                raise serializers.ValidationError({"username": "Username exists"})
+        action = self.context.get('action')
+        if action == 'signup':
+            return self.validate_signup(data)
+        elif action == 'login':
+            return self.validate_login(data)
+        elif action == 'update':
+            return self.validate_update(data)
+        return data
+    
+    def validate_signup(self, data):
+        # Check for empty fields
+        if 'username' not in data:
+            raise serializers.ValidationError({"username": "Username is required"})
         
-        # Check if email exists
-        if 'email' in data and User.objects.filter(email=data['email']).exists():
-            if not self.instance or self.instance.email != data['email']:
-                raise serializers.ValidationError({"email": "Email exists"})
+        if 'email' not in data:
+            raise serializers.ValidationError({"email": "Email is required"})
+        
+        if 'password' not in data:
+            raise serializers.ValidationError({"password": "Password is required"})
+        
+        if 'confirm_password' not in data:
+            raise serializers.ValidationError({"confirm_password": "Confirm password is required"})
 
-        # Check if passwords match
-        if data.get('confirm_password') and data.get('password') != data.get('confirm_password'):
-            raise serializers.ValidationError("Passwords do not match")
-
-        # Validate old password and new password logic
-        old_password = data.get('old_password')
-        new_password = data.get('new_password')
-        if old_password and new_password:
-            # Check if old password matches the current user's password
-            if not self.instance.check_password(old_password):
-                raise serializers.ValidationError("Old password is incorrect")
-
-            # Check if old password is the same as new password
-            if old_password == new_password:
-                raise serializers.ValidationError("New password must be different from old password")
+        # Check for unique fields
+        if User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError({"username": "Username is already taken"})
+            
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError({"email": "Email is already taken"})
+        
+        # Check for matching passwords
+        if 'password' in data and 'confirm_password' in data:
+            if data['password'] != data['confirm_password']:
+                raise serializers.ValidationError({"password": "Passwords do not match"})
 
         return data
     
+    def validate_login(self, data):
+        # Check for not empty fields
+        if 'username' not in data:
+            raise serializers.ValidationError({"username": "Username is required"})
+        
+        if 'password' not in data:
+            raise serializers.ValidationError({"password": "Password is required"})
+        
+        # Check if user exists and if password is correct
+        user = User.objects.filter(username=data['username']).first()
+        if not user or not user.check_password(data['password']):
+            raise serializers.ValidationError({"password": "Invalid username or password"})
+
+        return data
+    
+    def validate_update(self, data):
+        # Check for empty fields
+        if 'username' not in data or not data['username'].strip():
+            raise serializers.ValidationError({"username": "Username is required"})
+        
+        if 'email' not in data or not data['email'].strip():
+            raise serializers.ValidationError({"email": "Email is required"})
+        
+        if 'password' not in data or not data['old_password'].strip():
+            raise serializers.ValidationError({"old_password": "Old is required"})
+        
+        if not self.instance.check_password(data['old_password']):
+            raise serializers.ValidationError({"old_password": "Old password is incorrect"})
+
+        if 'new_password' not in data or not data['new_password'].strip():
+            raise serializers.ValidationError({"new_password": "New password is required"})
+        
+        if data['old_password'] == data['new_password']:
+            raise serializers.ValidationError({"new_password": "New password must be different from old password"})
+
+        return data
+
     def create(self, validated_data):
-        # remove confirm_password, old_password and new_password are not poped 
+        # remove confirm_password, old_password and new_password are not popped 
         # since the json sent from frontend when creating a user does not have old_password and new_password fields 
         validated_data.pop('confirm_password') 
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email']
         )
-
         user.set_password(validated_data['password'])
         user.save()
-
         return user
     
     def update(self, instance, validated_data):
-        validated_data.pop('confirm_password', None)  # Remove confirm_password from validated_data if present
+        validated_data.pop('confirm_password', None)
         old_password = validated_data.pop('old_password', None)
         new_password = validated_data.pop('new_password', None)
 
         instance = super().update(instance, validated_data)
 
         if old_password and new_password:
-            if not instance.check_password(old_password):
-                raise serializers.ValidationError("Old password is not correct")
-
-            if old_password == new_password:
-                raise serializers.ValidationError("New password must be different from old password")
-
             instance.set_password(new_password)
-            instance.username = validated_data.get('username', instance.username)
-            instance.email = validated_data.get('email', instance.email)
             instance.save()
 
         return instance

@@ -1,16 +1,13 @@
 import "./style.css"
 import CustomLink from "../../components/custom-link/CustomLink";
 import useAuth from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const NavBar = () => {
     const { isLoggedIn, logout } = useAuth()
-    const navigate = useNavigate()
     
     const handleLogout = () => {
         logout()
-        navigate("/login")
     }
     
     useEffect(() => {

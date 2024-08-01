@@ -12,9 +12,9 @@ const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('accessToken'))
     
     const { 
-        appendData: registerUser, 
         data: userData, 
-        setData: setUserData, 
+        setData: setUserData,
+        appendData: registerUser,
         errorStatus: errorStatusUser,
         setErrorStatus: setErrorStatusUser 
     } = useFetch("http://localhost:8000/api/register/", {
@@ -44,22 +44,18 @@ const AuthProvider = ({ children }) => {
         setToken(localStorage.getItem('accessToken'))
         localStorage.setItem('accessToken', userData.access);
         console.log("Access token saved to localStorage:", userData.access);
-        setAuthUser({ username: username, email: email, })
+        setAuthUser({ username: username, email: email })
         setIsLoggedIn(true)
     }
 
     const logout = () => {
-        localStorage.clear()
+        setUserData(null)
         setIsLoggedIn(false)
         setAuthUser(null)
+        localStorage.clear()
     }
-
-    useEffect(() => {
-        console.log("currentUser: " + currentUser)
-    }, [])
     
     useEffect(() => {
-        console.log("user is: " + currentUser)
         if (currentUser) {
             setAuthUser(currentUser)
         } else if (errorStatusUser) {
@@ -84,9 +80,6 @@ const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={value}>
-            <div>
-                {authUser?.username}
-            </div>
             {children}
         </AuthContext.Provider>
     )
