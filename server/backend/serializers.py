@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
 from django.contrib.auth.models import User
+from rest_framework.validators import UniqueValidator
+from rest_framework.exceptions import ValidationError
 
 class ScholarYearCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,7 +48,9 @@ class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)
     old_password = serializers.CharField(write_only=True, required=False)
     new_password = serializers.CharField(write_only=True, required=False)
-
+    # remove unique validation with django´s default message
+    username = serializers.CharField(validators = [])
+    
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password', 'old_password', 'new_password']
@@ -67,46 +71,55 @@ class UserSerializer(serializers.ModelSerializer):
         return data
     
     def validate_signup(self, data):
+        errors = {}
         # Check for empty fields
         if 'username' not in data:
-            raise serializers.ValidationError({"username": "Username is required"})
+            errors["username"] = "Username is required"
         
         if 'email' not in data:
-            raise serializers.ValidationError({"email": "Email is required"})
+            errors["email"] = "Email is required"
         
         if 'password' not in data:
-            raise serializers.ValidationError({"password": "Password is required"})
+            errors["password"] = "Password is required"
         
         if 'confirm_password' not in data:
-            raise serializers.ValidationError({"confirm_password": "Confirm password is required"})
+            errors["confirm_password"] = "Confirm password is required"
 
         # Check for unique fields
+        # Manually validate fields to capture UniqueValidator errors
         if User.objects.filter(username=data['username']).exists():
-            raise serializers.ValidationError({"username": "Username is already taken"})
-            
+            errors["username"] = "Username is already taken. Please choose a different username!."
+        
         if User.objects.filter(email=data['email']).exists():
-            raise serializers.ValidationError({"email": "Email is already taken"})
+            errors["email"] = "Email is already taken. Please choose a different email."
         
         # Check for matching passwords
         if 'password' in data and 'confirm_password' in data:
             if data['password'] != data['confirm_password']:
-                raise serializers.ValidationError({"password": "Passwords do not match"})
+                errors["password"] = "Passwords do not match"
 
+        if errors:
+            raise serializers.ValidationError(errors)
+        
         return data
     
     def validate_login(self, data):
+        errors = {}
         # Check for not empty fields
         if 'username' not in data:
-            raise serializers.ValidationError({"username": "Username is required"})
+            errors["username"] = "Username is required"
         
         if 'password' not in data:
-            raise serializers.ValidationError({"password": "Password is required"})
+            errors["password"] = "Password is required"
         
         # Check if user exists and if password is correct
         user = User.objects.filter(username=data['username']).first()
         if not user or not user.check_password(data['password']):
-            raise serializers.ValidationError({"password": "Invalid username or password"})
-
+            errors["password"] = "Invalid username or password"
+        
+        if errors:
+            raise serializers.ValidationError(errors)
+        
         return data
     
     def validate_update(self, data):
