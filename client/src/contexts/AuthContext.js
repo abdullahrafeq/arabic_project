@@ -25,10 +25,10 @@ const AuthProvider = ({ children }) => {
 
     const signup = (url, { email, username, password, confirmPassword }) => {
         registerUser(url, { 
-            email: email, 
-            username: username, 
-            password: password, 
-            confirm_password: confirmPassword 
+            email: email || "", 
+            username: username || "", 
+            password: password || "", 
+            confirm_password: confirmPassword || "", 
         })
     }
 

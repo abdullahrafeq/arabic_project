@@ -84,7 +84,7 @@ const LoginPage = () => {
             if (errorStatusUser?.password) {
                 setIsPasswordError(true)
                 setIsConfirmPasswordError(true)
-                setConfirmPasswordErrorMessage(errorStatusUser.password)
+                setConfirmPasswordErrorMessage(errorStatusUser.confirm_password)
                 setPasswordErrorMessage(errorStatusUser.password)
             }
 
