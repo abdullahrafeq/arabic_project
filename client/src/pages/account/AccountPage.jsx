@@ -15,7 +15,11 @@ const AccountPage = () => {
     const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
 
     const navigate = useNavigate()
-    const { currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, isSuccessfulUpdate } = useCurrentUser()
+    const { 
+        currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, 
+        isSuccessfulUpdate, setSuccessfulUpdate, isFailedUpdate, setFailedUpdate
+    } = useCurrentUser()
+
     const handleUpdate = () => {
         updateCurrentUser("http://localhost:8000/api/current-user/", {
             username: username || currentUser?.user?.username, 
@@ -32,6 +36,14 @@ const AccountPage = () => {
             setNewPassword("");
         }
     }
+
+    const [displayUsername, setDisplayUsername] = useState("");
+
+    useEffect(() => {
+        if (currentUser?.user?.username) {
+            setDisplayUsername(currentUser.user.username);
+        }
+    }, [currentUser]);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -50,11 +62,23 @@ const AccountPage = () => {
 
     useEffect(() => {
         if (isSuccessfulUpdate) {
-            setFadeOut(false); // Reset fade-out state
-            setTimeout(() => setFadeOut(true), 0); // Trigger fade-out after rendering
-            setTimeout(() => handleUpdateValues(currentUser), 0); // Clear passwords after fade-out
+            setFadeOut(false);
+            handleUpdateValues(currentUser); // Clear passwords immediately
+            setFailedUpdate(false)
+            // Start the fade-out effect
+            setTimeout(() => {
+                setFadeOut(true); // Trigger fade-out
+            }, 0);
+
+            // After the fade-out completes, reset the success state
+            setTimeout(() => {
+                setSuccessfulUpdate(false);
+            }, 2000); // Match the duration of the fade-out CSS transition
+        } else {
+            setSuccessfulUpdate(false)
         }
-    }, [isSuccessfulUpdate, currentUser]);
+    }, [isSuccessfulUpdate, currentUser, errorStatusCurrentUser, isFailedUpdate]);
+    
 
     return (
         <div className="account-page">
@@ -64,7 +88,7 @@ const AccountPage = () => {
                     <div className="settings">
                         <div>
                             <img src={Sibawaihy} alt="" />
-                            <strong>{currentUser?.user?.username}</strong>
+                            <strong>{displayUsername || "Loading..."}</strong>
                             <em>Student of the Arabic Language</em>
                         </div>
                         <ul>
@@ -93,7 +117,7 @@ const AccountPage = () => {
                                 <label htmlFor="">Username</label>
                                 <input 
                                     type="text" 
-                                    value={currentUser?.user?.username}
+                                    value={displayUsername}
                                     disabled
                                 />
                             </form>
@@ -104,7 +128,7 @@ const AccountPage = () => {
                                     value={oldPassword}
                                     onChange={(e) => setOldPassword(e.target.value)}
                                 />
-                                {!isSuccessfulUpdate && 
+                                {isFailedUpdate && 
                                     <p>{errorStatusCurrentUser?.old_password}</p>
                                 }
                             </form>
@@ -115,7 +139,7 @@ const AccountPage = () => {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                 />
-                                {!isSuccessfulUpdate && 
+                                {isFailedUpdate && 
                                     <p>{errorStatusCurrentUser?.new_password}</p>
                                 }
                             </form>

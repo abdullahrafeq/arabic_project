@@ -6,6 +6,8 @@ const useFetch = (url, { headers, body } = {}) => {
     const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
     const [isSuccessful, setSuccessful] = useState(false)
+    const [isError, setError] = useState(false)
+
     
     const request = () => {
         fetch(url, {
@@ -74,6 +76,7 @@ const useFetch = (url, { headers, body } = {}) => {
                 return response.json().then(err => {
                     console.log(err)
                     setErrorStatus(err)
+                    setError(true)
                     throw err
                 })
             }
@@ -106,7 +109,10 @@ const useFetch = (url, { headers, body } = {}) => {
         })
     }
 
-    return { request, appendData, updateData, deleteData, setErrorStatus, setData, data, isLoading, response, errorStatus, isSuccessful }
+    return { 
+        request, appendData, updateData, deleteData, 
+        setErrorStatus, setData, setSuccessful, setError, 
+        data, isLoading, response, errorStatus, isSuccessful, isError }
 }
 
 export default useFetch;
