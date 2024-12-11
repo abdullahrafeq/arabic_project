@@ -36,4 +36,6 @@ urlpatterns = [
     path('api/register/', views.register, name='register'),
     path('api/logout/', views.logout, name='logout'),
     path('api/current-user/', views.current_user, name='current_user'),
+    path('api/favourite-books/', views.favourite_books, name='favourite_books'),
+    path('api/favourite-books/<int:id>/', views.favourite_book, name='favourite_book'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

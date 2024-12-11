@@ -53,13 +53,15 @@ const ScholarDetailPage = () => {
     }, [errorStatusFavouriteScholar])
 
     const handleFavouriteClick = () => {
+        if (isLoggedIn) {
+            setHeart(!isHeart)
+        } else {
+            navigate("/login")
+        }
         if (isHeart) {
             removeFromFavouriteScholar()
         } else {
             addToFavouriteScholar()
-        }
-        if (isLoggedIn) {
-            setHeart(!isHeart)
         }
     }
 

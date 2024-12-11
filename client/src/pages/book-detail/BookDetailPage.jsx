@@ -8,7 +8,7 @@ import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
 const BookDetailPage = () => {
-    const { isLoggedIn } = useAuth
+    const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const { id } = useParams()
@@ -50,13 +50,15 @@ const BookDetailPage = () => {
     }, [errorStatusFavouriteBook])
 
     const handleFavouriteClick = () => {
+        if (isLoggedIn) {
+            setHeart(!isHeart)
+        } else {
+            navigate("/login")
+        }
         if (isHeart) {
             removeFromFavouriteBook()
         } else {
             addToFavouriteBook()
-        }
-        if (isLoggedIn) {
-            setHeart(!isHeart)
         }
     }
 

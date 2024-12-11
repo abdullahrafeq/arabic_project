@@ -5,6 +5,7 @@ const useFetch = (url, { headers, body } = {}) => {
     const [data, setData] = useState(null)
     const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
+    const [isSuccessful, setSuccessful] = useState(false)
     
     const request = () => {
         fetch(url, {
@@ -55,9 +56,9 @@ const useFetch = (url, { headers, body } = {}) => {
             setData(data)
             console.log("in the second then...", data)
         })
-        .catch((e) => {
-            setErrorStatus(e)
-            console.log(e)
+        .catch((err) => {
+            setErrorStatus(err)
+            console.log(err)
         })      
     }
 
@@ -70,12 +71,17 @@ const useFetch = (url, { headers, body } = {}) => {
         })
         .then((response) => {
             if (!response.ok) {
-                throw response.status;
+                return response.json().then(err => {
+                    console.log(err)
+                    setErrorStatus(err)
+                    throw err
+                })
             }
             return response.json();
         })
         .then((data) => {
             setData(data)
+            setSuccessful(true)
             console.log('Update successful:', data);
         })
         .catch((err) => {
@@ -100,7 +106,7 @@ const useFetch = (url, { headers, body } = {}) => {
         })
     }
 
-    return { request, appendData, updateData, deleteData, setErrorStatus, setData, data, isLoading, response, errorStatus }
+    return { request, appendData, updateData, deleteData, setErrorStatus, setData, data, isLoading, response, errorStatus, isSuccessful }
 }
 
 export default useFetch;

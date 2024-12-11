@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from urllib.parse import urljoin
 from .utils import convert_to_arabic_numerals
+from django.contrib.auth.models import User
 
 class ScholarYearCategory(models.Model):
     start_year = models.IntegerField()
@@ -82,3 +83,14 @@ class Quote(models.Model):
 
     def __str__(self):
         return f'Quote(id={self.id}, author={self.author.name}, quote="{self.quote}")'
+    
+
+# Fix custom user model to store the favourite scholar in the user
+# so that when a user logs out the favourite scholars is not stored in the page itself rather in the user model 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    favourite_books = models.ManyToManyField(Book, related_name="favourite_books")
+    favourite_scholars = models.ManyToManyField(Scholar, related_name="favourite_scholars")
+
+    def __str__(self):
+        return self.user.username

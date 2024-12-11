@@ -10,6 +10,7 @@ const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const { currentUser, requestCurrentUser, errorStatusCurrentUser } = useCurrentUser()
     const [token, setToken] = useState(localStorage.getItem('accessToken'))
+    const [isAdmin, setAdmin] = useState(false)
     
     const { 
         data: userData, 
@@ -34,8 +35,8 @@ const AuthProvider = ({ children }) => {
 
     const getTokens = (url, { username, password }) => {
         registerUser(url, {
-            username: username,
-            password: password
+            username: username || "",
+            password: password || ""
         })
     }
 

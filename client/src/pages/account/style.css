@@ -117,4 +117,19 @@
         margin-top: 20px;
         cursor: pointer;
     }
+
+    .success-message {
+        background-color: lightgreen;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        opacity: 1;
+        transition: opacity 5s ease-in-out;
+    }
+    
+    .success-message.fade-out {
+        opacity: 0;
+    }
+    
 }
+

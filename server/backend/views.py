@@ -1,16 +1,12 @@
 from django.http import JsonResponse
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 
 def scholar_year_categories(request):
     data = ScholarYearCategory.objects.all()
@@ -31,7 +27,6 @@ def scholars(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-#@permission_classes([IsAuthenticated])
 def scholar(request, id):
     try:
         scholar = Scholar.objects.get(pk=id)
@@ -106,7 +101,7 @@ def quotes(request):
 def quote(request, id):
     try:
         quote = Quote.objects.get(pk=id)
-    except Book.DoesNotExist:
+    except Quote.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
@@ -137,19 +132,6 @@ def register(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
-def login(request):
-    serializer = UserSerializer(data=request.data, context={'action': 'login'})
-    if serializer.is_valid(raise_exception=True):
-        user = User.objects.get(username=request.data['username'])
-        refresh = RefreshToken.for_user(user)
-        tokens = {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
-        return Response(tokens, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout(request):
     try:
@@ -167,7 +149,7 @@ def current_user(request):
     try:
         user = request.user
         print(f"Authenticated user: {user.username}")  # Debugging line
-        print(f"Request headers: {request.headers}")  # Debugging line
+        # print(f"Request headers: {request.headers}")  # Debugging line
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -175,7 +157,8 @@ def current_user(request):
         serializer = UserSerializer(user, context={'request': request})
         return Response({'user': serializer.data})
     elif request.method == 'PUT':
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer = UserSerializer(user, data=request.data, context={'action': 'update'})
+        print(f"request.data: {request.data}")
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -183,3 +166,51 @@ def current_user(request):
     elif request.method == 'DELETE':
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# handle the login
+# login is handled by jwt
+
+@api_view(['GET', 'POST'])
+def favourite_books(request):
+    try:
+        # Get the user's profile
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        data = profile.favourite_books.all()
+        serializer = UserProfileSerializer(data, many=True, context={'request': request})
+        return Response({'favourite_books': serializer.data})
+    elif request.method == 'POST':
+        # Deserialize the book object from request data
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save the book if it doesn't already exist, or get the existing one
+            book = serializer.save()  # Creates or gets the existing book
+            profile.favourite_books.add(book)  # Add book to user's favorites
+            profile.save()  # Save the user profile
+            return Response({'message': 'Book added to favorites!'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def favourite_book(request, id):
+    try:
+        # Get the user's profile
+        profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        book = profile.favourite_books.get(pk=id)
+    except Book.DoesNotExist:
+        return Response({'error': 'Book not found in favorites'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = BookSerializer(book, context={'request': request})
+        return Response({'favourite_book': serializer.data})
+    elif request.method == 'DELETE':
+        profile.favourite_books.remove(book)
+        return Response({'message': 'Book removed from favorites'}, status=status.HTTP_204_NO_CONTENT)
+

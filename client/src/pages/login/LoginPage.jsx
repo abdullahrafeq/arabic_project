@@ -13,6 +13,7 @@ const LoginPage = () => {
     const [email, setEmail] = useState()
     const [action, setAction] = useState("login")
     const [isCorrectLogin, setIsCorrectLogin] = useState(true)
+    const [isCorrectSignup, setIsCorrectSignup] = useState(true)
     const [userNameErrorMessage, setUsernameErrorMessage] = useState()
     const [emailErrorMessage, setEmailErrorMessage] = useState()
     const [passwordErrorMessage, setPasswordErrorMessage] = useState()
@@ -72,16 +73,19 @@ const LoginPage = () => {
     const handleSignUpResponse = (userData) => {
         if (userData === null) {
             if (errorStatusUser?.username) {
+                setIsCorrectSignup(false)
                 setIsUserError(true)
                 setUsernameErrorMessage(errorStatusUser.username)
             }
 
             if (errorStatusUser?.email) {
+                setIsCorrectSignup(false)
                 setIsEmailError(true)
                 setEmailErrorMessage(errorStatusUser.email)
             }
 
             if (errorStatusUser?.password) {
+                setIsCorrectSignup(false)
                 setIsPasswordError(true)
                 setIsConfirmPasswordError(true)
                 setConfirmPasswordErrorMessage(errorStatusUser.confirm_password)
@@ -99,8 +103,24 @@ const LoginPage = () => {
         console.log("here")
         if (userData === null) {
             if (errorStatusUser?.detail === "No active account found with the given credentials") {
+                console.log("in my error")
                 setIsCorrectLogin(false)
+                setPasswordErrorMessage("Invalid username or password")
+                setUsernameErrorMessage("Invalid username or password")
                 return
+            }
+
+            if (errorStatusUser?.username) {
+                console.log("in user error")
+                setIsCorrectLogin(false)
+                setIsUserError(true)
+                setUsernameErrorMessage(errorStatusUser.username)
+            }
+
+            if (errorStatusUser?.password) {
+                setIsCorrectLogin(false)
+                setIsPasswordError(true)
+                setPasswordErrorMessage(errorStatusUser.password)
             }
         }
         
@@ -148,8 +168,8 @@ const LoginPage = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
-                        {action === 'login' && !isCorrectLogin && <p>invalid input</p>}
-                        {action === 'signup' && isUserError && <p>{userNameErrorMessage}</p>}
+                        {action === 'login' && !isCorrectLogin && <p>{userNameErrorMessage}</p>}
+                        {action === 'signup' && !isCorrectSignup && isUserError && <p>{userNameErrorMessage}</p>}
                     </div>
                     {action === "signup" &&
                         <div className="input">
@@ -160,7 +180,7 @@ const LoginPage = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            {action === 'signup' && isEmailError && <p>{emailErrorMessage}</p>}
+                            {action === 'signup' && !isCorrectSignup && isEmailError && <p>{emailErrorMessage}</p>}
                         </div>
                     }
                     <div className="input">
@@ -171,8 +191,8 @@ const LoginPage = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        {action === 'login' && !isCorrectLogin && <p>invalid input</p>}
-                        {action === 'signup' && isPasswordError && <p>{passwordErrorMessage}</p>}
+                        {action === 'login' && !isCorrectLogin && <p>{passwordErrorMessage}</p>}
+                        {action === 'signup' && !isCorrectSignup && isPasswordError && <p>{passwordErrorMessage}</p>}
                     </div>
                     {action==="signup" &&
                         <div className="input">
@@ -183,7 +203,7 @@ const LoginPage = () => {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
-                            {action === 'signup' && isConfirmPasswordError && <p>{confirmPasswordErrorMessage}</p>}
+                            {action === 'signup' && !isCorrectSignup && isConfirmPasswordError && <p>{confirmPasswordErrorMessage}</p>}
                         </div>
                     }
                 </div>

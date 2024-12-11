@@ -12,13 +12,14 @@ const AccountPage = () => {
     const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
-    
+    const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
+
     const navigate = useNavigate()
-    const { currentUser, requestCurrentUser, updateCurrentUser } = useCurrentUser()
+    const { currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, isSuccessfulUpdate } = useCurrentUser()
     const handleUpdate = () => {
         updateCurrentUser("http://localhost:8000/api/current-user/", {
-            email: email,
-            username: username,
+            username: username || currentUser?.user?.username, 
+            email: email || currentUser?.user?.email,         
             old_password: oldPassword,
             new_password: newPassword
         })
@@ -26,8 +27,10 @@ const AccountPage = () => {
 
     const handleUpdateValues = (user) => {
         console.log(user)
-        setOldPassword("")
-        setNewPassword("")
+        if (isSuccessfulUpdate) {
+            setOldPassword("");
+            setNewPassword("");
+        }
     }
 
     useEffect(() => {
@@ -37,11 +40,21 @@ const AccountPage = () => {
     }, [])
 
     useEffect(() => {
-        requestCurrentUser()
-        console.log(currentUser)
-        setEmail(currentUser?.user?.email)
-        setUsername(currentUser?.user?.username)
-    }, [])
+        if (!currentUser) {
+            requestCurrentUser();
+        } else {
+            setEmail(currentUser?.user?.email);
+            setUsername(currentUser?.user?.username);
+        }
+    }, [currentUser, requestCurrentUser]);
+
+    useEffect(() => {
+        if (isSuccessfulUpdate) {
+            setFadeOut(false); // Reset fade-out state
+            setTimeout(() => setFadeOut(true), 0); // Trigger fade-out after rendering
+            setTimeout(() => handleUpdateValues(currentUser), 0); // Clear passwords after fade-out
+        }
+    }, [isSuccessfulUpdate, currentUser]);
 
     return (
         <div className="account-page">
@@ -72,16 +85,16 @@ const AccountPage = () => {
                                 <label htmlFor="">Email</label>
                                 <input 
                                     type="text" 
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={currentUser?.user?.email}
+                                    disabled
                                 />
                             </form>
                             <form action="">
                                 <label htmlFor="">Username</label>
                                 <input 
                                     type="text" 
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    value={currentUser?.user?.username}
+                                    disabled
                                 />
                             </form>
                             <form action="">
@@ -91,6 +104,9 @@ const AccountPage = () => {
                                     value={oldPassword}
                                     onChange={(e) => setOldPassword(e.target.value)}
                                 />
+                                {!isSuccessfulUpdate && 
+                                    <p>{errorStatusCurrentUser?.old_password}</p>
+                                }
                             </form>
                             <form action="">
                                 <label htmlFor="">New Password</label>
@@ -99,8 +115,16 @@ const AccountPage = () => {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                 />
+                                {!isSuccessfulUpdate && 
+                                    <p>{errorStatusCurrentUser?.new_password}</p>
+                                }
                             </form>
                         </div>
+                        {isSuccessfulUpdate && 
+                            <div className={`success-message ${fadeOut ? "fade-out" : ""}`}>
+                                Successful update
+                            </div>              
+                        }
                         <Button 
                             className="update-button" 
                             children={<>Update</>}

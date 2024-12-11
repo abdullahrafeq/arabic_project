@@ -5,7 +5,8 @@ const useCurrentUser = () => {
         data: currentUser,
         request: requestCurrentUser,
         updateData: updateCurrentUser,
-        errorStatus: errorStatusCurrentUser 
+        errorStatus: errorStatusCurrentUser,
+        isSuccessful: isSuccessfulUpdate 
     } = useFetch("http://localhost:8000/api/current-user/", {
             headers: {
                 'Content-Type': 'application/json',
@@ -13,7 +14,7 @@ const useCurrentUser = () => {
             }
         })
     
-    return { currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser }
+    return { currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, isSuccessfulUpdate }
 }
 
 export default useCurrentUser
