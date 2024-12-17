@@ -8,12 +8,15 @@ const useFetch = (url, { headers, body } = {}) => {
     const [isSuccessful, setSuccessful] = useState(false)
     const [isError, setError] = useState(false)
     
-    const request = async () => {
-        console.log(headers)
+    const request = async ({ token } = {}) => {
         setIsLoading(true)
+        const finalHeaders = {
+            ...headers,
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+        }
         return fetch(url, {
             method: 'GET',
-            headers: headers,
+            headers: finalHeaders,
             body: body,
         })
         .then((response) => {
@@ -72,12 +75,18 @@ const useFetch = (url, { headers, body } = {}) => {
         });   
     }
 
-    const updateData = async (url, updatedData) => {
+    const updateData = async (url, updatedData, { token } = {}) => {
         console.log(updatedData)
         setIsLoading(true)
+        console.log("isLoading: ", isLoading)
+        const finalHeaders = {
+            ...headers,
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+        }
+        console.log(finalHeaders)
         return fetch(url, {
             method: 'PUT',
-            headers: headers,
+            headers: finalHeaders,
             body: JSON.stringify(updatedData)
         })
         .then(async (response) => {
@@ -95,10 +104,12 @@ const useFetch = (url, { headers, body } = {}) => {
             setData(data)
             setSuccessful(true)
             console.log('Update successful:', data);
+            return data
         })
         .catch((err) => {
             setErrorStatus(err)
             console.log(err);
+            throw err
         })
         .finally(() => {
             setIsLoading(false)
@@ -119,6 +130,7 @@ const useFetch = (url, { headers, body } = {}) => {
         })    
         .catch((err) => {
             console.log(err)
+            throw err
         })
         .finally(() => {
             setIsLoading(false)

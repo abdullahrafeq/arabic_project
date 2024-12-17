@@ -26,21 +26,6 @@ const LoginPage = () => {
         setPassword("")
         setConfirmPassword("")
     }
-        
-    const resetIncorrectValues = () => {
-        setIsCorrectLogin(true)
-    }
-
-    /*
-    useEffect(() => {
-        console.log("useEffect triggered:", { userData, errorStatusUser, action })
-        if (action === "signup") {
-            //handleSignUpResponse(userData)
-        } else if (action === "login") {
-            //handleLoginResponse(userData)
-        }
-    }, [userData, errorStatusUser, action, userNameErrorMessage, emailErrorMessage, passwordErrorMessage, confirmPasswordErrorMessage]);
-    */
 
     const handleSignUp = async () => {
         try {
@@ -50,7 +35,6 @@ const LoginPage = () => {
                 password,
                 confirmPassword
             })
-
         } catch (err) {
             console.error("In signup page error: ", err)
             setIsCorrectSignup(false)
@@ -78,7 +62,6 @@ const LoginPage = () => {
 
     const handleClick = (event, clickAction) => {
         event.preventDefault()
-        resetIncorrectValues()
         
         if (action !== clickAction) {
             setAction(clickAction);

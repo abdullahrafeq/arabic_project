@@ -20,9 +20,11 @@ import { useContext, useEffect } from 'react';
 
 function AppContent() {
   const { isAdmin } = useContext(AuthContext);
-  useEffect(()=>{
+  
+  useEffect(() => {
     console.log(isAdmin)
-  },[isAdmin])
+  }, [isAdmin])
+  
   return (
     <div className="App">
       <SearchProvider>

@@ -6,7 +6,6 @@ import Quote from "./components/quote/Quote";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
-import useCurrentUser from "../../hooks/useCurrentUser";
 
 
 const HomePage = () => {
@@ -31,21 +30,13 @@ const HomePage = () => {
         errorStatus: errorStatusQuotes
     } = useFetch("http://127.0.0.1:8000/api/quotes/");
 
-    const { 
-        currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, 
-        isSuccessfulUpdate, setSuccessfulUpdate, isFailedUpdate, setFailedUpdate
-    } = useCurrentUser()
 
     useEffect(() => {
+        console.log("init homepage")
         requestScholars();
         requestBooks();
         requestQuotes();
-        requestCurrentUser()
     }, []);
-
-    useEffect(() => {
-        console.log(currentUser)
-    },[currentUser])
 
     const scholars = scholarsData?.scholars || [];
     const books = booksData?.books || [];

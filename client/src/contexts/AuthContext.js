@@ -10,10 +10,9 @@ const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const { 
         currentUser, updateCurrentUser, requestCurrentUser, errorStatusCurrentUser, 
-        isSuccessfulUpdate, isFailedUpdate, setSuccessfulUpdate, setFailedUpdate } = useCurrentUser()
+        isSuccessfulUpdate, isFailedUpdate, setSuccessfulUpdate, setFailedUpdate, updateHeaders } = useCurrentUser()
     const [token, setToken] = useState(localStorage.getItem('accessToken'))
     const [isAdmin, setAdmin] = useState(false)
-    const [errMsgs, setErrMsgs] = useState({})
 
     const { 
         data: userData, 
@@ -28,13 +27,21 @@ const AuthProvider = ({ children }) => {
         }
     })
 
-    const updateUser = (url, {email, username, oldPassword, newPassword}) => {
-        updateCurrentUser(url, {
-            username: username || currentUser?.user?.username, 
-            email: email || currentUser?.user?.email,         
-            old_password: oldPassword || "",
-            new_password: newPassword || ""
-        })
+    const updateUser = async (url, {email, username, oldPassword, newPassword}) => {
+        try {
+            console.log(localStorage.getItem("accessToken"))
+            await updateCurrentUser(url, {
+                username: username || authUser?.user?.username, 
+                email: email || authUser?.user?.email,         
+                old_password: oldPassword || "",
+                new_password: newPassword || ""
+            }, { token: localStorage.getItem("accessToken") })
+            const user = await requestCurrentUser({ token: localStorage.getItem("accessToken") }); // Fetch user details immediately
+            setAuthUser(user)
+        } catch (err) {
+            console.error("Error during update: ", err)
+            throw err
+        }
     }
 
     const signup = async (url, { email, username, password, confirmPassword }) => {
@@ -70,13 +77,14 @@ const AuthProvider = ({ children }) => {
                 localStorage.setItem("accessToken", response.tokens.access);
                 setToken(response.tokens.access);
                 setIsLoggedIn(true);
-                const user = await requestCurrentUser(); // Fetch user details immediately
+                const user = await requestCurrentUser({ token: response.tokens.access }); // Fetch user details immediately
                 setAuthUser(user)
                 console.log(user)
                 console.log("User successfully logged in");
                 return response;
             }
         } catch (err) {
+            setAuthUser(null)
             console.error("Error during login: ", err)
             throw err
         }
@@ -110,16 +118,19 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         console.log("AuthProvider mounted!");
         console.log("currentUser:", currentUser);
+        localStorage.clear()
     }, [])
     
     useEffect(() => {
-        if (currentUser) {
-            setAdmin(currentUser?.is_superuser || false)
-            console.log(currentUser)
-        } else if (errorStatusUser) {
+        if (authUser) {
+            setAdmin(authUser?.user?.is_superuser || false)
+            console.log(authUser)
+            console.log("isAdmin: ", isAdmin)
+        } else {
             setAdmin(false)
+            console.log("here")
         }
-    }, [currentUser, errorStatusUser])
+    }, [authUser, isAdmin])
 
     const value = {
         currentUser,

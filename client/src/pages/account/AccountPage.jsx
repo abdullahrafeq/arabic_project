@@ -4,51 +4,30 @@ import Button from "../../components/button/Button"
 import { useEffect, useState } from "react"
 import useAuth from "../../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
-import useCurrentUser from "../../hooks/useCurrentUser"
 
 const AccountPage = () => {
     const { 
         authUser, isLoggedIn, updateUser, isSuccessfulUpdate, isFailedUpdate, 
-        setSuccessfulUpdate, setFailedUpdate } = useAuth()
+        setSuccessfulUpdate, setFailedUpdate, isLoading } = useAuth()
     const [username, setUsername] = useState()
     const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
     const [fadeOut, setFadeOut] = useState(false) // State to control fade-out effect
-
+    const [errMsgs, setErrMsgs] = useState({})
     const navigate = useNavigate()
-    const { 
-        currentUser, errorStatusCurrentUser,
-    } = useCurrentUser()
 
-    const handleUpdate = () => {
-        updateUser("http://localhost:8000/api/current-user/", {
-            username,
-            email,
-            oldPassword,
-            newPassword
-        })
-    }
-
-    const handleUpdateValues = (user) => {
-        console.log(user)
-        if (isSuccessfulUpdate) {
+    const handleUpdate = async () => {
+        try {
+            await updateUser("http://localhost:8000/api/current-user/", {
+                username,
+                email,
+                oldPassword,
+                newPassword
+            })
+            setFadeOut(false);
             setOldPassword("");
             setNewPassword("");
-        }
-    }
-
-    useEffect(() => {
-        if (!isLoggedIn) {
-            navigate("/login")
-        }
-        console.log(authUser)
-    }, [])
-
-    useEffect(() => {
-        if (isSuccessfulUpdate) {
-            setFadeOut(false);
-            handleUpdateValues(currentUser); // Clear passwords immediately
             setFailedUpdate(false)
             // Start the fade-out effect
             setTimeout(() => {
@@ -59,11 +38,20 @@ const AccountPage = () => {
             setTimeout(() => {
                 setSuccessfulUpdate(false);
             }, 2000); // Match the duration of the fade-out CSS transition
-        } else {
+        } catch (err) {
+            console.error("Error in accounts page", err)
+            console.log(isFailedUpdate)
             setSuccessfulUpdate(false)
+            setErrMsgs(err)
         }
-    }, [isSuccessfulUpdate, currentUser, errorStatusCurrentUser, isFailedUpdate]);
-    
+    }
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/login")
+        }
+        console.log(authUser)
+    }, [])
 
     return (
         <div className="account-page">
@@ -73,7 +61,7 @@ const AccountPage = () => {
                     <div className="settings">
                         <div>
                             <img src={Sibawaihy} alt="" />
-                            <strong>{authUser?.user?.username || "Loading..."}</strong>
+                            <strong>{isLoading ? "Loading..." : authUser?.user?.username}</strong>
                             <em>Student of the Arabic Language</em>
                         </div>
                         <ul>
@@ -114,7 +102,7 @@ const AccountPage = () => {
                                     onChange={(e) => setOldPassword(e.target.value)}
                                 />
                                 {isFailedUpdate && 
-                                    <p>{errorStatusCurrentUser?.old_password}</p>
+                                    <p>{errMsgs?.old_password}</p>
                                 }
                             </form>
                             <form action="">
@@ -125,7 +113,7 @@ const AccountPage = () => {
                                     onChange={(e) => setNewPassword(e.target.value)}
                                 />
                                 {isFailedUpdate && 
-                                    <p>{errorStatusCurrentUser?.new_password}</p>
+                                    <p>{errMsgs?.new_password}</p>
                                 }
                             </form>
                         </div>
@@ -139,7 +127,7 @@ const AccountPage = () => {
                             children={<>Update</>}
                             onClick={() => {
                                 handleUpdate()
-                                handleUpdateValues(currentUser)
+                                /*handleUpdateValues(currentUser)*/
                             }}
                         />
                     </div>

@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { useEffect } from "react";
 
 const NavBar = () => {
-    const { isLoggedIn, logout } = useAuth()
+    const { isLoggedIn, logout, isAdmin } = useAuth()
     const handleLogout = async (event) => {
         try {
             //event.preventDefault()
@@ -31,6 +31,9 @@ const NavBar = () => {
                     <li><CustomLink to="/favourite-scholars" children={<>Favoutite Scholars</>}/></li>
                     <li><CustomLink to="/favourite-books" children={<>Favoutite Books</>}/></li>
                     <li><CustomLink to="/account" children={<>Account</>}/></li>
+                    {isAdmin && 
+                        <li><CustomLink to="/admin-guide" children={<>Admin Guide</>}/></li>
+                    }
                     <li>
                         {isLoggedIn ? 
                             <CustomLink to="/login" children={<>Logout</>} onClick={handleLogout}/>
