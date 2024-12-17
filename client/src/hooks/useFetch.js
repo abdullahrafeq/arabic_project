@@ -1,16 +1,16 @@
 import { useState } from "react"
 
 const useFetch = (url, { headers, body } = {}) => {
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState(null)
     const [errorStatus, setErrorStatus] = useState(null)
     const [response, setResponse] = useState()
     const [isSuccessful, setSuccessful] = useState(false)
     const [isError, setError] = useState(false)
-
     
     const request = async () => {
         console.log(headers)
+        setIsLoading(true)
         return fetch(url, {
             method: 'GET',
             headers: headers,
@@ -39,6 +39,7 @@ const useFetch = (url, { headers, body } = {}) => {
 
     const appendData = async (url, newData) => {
         console.log("inside appendData", newData)
+        setIsLoading(true)
         return fetch(url, {
             method: 'POST',
             headers: headers,
@@ -65,11 +66,15 @@ const useFetch = (url, { headers, body } = {}) => {
             setErrorStatus(err)
             console.log(err)
             throw err
-        })      
+        })
+        .finally(() => {
+            setIsLoading(false)
+        });   
     }
 
     const updateData = async (url, updatedData) => {
         console.log(updatedData)
+        setIsLoading(true)
         return fetch(url, {
             method: 'PUT',
             headers: headers,
@@ -95,9 +100,13 @@ const useFetch = (url, { headers, body } = {}) => {
             setErrorStatus(err)
             console.log(err);
         })
+        .finally(() => {
+            setIsLoading(false)
+        });
     }
 
     const deleteData = async (url) => {
+        setIsLoading(true)
         return fetch(url, {
             method: 'DELETE',
             headers: headers,
@@ -111,6 +120,9 @@ const useFetch = (url, { headers, body } = {}) => {
         .catch((err) => {
             console.log(err)
         })
+        .finally(() => {
+            setIsLoading(false)
+        });
     }
 
     return { 

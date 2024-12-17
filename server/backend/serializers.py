@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 import re
 
 
@@ -110,7 +111,7 @@ class UserSerializer(serializers.ModelSerializer):
         # Manually validate email format using regular expressions
         email = data.get('email', '').strip()
         if not email:
-            errors['email'] = 'Email field may not be blank.'
+            errors['email'] = 'Email may not be blank.'
         else:
             # Basic email regex pattern for validation
             email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -141,11 +142,36 @@ class UserSerializer(serializers.ModelSerializer):
         # Check for matching passwords
         if 'password' in data and 'confirm_password' in data:
             if data['password'] != data['confirm_password']:
-                errors["password"] = "Customized password message, don't match"
+                errors["password"] = "Passwords do not match"
 
         if errors:
             raise serializers.ValidationError(errors)
         
+        return data
+    
+    def validate_login(self, data):
+        errors = {}
+        username = data.get('username')
+        password = data.get('password')
+
+        # Check for missing fields
+        if not username:
+            errors['username'] = "Username may not be blank."
+        if not password:
+            errors['password'] = "Password may not be blank."
+
+        # Stop here if any required fields are missing
+        if errors:
+            raise serializers.ValidationError(errors)
+        # Authenticate user
+        user = authenticate(username=username, password=password)
+        if user is None:
+            errors['username'] = "Invalid username or password."
+            errors['password'] = "Invalid username or password."
+            raise serializers.ValidationError(errors)
+
+        # Add authenticated user to validated data
+        data['user'] = user
         return data
     
     def validate_update(self, data):

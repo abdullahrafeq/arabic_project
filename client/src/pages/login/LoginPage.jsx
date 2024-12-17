@@ -14,16 +14,11 @@ const LoginPage = () => {
     const [action, setAction] = useState("login")
     const [isCorrectLogin, setIsCorrectLogin] = useState(true)
     const [isCorrectSignup, setIsCorrectSignup] = useState(true)
-    const [userNameErrorMessage, setUsernameErrorMessage] = useState()
-    const [emailErrorMessage, setEmailErrorMessage] = useState()
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState()
-    const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState()
-    const [isUserError, setIsUserError] = useState(false)
-    const [isEmailError, setIsEmailError] = useState(false)
-    const [isPasswordError, setIsPasswordError] = useState(false)
-    const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
-    const { login, signup, userData, setUserData, errorStatusUser, currentUser } = useAuth()
+    const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+    const [errMsgs, setErrMsgs] = useState({})
+    const { login, signup, isLoading } = useAuth()
     const navigate = useNavigate()
+
 
     const resetValues = () => {
         setUsername("")
@@ -33,112 +28,70 @@ const LoginPage = () => {
     }
         
     const resetIncorrectValues = () => {
-        setIsUserError(false)
-        setIsEmailError(false)
-        setIsPasswordError(false)
-        setIsConfirmPasswordError(false)
         setIsCorrectLogin(true)
     }
 
+    /*
     useEffect(() => {
         console.log("useEffect triggered:", { userData, errorStatusUser, action })
         if (action === "signup") {
-            handleSignUpResponse(userData)
+            //handleSignUpResponse(userData)
         } else if (action === "login") {
-            handleLoginResponse(userData)
+            //handleLoginResponse(userData)
         }
     }, [userData, errorStatusUser, action, userNameErrorMessage, emailErrorMessage, passwordErrorMessage, confirmPasswordErrorMessage]);
+    */
 
-    const handleSignUp = () => {
-        signup("http://localhost:8000/api/register/", { 
-            email, 
-            username, 
-            password,
-            confirmPassword
-        })
+    const handleSignUp = async () => {
+        try {
+            await signup("http://localhost:8000/api/register/", { 
+                email, 
+                username, 
+                password,
+                confirmPassword
+            })
+
+        } catch (err) {
+            console.error("In signup page error: ", err)
+            setIsCorrectSignup(false)
+            setErrMsgs(err)
+        } finally {
+            resetValues()
+        }
     }
 
     const handleLogin = async () => {
         try {
-            const result = await login("http://localhost:8000/api/token/", username, password);            
-            if (result?.access) {
+            const result = await login("http://localhost:8000/api/login/", username, password);            
+            if (result?.tokens?.access) {
                 console.log("Login successful, navigating to homepage...");
                 navigate("/")
             }
         } catch (err) {
-            console.error(err)
+            console.error("In login page error: ", err)
+            setIsCorrectLogin(false)
+            setErrMsgs(err)
         } finally {
-            resetValues() // Clear error messages
+            resetValues()
         }
-    }
-
-    const handleSignUpResponse = (userData) => {
-        if (userData === null) {
-            if (errorStatusUser?.username) {
-                setIsCorrectSignup(false)
-                setIsUserError(true)
-                setUsernameErrorMessage(errorStatusUser.username)
-            }
-
-            if (errorStatusUser?.email) {
-                setIsCorrectSignup(false)
-                setIsEmailError(true)
-                setEmailErrorMessage(errorStatusUser.email)
-            }
-
-            if (errorStatusUser?.password) {
-                setIsCorrectSignup(false)
-                setIsPasswordError(true)
-                setIsConfirmPasswordError(true)
-                setConfirmPasswordErrorMessage(errorStatusUser.confirm_password)
-                setPasswordErrorMessage(errorStatusUser.password)
-            }
-
-            return
-        }
-
-        resetValues()
-        console.log("successfull")
-    }
-
-    const handleLoginResponse = (userData) => {
-        console.log("in handleLoginResponse")
-        if (userData === null) {
-            if (errorStatusUser?.detail === "No active account found with the given credentials") {
-                console.log("in my error")
-                setIsCorrectLogin(false)
-                setPasswordErrorMessage("Invalid username or password")
-                setUsernameErrorMessage("Invalid username or password")
-                return
-            }
-
-            if (errorStatusUser?.username) {
-                console.log("in username error")
-                setIsCorrectLogin(false)
-                setIsUserError(true)
-                setUsernameErrorMessage(errorStatusUser.username)
-            }
-
-            if (errorStatusUser?.password) {
-                setIsCorrectLogin(false)
-                setIsPasswordError(true)
-                setPasswordErrorMessage(errorStatusUser.password)
-            }
-        }
-        
     }
 
     const handleClick = (event, clickAction) => {
         event.preventDefault()
         resetIncorrectValues()
-        setAction(clickAction)
-
+        
+        if (action !== clickAction) {
+            setAction(clickAction);
+            setHasAttemptedSubmit(false); // Reset submit trigger
+            return // Prevent fetching when switching modes
+        }
         if (clickAction === "signup") {
+            setHasAttemptedSubmit(true);
             handleSignUp()
         } else if (clickAction === "login") {
+            setHasAttemptedSubmit(true);
             handleLogin()
         }
-        setUserData(null)
     }
 
     return (
@@ -164,8 +117,8 @@ const LoginPage = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
-                        {action === 'login' && !isCorrectLogin && <p>{userNameErrorMessage}</p>}
-                        {action === 'signup' && !isCorrectSignup && isUserError && <p>{userNameErrorMessage}</p>}
+                        {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "username" in errMsgs && <p>{errMsgs?.username}</p>}
+                        {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "username" in errMsgs && <p>{errMsgs?.username}</p>}
                     </div>
                     {action === "signup" &&
                         <div className="input">
@@ -176,7 +129,7 @@ const LoginPage = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            {action === 'signup' && !isCorrectSignup && isEmailError && <p>{emailErrorMessage}</p>}
+                            {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "email" in errMsgs && <p>{errMsgs?.email}</p>}
                         </div>
                     }
                     <div className="input">
@@ -187,8 +140,8 @@ const LoginPage = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        {action === 'login' && !isCorrectLogin && <p>{passwordErrorMessage}</p>}
-                        {action === 'signup' && !isCorrectSignup && isPasswordError && <p>{passwordErrorMessage}</p>}
+                        {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "password" in errMsgs && <p>{errMsgs?.password}</p>}
+                        {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "password" in errMsgs && <p>{errMsgs?.password}</p>}
                     </div>
                     {action==="signup" &&
                         <div className="input">
@@ -199,7 +152,7 @@ const LoginPage = () => {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
-                            {action === 'signup' && !isCorrectSignup && isConfirmPasswordError && <p>{confirmPasswordErrorMessage}</p>}
+                            {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "confirm_password" in errMsgs && <p>{errMsgs?.confirm_password}</p>}
                         </div>
                     }
                 </div>
@@ -215,6 +168,11 @@ const LoginPage = () => {
                         onClick={(event) => handleClick(event, "login")}
                     />
                 </div>
+                {isLoading &&
+                    <div>
+                        Loading...
+                    </div>
+                }
             </div>
         </div>
     )

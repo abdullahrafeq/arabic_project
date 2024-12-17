@@ -13,13 +13,15 @@ const AuthProvider = ({ children }) => {
         isSuccessfulUpdate, isFailedUpdate, setSuccessfulUpdate, setFailedUpdate } = useCurrentUser()
     const [token, setToken] = useState(localStorage.getItem('accessToken'))
     const [isAdmin, setAdmin] = useState(false)
-    
+    const [errMsgs, setErrMsgs] = useState({})
+
     const { 
         data: userData, 
         setData: setUserData,
         appendData: registerUser,
         errorStatus: errorStatusUser,
-        setErrorStatus: setErrorStatusUser 
+        setErrorStatus: setErrorStatusUser,
+        isLoading
     } = useFetch("http://localhost:8000/api/register/", {
         headers: {
             'Content-Type': 'application/json'
@@ -35,13 +37,21 @@ const AuthProvider = ({ children }) => {
         })
     }
 
-    const signup = (url, { email, username, password, confirmPassword }) => {
-        registerUser(url, { 
-            email: email || "", 
-            username: username || "", 
-            password: password || "", 
-            confirm_password: confirmPassword || "", 
-        })
+    const signup = async (url, { email, username, password, confirmPassword }) => {
+        try {
+            const response = await registerUser(url, { 
+                email: email || "", 
+                username: username || "", 
+                password: password || "", 
+                confirm_password: confirmPassword || "", 
+            })
+
+            console.log(response)
+            return response;
+        } catch (err) {
+            console.log("Error during signup: ", err)
+            throw err
+        }
     }
     
     const getTokens = (url, { username, password }) => {
@@ -56,9 +66,9 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await getTokens(url, { username, password })
             console.log(response)
-            if (response?.access) {
-                localStorage.setItem("accessToken", response.access);
-                setToken(response.access);
+            if (response?.tokens?.access) {
+                localStorage.setItem("accessToken", response.tokens.access);
+                setToken(response.tokens.access);
                 setIsLoggedIn(true);
                 const user = await requestCurrentUser(); // Fetch user details immediately
                 setAuthUser(user)
@@ -73,10 +83,28 @@ const AuthProvider = ({ children }) => {
     }
      
 
-    const logout = () => {
-        setUserData(null)
-        setIsLoggedIn(false)
-        localStorage.clear()
+    const logout = async () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            console.warn("No refresh token found. User already logged out.");
+            setIsLoggedIn(false);
+            setAuthUser(null);
+            localStorage.clear();
+            return;
+        }
+        try {
+            await registerUser("http://localhost:8000/api/logout/", { 
+                refresh_token: refreshToken 
+            })
+            console.log("User successfully logged out");
+
+            // Clear auth state and localStorage
+            setIsLoggedIn(false);
+            setAuthUser(null);
+            localStorage.clear();
+        } catch (err) {
+            console.error("Error during logout:", err);
+        }
     }
 
     useEffect(() => {
@@ -114,7 +142,8 @@ const AuthProvider = ({ children }) => {
         setFailedUpdate,
         isAdmin,
         token,
-        login
+        login,
+        isLoading
     }
 
     return (

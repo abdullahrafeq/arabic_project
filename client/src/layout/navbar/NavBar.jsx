@@ -5,8 +5,13 @@ import { useEffect } from "react";
 
 const NavBar = () => {
     const { isLoggedIn, logout } = useAuth()
-    const handleLogout = () => {
-        logout()
+    const handleLogout = async (event) => {
+        try {
+            //event.preventDefault()
+            await logout()
+        } catch (err) {
+            console.error("Error during logout: err")
+        }
     }
     
     useEffect(() => {
