@@ -22,7 +22,7 @@ const LoginPage = () => {
     const [isEmailError, setIsEmailError] = useState(false)
     const [isPasswordError, setIsPasswordError] = useState(false)
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false)
-    const { signup, getTokens, login, userData, setUserData, errorStatusUser } = useAuth()
+    const { login, signup, userData, setUserData, errorStatusUser, currentUser } = useAuth()
     const navigate = useNavigate()
 
     const resetValues = () => {
@@ -39,10 +39,6 @@ const LoginPage = () => {
         setIsConfirmPasswordError(false)
         setIsCorrectLogin(true)
     }
-
-    useEffect(() => {
-        resetIncorrectValues()
-    }, [])
 
     useEffect(() => {
         console.log("useEffect triggered:", { userData, errorStatusUser, action })
@@ -62,12 +58,18 @@ const LoginPage = () => {
         })
     }
 
-    const handleLogin = () => {
-        console.log(username, password)
-        getTokens("http://localhost:8000/api/token/", { 
-            username, 
-            password 
-        })
+    const handleLogin = async () => {
+        try {
+            const result = await login("http://localhost:8000/api/token/", username, password);            
+            if (result?.access) {
+                console.log("Login successful, navigating to homepage...");
+                navigate("/")
+            }
+        } catch (err) {
+            console.error(err)
+        } finally {
+            resetValues() // Clear error messages
+        }
     }
 
     const handleSignUpResponse = (userData) => {
@@ -100,7 +102,7 @@ const LoginPage = () => {
     }
 
     const handleLoginResponse = (userData) => {
-        console.log("here")
+        console.log("in handleLoginResponse")
         if (userData === null) {
             if (errorStatusUser?.detail === "No active account found with the given credentials") {
                 console.log("in my error")
@@ -111,7 +113,7 @@ const LoginPage = () => {
             }
 
             if (errorStatusUser?.username) {
-                console.log("in user error")
+                console.log("in username error")
                 setIsCorrectLogin(false)
                 setIsUserError(true)
                 setUsernameErrorMessage(errorStatusUser.username)
@@ -124,19 +126,13 @@ const LoginPage = () => {
             }
         }
         
-        if (userData?.access) {
-            resetValues()
-            login({ username, email })
-            console.log("userData: ", userData)
-            navigate('/')
-        }
     }
-        
+
     const handleClick = (event, clickAction) => {
         event.preventDefault()
         resetIncorrectValues()
         setAction(clickAction)
-        
+
         if (clickAction === "signup") {
             handleSignUp()
         } else if (clickAction === "login") {

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 const NavBar = () => {
     const { isLoggedIn, logout } = useAuth()
-    
     const handleLogout = () => {
         logout()
     }

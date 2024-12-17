@@ -20,6 +20,9 @@ def scholars(request):
         serializer = ScholarSerializer(data, many=True, context={'request': request})
         return Response({'scholars': serializer.data})
     elif request.method == 'POST':
+         # Restrict adding scholars to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can add scholars.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = ScholarSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -37,12 +40,18 @@ def scholar(request, id):
         serializer = ScholarSerializer(scholar, context={'request': request})
         return Response({'scholar': serializer.data})
     elif request.method == 'PUT':
+         # Restrict adding scholars to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can edit scholars.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = ScholarSerializer(scholar, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'scholar': serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
+         # Restrict deleting scholars to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can delete scholars.'}, status=status.HTTP_403_FORBIDDEN)
         scholar.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

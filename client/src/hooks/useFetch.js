@@ -9,8 +9,9 @@ const useFetch = (url, { headers, body } = {}) => {
     const [isError, setError] = useState(false)
 
     
-    const request = () => {
-        fetch(url, {
+    const request = async () => {
+        console.log(headers)
+        return fetch(url, {
             method: 'GET',
             headers: headers,
             body: body,
@@ -25,6 +26,7 @@ const useFetch = (url, { headers, body } = {}) => {
         .then((data) => {
             console.log(data)
             setData(data)
+            return data
         })
         .catch((err) => {
             setErrorStatus(err)
@@ -35,14 +37,14 @@ const useFetch = (url, { headers, body } = {}) => {
         })
     }
 
-    const appendData = (url, newData) => {
+    const appendData = async (url, newData) => {
         console.log("inside appendData", newData)
-        fetch(url, {
+        return fetch(url, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(newData)
         })
-        .then(response => {
+        .then(async (response) => {
             console.log("in first then...", response)
             if (!response.ok) {
                 return response.json().then(err => {
@@ -57,21 +59,23 @@ const useFetch = (url, { headers, body } = {}) => {
         .then((data) => {
             setData(data)
             console.log("in the second then...", data)
+            return data
         })
         .catch((err) => {
             setErrorStatus(err)
             console.log(err)
+            throw err
         })      
     }
 
-    const updateData = (url, updatedData) => {
+    const updateData = async (url, updatedData) => {
         console.log(updatedData)
-        fetch(url, {
+        return fetch(url, {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify(updatedData)
         })
-        .then((response) => {
+        .then(async (response) => {
             if (!response.ok) {
                 return response.json().then(err => {
                     console.log(err)
@@ -90,11 +94,11 @@ const useFetch = (url, { headers, body } = {}) => {
         .catch((err) => {
             setErrorStatus(err)
             console.log(err);
-        });
+        })
     }
 
-    const deleteData = (url) => {
-        fetch(url, {
+    const deleteData = async (url) => {
+        return fetch(url, {
             method: 'DELETE',
             headers: headers,
         })

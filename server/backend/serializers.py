@@ -48,7 +48,8 @@ class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
     old_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
     new_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
-    
+    is_superuser = serializers.SerializerMethodField()
+
     # remove unique validation with django's default message for username, email, password
     username = serializers.CharField(
         allow_blank = True,
@@ -68,8 +69,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'confirm_password', 'old_password', 'new_password']
+        fields = ['username', 'email', 'password', 'is_superuser', 'confirm_password', 'old_password', 'new_password']
 
+    def get_is_superuser(self, obj):
+        # Access the request from context and check if the user is a superuser
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            return request.user.is_superuser
+        return False
+    
     def validate(self, data):
         action = self.context.get('action')
         if action == 'signup':

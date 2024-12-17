@@ -7,25 +7,26 @@ import { useNavigate } from "react-router-dom"
 import useCurrentUser from "../../hooks/useCurrentUser"
 
 const AccountPage = () => {
-    const { isLoggedIn } = useAuth()
+    const { 
+        authUser, isLoggedIn, updateUser, isSuccessfulUpdate, isFailedUpdate, 
+        setSuccessfulUpdate, setFailedUpdate } = useAuth()
     const [username, setUsername] = useState()
     const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
-    const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
+    const [fadeOut, setFadeOut] = useState(false) // State to control fade-out effect
 
     const navigate = useNavigate()
     const { 
-        currentUser, requestCurrentUser, updateCurrentUser, errorStatusCurrentUser, 
-        isSuccessfulUpdate, setSuccessfulUpdate, isFailedUpdate, setFailedUpdate
+        currentUser, errorStatusCurrentUser,
     } = useCurrentUser()
 
     const handleUpdate = () => {
-        updateCurrentUser("http://localhost:8000/api/current-user/", {
-            username: username || currentUser?.user?.username, 
-            email: email || currentUser?.user?.email,         
-            old_password: oldPassword,
-            new_password: newPassword
+        updateUser("http://localhost:8000/api/current-user/", {
+            username,
+            email,
+            oldPassword,
+            newPassword
         })
     }
 
@@ -37,28 +38,12 @@ const AccountPage = () => {
         }
     }
 
-    const [displayUsername, setDisplayUsername] = useState("");
-
-    useEffect(() => {
-        if (currentUser?.user?.username) {
-            setDisplayUsername(currentUser.user.username);
-        }
-    }, [currentUser]);
-
     useEffect(() => {
         if (!isLoggedIn) {
             navigate("/login")
         }
+        console.log(authUser)
     }, [])
-
-    useEffect(() => {
-        if (!currentUser) {
-            requestCurrentUser();
-        } else {
-            setEmail(currentUser?.user?.email);
-            setUsername(currentUser?.user?.username);
-        }
-    }, [currentUser, requestCurrentUser]);
 
     useEffect(() => {
         if (isSuccessfulUpdate) {
@@ -88,7 +73,7 @@ const AccountPage = () => {
                     <div className="settings">
                         <div>
                             <img src={Sibawaihy} alt="" />
-                            <strong>{displayUsername || "Loading..."}</strong>
+                            <strong>{authUser?.user?.username || "Loading..."}</strong>
                             <em>Student of the Arabic Language</em>
                         </div>
                         <ul>
@@ -109,7 +94,7 @@ const AccountPage = () => {
                                 <label htmlFor="">Email</label>
                                 <input 
                                     type="text" 
-                                    value={currentUser?.user?.email}
+                                    value={authUser?.user?.email}
                                     disabled
                                 />
                             </form>
@@ -117,7 +102,7 @@ const AccountPage = () => {
                                 <label htmlFor="">Username</label>
                                 <input 
                                     type="text" 
-                                    value={displayUsername}
+                                    value={authUser?.user?.username}
                                     disabled
                                 />
                             </form>

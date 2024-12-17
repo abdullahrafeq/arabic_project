@@ -12,35 +12,48 @@ import AboutUsPage from './pages/about-us/AboutUsPage';
 import FavouriteBooksPage from './pages/favourite-books/FavouriteBooksPage';
 import BookDetailPage from './pages/book-detail/BookDetailPage';
 import ScholarDetailPage from './pages/scholar-detail/ScholarDetailPage';
+import AdminGuidePage from './pages/admin-guide/AdminGuidePage';
 import './App.css';
-import {SearchProvider} from './contexts/SearchContext';
-import { AuthProvider } from './contexts/AuthContext';
+import { SearchProvider } from './contexts/SearchContext';
+import { AuthProvider, AuthContext } from './contexts/AuthContext';
+import { useContext, useEffect } from 'react';
 
-function App() {  
+function AppContent() {
+  const { isAdmin } = useContext(AuthContext);
+  useEffect(()=>{
+    console.log(isAdmin)
+  },[isAdmin])
   return (
     <div className="App">
-      <AuthProvider>
-        <SearchProvider>
-            <NavBar/>
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
-                <Route path="/favourite-books" element={<FavouriteBooksPage />} />
-                <Route path="/scholars" element={<ScholarsPage/>} />
-                <Route path="/books" element={<BooksPage/>} />
-                <Route path="/scholar-detail/:id" element={<ScholarDetailPage/>} />
-                <Route path="/book-detail/:id" element={<BookDetailPage/>} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/contact-us" element={<ContactUsPage />} />
-                <Route path="/about-us" element={<AboutUsPage />} />
-              </Routes>
-            </main>
-            <Footer/>
-        </SearchProvider>
-      </AuthProvider>
+      <SearchProvider>
+        <NavBar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/favourite-scholars" element={<FavouriteScholarsPage />} />
+            <Route path="/favourite-books" element={<FavouriteBooksPage />} />
+            <Route path="/scholars" element={<ScholarsPage />} />
+            <Route path="/books" element={<BooksPage />} />
+            <Route path="/scholar-detail/:id" element={<ScholarDetailPage />} />
+            <Route path="/book-detail/:id" element={<BookDetailPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/contact-us" element={<ContactUsPage />} />
+            <Route path="/about-us" element={<AboutUsPage />} />
+            {isAdmin && <Route path="/admin-guide" element={<AdminGuidePage />} />}
+          </Routes>
+        </main>
+        <Footer />
+      </SearchProvider>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
