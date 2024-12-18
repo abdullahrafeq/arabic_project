@@ -31,6 +31,9 @@ def scholars(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def scholar(request, id):
+    print("the request is: ", request)
+    print("User:", request.user)  # Outputs the user instance
+    print("is super user:", request.user.is_superuser)  # Outputs the user instance
     try:
         scholar = Scholar.objects.get(pk=id)
     except Scholar.DoesNotExist:
@@ -43,7 +46,7 @@ def scholar(request, id):
          # Restrict adding scholars to admins only
         if not request.user.is_superuser:
             return Response({'error': 'Permission denied. Only admins can edit scholars.'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = ScholarSerializer(scholar, data=request.data)
+        serializer = ScholarSerializer(scholar, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'scholar': serializer.data})

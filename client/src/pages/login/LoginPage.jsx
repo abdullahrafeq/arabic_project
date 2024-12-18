@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom"
+import { Oval } from 'react-loader-spinner'
+
 
 const LoginPage = () => {
     const [username, setUsername] = useState()
@@ -153,7 +155,13 @@ const LoginPage = () => {
                 </div>
                 {isLoading &&
                     <div>
-                        Loading...
+                        <Oval
+                            height={40} 
+                            width={40} 
+                            color="#555" /* Neutral gray or preferred color */
+                            secondaryColor="#ddd" /* Optional lighter color */
+                            ariaLabel="oval-loading"
+                        />
                     </div>
                 }
             </div>

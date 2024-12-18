@@ -76,6 +76,7 @@ const useFetch = (url, { headers, body } = {}) => {
     }
 
     const updateData = async (url, updatedData, { token } = {}) => {
+        console.log(headers)
         console.log(updatedData)
         setIsLoading(true)
         console.log("isLoading: ", isLoading)
