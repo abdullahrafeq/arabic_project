@@ -61,11 +61,6 @@ const ScholarsPage = () => {
                 selectedCategory.id === scholar.year_category.id
             )
     ))
-
-    const handleClose = async () => {
-        setIsModalOpen(false)
-        setSelectedScholar(null)
-    }
     
     const handleSave = async (updatedData) => {
         if (!selectedScholar) return;
@@ -80,7 +75,7 @@ const ScholarsPage = () => {
         } catch (err) {
             console.error("Error during update scholar: ", err)
         }
-    };
+    }
 
     useEffect(() => {
         requestCategories()
@@ -137,8 +132,9 @@ const ScholarsPage = () => {
             <EditModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                scholar={selectedScholar}
+                editedElement={selectedScholar}
                 onSave={handleSave}
+                type="scholar"
             />
         </div>
     )

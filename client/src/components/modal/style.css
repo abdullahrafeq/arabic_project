@@ -31,4 +31,30 @@
         margin-right: 10px;
         padding: 5px 10px;
     }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    /* Style for Yes/No radio buttons */
+    .radio-buttons-container {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Space between Yes/No options */
+    }
+
+    .radio-buttons-container label {
+        display: flex;
+        align-items: center;
+        gap: 5px; /* Space between radio button and label */
+    }
+
+    /* Add hover effect for the radio button itself */
+    .radio-buttons-container input[type="radio"]:hover, .radio-buttons-container label:hover {
+        cursor: pointer;
+    }
+
+    .modal-footer button:hover {
+        cursor: pointer;
+    }
 }

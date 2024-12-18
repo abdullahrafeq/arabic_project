@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import "./style.css";
 
-const EditModal = ({ isOpen, onClose, scholar, onSave }) => {
+const EditModal = ({ isOpen, onClose, editedElement, onSave, type }) => {
     
     // Initialize form state with scholar's data
-    const [formData, setFormData] = useState({
-        name: scholar ? scholar?.name : "",
-        arabic_name: scholar ? scholar?.arabic_name : "",
-        birth_year: scholar ? scholar?.birth_year : "",
-        death_year: scholar ? scholar?.death_year : "",
-    });
+    const [formData, setFormData] = useState({});
     
     // Update state on input change
     const handleChange = (e) => {
@@ -22,67 +17,42 @@ const EditModal = ({ isOpen, onClose, scholar, onSave }) => {
     };
     
     useEffect(() => {
-      if (scholar) {
-        setFormData({
-          name: scholar?.name,
-          arabic_name: scholar?.arabic_name,
-          birth_year: scholar?.birth_year,
-          death_year: scholar?.death_year,
-        });
+      if (editedElement) {
+        if (type === "scholar") {
+          setFormData({
+            name: editedElement?.name,
+            arabic_name: editedElement?.arabic_name,
+            birth_year: editedElement?.birth_year,
+            death_year: editedElement?.death_year,
+          })
+        } else if (type === "book") {
+          setFormData({
+            name: editedElement?.name,
+            arabic_name: editedElement?.arabic_name,
+            is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
+          })
+        }
       }
-    }, [scholar]);
+    }, [editedElement, type]);
 
   if (!isOpen) return null;
   
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        <h2 className="modal-header">Edit Scholar</h2>
-
-        <div className="modal-body">
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name} // Pre-populated value
-              onChange={handleChange} // Allow changes
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="name">Arabic Name</label>
-            <input
-              type="text"
-              id="name"
-              name="arabic_name"
-              value={formData.arabic_name} // Pre-populated value
-              onChange={handleChange} // Allow changes
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="birth_year">Birth Year</label>
-            <input
-              type="number"
-              id="birth_year"
-              name="birth_year"
-              value={formData.birth_year} // Pre-populated value
-              onChange={handleChange} // Allow changes
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="death_year">Death Year</label>
-            <input
-              type="number"
-              id="death_year"
-              name="death_year"
-              value={formData.death_year} // Pre-populated value
-              onChange={handleChange} // Allow changes
-            />
-          </div>
-        </div>
-
+      <div className="modal-content">        
+        {type === "scholar" ? (
+          <ScholarModal 
+            formData={formData} 
+            handleChange={handleChange} 
+          />
+        ) : type === "book" ? (
+          <BookModal 
+            formData={formData} 
+            handleChange={handleChange} 
+          />
+        ) : (
+          <></>
+        )}
         <div className="modal-footer">
           <button className="btn btn-save" onClick={handleSubmit}>
             Save
@@ -95,5 +65,110 @@ const EditModal = ({ isOpen, onClose, scholar, onSave }) => {
     </div>
   );
 };
+
+const ScholarModal = ({ formData, handleChange }) => {
+  return (
+    <>
+      <h2 className="modal-header">Edit Scholar</h2>
+      <div className="modal-body">
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="name">Arabic Name</label>
+          <input
+            type="text"
+            id="name"
+            name="arabic_name"
+            value={formData.arabic_name} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="birth_year">Birth Year</label>
+          <input
+            type="number"
+            id="birth_year"
+            name="birth_year"
+            value={formData.birth_year} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="death_year">Death Year</label>
+          <input
+            type="number"
+            id="death_year"
+            name="death_year"
+            value={formData.death_year} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+const BookModal = ({ formData, handleChange }) => {
+  return (
+    <>
+      <h2 className="modal-header">Edit Book</h2>
+      <div className="modal-body">
+        <div className="form-group">
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="arabic_name">Arabic Name</label>
+          <input
+            type="text"
+            id="arabic_name"
+            name="arabic_name"
+            value={formData.arabic_name} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label>Is on home page</label>
+          <div className="radio-buttons-container">
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="true"
+                checked={formData.is_on_home_page === "true"}
+                onChange={handleChange}
+              />
+              Yes
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="false"
+                checked={formData.is_on_home_page === "false"}
+                onChange={handleChange}
+              />
+              No
+            </label>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default EditModal;

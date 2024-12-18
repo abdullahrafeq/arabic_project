@@ -20,7 +20,7 @@ def scholars(request):
         serializer = ScholarSerializer(data, many=True, context={'request': request})
         return Response({'scholars': serializer.data})
     elif request.method == 'POST':
-         # Restrict adding scholars to admins only
+        # Restrict adding scholars to admins only
         if not request.user.is_superuser:
             return Response({'error': 'Permission denied. Only admins can add scholars.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = ScholarSerializer(data=request.data)
@@ -43,7 +43,7 @@ def scholar(request, id):
         serializer = ScholarSerializer(scholar, context={'request': request})
         return Response({'scholar': serializer.data})
     elif request.method == 'PUT':
-         # Restrict adding scholars to admins only
+        # Restrict editing scholars to admins only
         if not request.user.is_superuser:
             return Response({'error': 'Permission denied. Only admins can edit scholars.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = ScholarSerializer(scholar, data=request.data, partial=True)
@@ -87,7 +87,10 @@ def book(request, id):
         serializer = BookSerializer(book, context={'request': request})
         return Response({'book': serializer.data})
     elif request.method == 'PUT':
-        serializer = BookSerializer(book, data=request.data)
+        # Restrict editing books to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can edit books.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = BookSerializer(book, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'book': serializer.data})
@@ -120,7 +123,9 @@ def quote(request, id):
         serializer = QuoteSerializer(quote, context={'request': request})
         return Response({'quote': serializer.data})
     elif request.method == 'PUT':
-        serializer = QuoteSerializer(quote, data=request.data)
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can edit quotes.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = QuoteSerializer(quote, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'quote': serializer.data})

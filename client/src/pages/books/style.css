@@ -46,6 +46,11 @@
         gap: 20px;
     }
 
+    .book-card-wrapper {
+        position: relative;
+        margin: 10px; /* Adjust spacing between cards */
+    }
+
     .books-grid {
         grid-area: books-grid;
         display: grid;
@@ -75,5 +80,30 @@
 
     .book-card hr {
         width: 75%;
+    }
+
+    .edit-btn {
+        position: absolute;
+        top: 10px; /* Adjust to align with the top */
+        right: 10px; /* Align to the right */
+        display: none; /* Hide by default */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 20px;
+        height: fit-content;
+        color: rgb(76, 76, 76);
+    }
+
+    .edit-btn:hover {
+        background-color: #f0f0f0; /* Change color on hover */
+    }
+
+    .book-card-wrapper:hover .edit-btn {
+        display: block; /* Show on hover */
     }
 }
