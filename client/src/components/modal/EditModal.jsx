@@ -1,35 +1,90 @@
 import { useState, useEffect } from "react";
 import "./style.css";
 
-const EditModal = ({ isOpen, onClose, editedElement, onSave, type }) => {
+const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, authors, categories }) => {
     
     // Initialize form state with scholar's data
     const [formData, setFormData] = useState({});
     
     // Update state on input change
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+      const { name, value, options } = e.target;
+    
+      console.log(`Handling change for ${name}:`, value);
+    
+      if (name === "author") {
+        const selectedAuthor = authors.find((author) => author.id === parseInt(value));
+        console.log("Selected Author:", selectedAuthor);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          author: value, // Update with selected object or empty
+        }));
+      } else if (name === "category") {
+        // Get selected category IDs
+        const selectedCategoryIds = Array.from(options)
+          .filter((option) => option.selected)
+          .map((option) => parseInt(option.value, 10)) // Extract IDs as integers
+
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          categories: selectedCategoryIds, // Store IDs in the array
+        }))
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+      }
+    }
     
     // Pass updated data back on save
     const handleSubmit = () => {
         onSave(formData);
     };
-    
+
     useEffect(() => {
-      if (editedElement) {
+      console.log("Authors in EditModal:", authors);
+    }, [authors]);
+
+    useEffect(() => {
+      console.log("formData:", formData);
+    }, [formData]);
+
+    useEffect(() => {
+      if (modalMode === "edit" && editedElement) {
         if (type === "scholar") {
           setFormData({
             name: editedElement?.name,
             arabic_name: editedElement?.arabic_name,
             birth_year: editedElement?.birth_year,
             death_year: editedElement?.death_year,
+            is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
           })
         } else if (type === "book") {
           setFormData({
             name: editedElement?.name,
             arabic_name: editedElement?.arabic_name,
+            author: editedElement?.author,
+            categories: editedElement?.categories?.map((category) => category.id), // Convert to array of IDs
             is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
+          })
+        }
+      } else if (modalMode === "add") {
+        if (type === "scholar") {
+          setFormData({
+            name: "",
+            arabic_name: "",
+            birth_year: "",
+            death_year: "",
+            is_on_home_page: "false",
+          })
+        } else if (type === "book") {
+          setFormData({
+            name: "",
+            arabic_name: "",
+            author: "",
+            categories: [],
+            is_on_home_page: "false",
           })
         }
       }
@@ -44,18 +99,24 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type }) => {
           <ScholarModal 
             formData={formData} 
             handleChange={handleChange} 
+            modalMode={modalMode}
+            scholarName={editedElement?.name}
           />
         ) : type === "book" ? (
           <BookModal 
             formData={formData} 
-            handleChange={handleChange} 
+            handleChange={handleChange}
+            modalMode={modalMode}
+            authors={authors}
+            categories={categories}
+            bookName={editedElement?.name}
           />
         ) : (
           <></>
         )}
         <div className="modal-footer">
           <button className="btn btn-save" onClick={handleSubmit}>
-            Save
+            {modalMode === "delete" ? <>Yes</> : <>Save</>}
           </button>
           <button className="btn btn-cancel" onClick={onClose}>
             Cancel
@@ -66,10 +127,22 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type }) => {
   );
 };
 
-const ScholarModal = ({ formData, handleChange }) => {
+const ScholarModal = ({ formData, handleChange, modalMode, scholarName }) => {
+
+  if (modalMode === "delete") {
+    return (
+      <>
+        <h2>
+          Delete scholar
+        </h2>
+        <p>Are you sure you want to delete the scholar: <b>{scholarName}</b>?</p>
+      </>
+    )
+  }
+
   return (
     <>
-      <h2 className="modal-header">Edit Scholar</h2>
+      <h2 className="modal-header">{modalMode === "add" ? <>Add</> : <>Edit</>} Scholar</h2>
       <div className="modal-body">
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -111,15 +184,52 @@ const ScholarModal = ({ formData, handleChange }) => {
             onChange={handleChange} // Allow changes
           />
         </div>
+        <div className="form-group">
+          <label>Is on home page</label>
+          <div className="radio-buttons-container">
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="true"
+                checked={formData.is_on_home_page === "true"}
+                onChange={handleChange}
+              />
+              Yes
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="false"
+                checked={formData.is_on_home_page === "false"}
+                onChange={handleChange}
+              />
+              No
+            </label>
+          </div>
+        </div>
       </div>
     </>
   );
 }
 
-const BookModal = ({ formData, handleChange }) => {
+const BookModal = ({ formData, handleChange, modalMode, authors, categories, bookName }) => {
+
+  if (modalMode === "delete") {
+    return (
+      <>
+        <h2>
+          Delete book
+        </h2>
+        <p>Are you sure you want to delete the book: <b>{bookName}</b>?</p>
+      </>
+    )
+  }
+
   return (
     <>
-      <h2 className="modal-header">Edit Book</h2>
+      <h2 className="modal-header">{modalMode === "add" ? <>Add</> : <>Edit</>} Book</h2>
       <div className="modal-body">
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -140,6 +250,38 @@ const BookModal = ({ formData, handleChange }) => {
             value={formData.arabic_name} // Pre-populated value
             onChange={handleChange} // Allow changes
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="author">Author</label>
+          <select
+            id="author"
+            name="author"
+            onChange={handleChange}
+          >
+            <option value="select">
+              Select author
+            </option>
+            {authors?.map((author) => (
+              <option key={author.id} value={author.id}>
+                {author.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            name="category"
+            onChange={handleChange} // Allow changes
+          >
+            <option value="">Select category</option>
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label>Is on home page</label>

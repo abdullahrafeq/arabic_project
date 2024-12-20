@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import re
@@ -22,21 +22,12 @@ class BookCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BookSerializer(serializers.ModelSerializer):
-    author = ScholarSerializer(read_only=True)
-    categories = BookCategorySerializer(many=True, read_only=True)
+    author = serializers.PrimaryKeyRelatedField(queryset=Scholar.objects.all())  # Accepts author ID
+    categories = serializers.PrimaryKeyRelatedField(queryset=BookCategory.objects.all(), many=True)  # Accepts category IDs
 
     class Meta:
         model = Book
-        fields = [
-            'id', 
-            'name', 
-            'arabic_name', 
-            'author', 
-            'categories', 
-            'image_url', 
-            'is_favourite',
-            'is_on_home_page'
-            ]
+        fields = '__all__'
 
 class QuoteSerializer(serializers.ModelSerializer):
     author = ScholarSerializer(read_only=True)
@@ -228,12 +219,4 @@ class UserSerializer(serializers.ModelSerializer):
             instance.save()
 
         return instance
-    
-class UserProfileSerializer(serializers.ModelSerializer):
-    favourite_books = serializers.PrimaryKeyRelatedField(queryset=Book.objects.all(), many=True)
-    favourite_scholars = serializers.PrimaryKeyRelatedField(queryset=Scholar.objects.all(), many=True)
-    
-    class Meta:
-        model = UserProfile
-        fields = '__all__'
     

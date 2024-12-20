@@ -17,7 +17,7 @@ const ScholarDetailPage = () => {
         request: requestScholar, 
         data: scholarData,
         errorStatus: errorStatusScholars,
-      } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}`, {
+      } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

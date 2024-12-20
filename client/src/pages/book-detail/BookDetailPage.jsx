@@ -17,7 +17,7 @@ const BookDetailPage = () => {
         appendData: appendFavouriteBook, 
         data: bookData,
         errorStatus: errorStatusBooks
-      } = useFetch(`http://127.0.0.1:8000/api/books/${id}`, {
+      } = useFetch(`http://127.0.0.1:8000/api/books/${id}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

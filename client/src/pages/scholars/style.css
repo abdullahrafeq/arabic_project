@@ -61,6 +61,27 @@
         margin: 10px; /* Adjust spacing between cards */
     }
 
+    .add-scholar-btn {
+        all: unset; /* Resets all default styles */
+        border: none;
+        padding: 0;
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    .add-scholar-btn .scholar-card .fa-plus {
+        font-size: 60px;
+        margin: 10px 0;
+        transition: font-size 0.3s ease;
+    }
+
+    .add-scholar-btn:hover {
+        cursor: pointer;
+        .fa-plus {
+            font-size: 80px;
+        }
+    }
+
     .scholar-card {
         background-color: #f9f9f9;
         border-radius: 8px;
@@ -86,7 +107,14 @@
 
     .scholar-card hr {
         width: 75%;
+        border-style: solid;
     }
+
+    .add-scholar-btn .scholar-card .box {
+        background-color: lightgray;
+        color: rgb(100, 100, 100);
+        font-size: 60px;
+    } 
 
     .scholar-link {
         height: fit-content;
@@ -108,12 +136,28 @@
         height: fit-content;
         color: rgb(76, 76, 76);
     }
+    .delete-btn {
+        position: absolute;
+        top: 10px; /* Adjust to align with the top */
+        left: 10px; /* Align to the right */
+        display: none; /* Hide by default */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 20px;
+        height: fit-content;
+        color: rgb(143, 28, 28);
+    }
 
-    .edit-btn:hover {
+    .edit-btn:hover, .delete-btn:hover {
         background-color: #f0f0f0; /* Change color on hover */
     }
 
-    .scholar-card-wrapper:hover .edit-btn {
+    .scholar-card-wrapper:hover .edit-btn, .scholar-card-wrapper:hover .delete-btn {
         display: block; /* Show on hover */
     }
 }

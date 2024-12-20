@@ -40,12 +40,17 @@ const useFetch = (url, { headers, body } = {}) => {
         })
     }
 
-    const appendData = async (url, newData) => {
+    const appendData = async (url, newData, { token } = {}) => {
         console.log("inside appendData", newData)
         setIsLoading(true)
+        const finalHeaders = {
+            ...headers,
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+        }
+        console.log(finalHeaders)
         return fetch(url, {
             method: 'POST',
-            headers: headers,
+            headers: finalHeaders,
             body: JSON.stringify(newData)
         })
         .then(async (response) => {
@@ -117,16 +122,25 @@ const useFetch = (url, { headers, body } = {}) => {
         });
     }
 
-    const deleteData = async (url) => {
+    const deleteData = async (url, { token } = {}) => {
         setIsLoading(true)
+        const finalHeaders = {
+            ...headers,
+            ...(token && { 'Authorization': `Bearer ${token}` }),
+        }
         return fetch(url, {
             method: 'DELETE',
-            headers: headers,
+            headers: finalHeaders,
         })
         .then((response) => {
+            if (response.status === 204) {
+                console.log('Delete successful: No content returned');
+                return null; // Return null or an empty object
+            }
             return response.json()
         })
         .then((data) => {
+            console.log("In second then: ", data)
             console.log('Delete successful:', data); // Log success message or data
         })    
         .catch((err) => {

@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer, UserProfileSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,7 +26,10 @@ def scholars(request):
         serializer = ScholarSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'scholars': serializer.data})
+            data = Scholar.objects.all()
+            updated_serializer = ScholarSerializer(data, many=True, context={'request': request})
+            print("updated_serializer: ", updated_serializer)
+            return Response({'scholars': updated_serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -73,7 +76,10 @@ def books(request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'books': serializer.data}, status=status.HTTP_201_CREATED)
+            data = Book.objects.all()
+            updated_serializer = BookSerializer(data, many=True, context={'request': request})
+            print("updated_serializer: ", updated_serializer)
+            return Response({'books': updated_serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -218,48 +224,4 @@ def current_user(request):
 
 # handle the login
 # login is handled by jwt
-
-@api_view(['GET', 'POST'])
-def favourite_books(request):
-    try:
-        # Get the user's profile
-        profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
-        data = profile.favourite_books.all()
-        serializer = UserProfileSerializer(data, many=True, context={'request': request})
-        return Response({'favourite_books': serializer.data})
-    elif request.method == 'POST':
-        # Deserialize the book object from request data
-        serializer = BookSerializer(data=request.data)
-        if serializer.is_valid():
-            # Save the book if it doesn't already exist, or get the existing one
-            book = serializer.save()  # Creates or gets the existing book
-            profile.favourite_books.add(book)  # Add book to user's favorites
-            profile.save()  # Save the user profile
-            return Response({'message': 'Book added to favorites!'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-@api_view(['GET', 'DELETE'])
-@permission_classes([IsAuthenticated])
-def favourite_book(request, id):
-    try:
-        # Get the user's profile
-        profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        return Response({'error': 'User profile not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-    try:
-        book = profile.favourite_books.get(pk=id)
-    except Book.DoesNotExist:
-        return Response({'error': 'Book not found in favorites'}, status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method == 'GET':
-        serializer = BookSerializer(book, context={'request': request})
-        return Response({'favourite_book': serializer.data})
-    elif request.method == 'DELETE':
-        profile.favourite_books.remove(book)
-        return Response({'message': 'Book removed from favorites'}, status=status.HTTP_204_NO_CONTENT)
 

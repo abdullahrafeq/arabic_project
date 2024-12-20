@@ -5,7 +5,6 @@ import AlKitab from "../../assets/alkitab.jpg"
 import Quote from "./components/quote/Quote";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
-import useAuth from "../../hooks/useAuth";
 
 
 const HomePage = () => {
