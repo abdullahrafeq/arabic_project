@@ -49,7 +49,7 @@
     .scholars-grid {
         grid-area: scholars-grid;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+        grid-template-columns: repeat(auto-fit, minmax(200px, max-content)); /* Responsive columns */
         gap: 20px;
         align-items: start; /* Align items to the start to avoid extra space */
         height: fit-content; /* Ensure the height fits the content */
@@ -93,6 +93,7 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        width: 12vw;
     }
 
     .scholar-card p {
@@ -136,6 +137,7 @@
         height: fit-content;
         color: rgb(76, 76, 76);
     }
+    
     .delete-btn {
         position: absolute;
         top: 10px; /* Adjust to align with the top */

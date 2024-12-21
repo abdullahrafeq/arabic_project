@@ -172,11 +172,13 @@ const BooksPage = () => {
             <main className="books-grid">
                 {isAdmin &&
                     <div className="book-card-wrapper">
-                        <button className="add-scholar-btn" onClick={() => setModalMode("add")}>
-                            <div className="scholar-card">
-                                <ZigZagCircle children={<FontAwesomeIcon icon={faPlus}/>}/>
+                        <button className="add-book-btn" onClick={() => setModalMode("add")}>
+                            <div className="book-card">
+                                <div className="book-cover">
+                                    {<FontAwesomeIcon icon={faPlus}/>}
+                                </div>
                                 <hr />
-                                <p>Add book</p>
+                                <p>Add a book</p>
                                 <p></p>
                             </div>
                         </button>
