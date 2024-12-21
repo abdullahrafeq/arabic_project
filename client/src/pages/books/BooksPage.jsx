@@ -188,7 +188,8 @@ const BooksPage = () => {
                             <BookCard 
                                 key={index} 
                                 id={book.id} 
-                                name={book.name} 
+                                name={book.name}
+                                arabicName={book.arabic_name} 
                                 author={book.author.name}
                             />
                             {isAdmin && (

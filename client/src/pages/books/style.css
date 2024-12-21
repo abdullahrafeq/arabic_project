@@ -66,6 +66,10 @@
         transition: transform 0.3s ease;
         text-align: center;
         padding: 10px;
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .book-card p {
