@@ -7,10 +7,15 @@ import { useParams, useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
+import BookCard from "../home/components/book-card/BookCard"
+
 const BookDetailPage = () => {
     const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
+    const [author, setAuthor] = useState()
+    const [categories, setCategories] = useState([])
+
     const { id } = useParams()
     const {
         request: requestBook, 
@@ -23,6 +28,24 @@ const BookDetailPage = () => {
           'Content-Type': 'application/json',
         },
     })
+
+    const {
+        request: requestScholars,
+        data: scholarsData
+    } = useFetch("http://127.0.0.1:8000/api/scholars/", {
+        headers: {
+        'Content-Type': 'application/json',
+        }
+    },) 
+
+    const {
+        request: requestCategories,
+        data: categoriesData
+    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+        headers: {
+        'Content-Type': 'application/json',
+        }
+    },)
 
     const book = bookData?.book || []
     const navigate = useNavigate()
@@ -62,13 +85,53 @@ const BookDetailPage = () => {
         }
     }
 
+    useEffect(() => {
+        if (book.author) {
+            requestScholars()
+            requestCategories()
+            console.log("book: ", book)
+        }
+    }, [book.author])
+
+    useEffect(() => {
+        if (scholarsData?.scholars && book.author) {
+            console.log("scholarsData: ", scholarsData)
+            const matchedAuthor = scholarsData.scholars.find((scholar) => scholar.id === book.author) 
+            setAuthor(matchedAuthor || null)
+        }
+    }, [scholarsData])
+
+    useEffect(() => {
+        if (categoriesData?.book_categories && book.categories) {
+            console.log("categoriesData: ", categoriesData)
+            console.log("book.categories: ", book.categories)
+            const bookCategories = book.categories.map((categoryID) => categoriesData.book_categories.find((category) => {
+                return category.id === categoryID
+            }))
+            setCategories(bookCategories)
+            console.log(bookCategories)
+        }
+    }, [categoriesData])
+
+    useEffect(() => {
+        if (author) {
+            console.log("author: ", author)
+        }
+    }, [author])
+    
     return (
         <main className="book-details-page">
             {book && book.author ? (
                 <>
                     <div className="book-details">
                         <div className="image-container">
-                            <img src={"http://127.0.0.1:8000/"+book.image_url} alt="" />
+                            <div className="book-card">
+                                <div className="book-cover">
+                                    {book.arabic_name}
+                                </div>
+                                <hr />
+                                <p>{author?.name}</p>
+                            </div>
                         </div>
                         <div className="description-container">
                             <div className="title-container">
@@ -79,8 +142,8 @@ const BookDetailPage = () => {
                                     onClick={handleFavouriteClick}
                                 />
                             </div>
-                            <p>Author: <em className="author-title"><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
-                            <p>Categories: {book.categories.map((category, index) => {
+                            <p>Author: {author?.name} <em className="author-title"><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
+                            <p>Categories: {categories.map((category, index) => {
                                 return (
                                     <em key={index}>{category.name}{index !== book.categories.length -1 && <>, </>} </em>
                                 )
