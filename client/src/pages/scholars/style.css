@@ -46,6 +46,26 @@
         gap: 20px;
     }
 
+    .filter-scholar .category-alternative:hover {
+        cursor: pointer;
+    }
+
+    .filter-scholar .clear-btn {
+        width: 50%;
+        background-color: rgb(198, 198, 198); 
+        outline: none;
+        border: none;
+        border-radius: 10px;
+        padding: 10px; 
+        margin-top: 20px;
+        color: rgb(77, 77, 77);
+        font-weight: bold;
+    } 
+
+    .filter-scholar .clear-btn:hover {
+        cursor: pointer;
+    }
+
     .scholars-grid {
         grid-area: scholars-grid;
         display: grid;

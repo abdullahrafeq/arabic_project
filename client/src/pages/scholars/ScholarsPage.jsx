@@ -53,6 +53,10 @@ const ScholarsPage = () => {
     const { query, setSearch } = useSearch()
     
     useEffect(() => {
+        setSearch("")
+    }, [])
+
+    useEffect(() => {
         setScholars(scholarsData?.scholars || [])
     }, [scholarsData])
 

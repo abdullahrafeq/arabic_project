@@ -46,6 +46,26 @@
         gap: 20px;
     }
 
+    .filter-book .category-alternative:hover {
+        cursor: pointer;
+    }
+
+    .filter-book .clear-btn {
+        width: 50%;
+        background-color: rgb(198, 198, 198); 
+        outline: none;
+        border: none;
+        border-radius: 10px;
+        padding: 10px; 
+        margin-top: 20px;
+        color: rgb(77, 77, 77);
+        font-weight: bold;
+    } 
+    
+    .filter-book .clear-btn:hover {
+        cursor: pointer;
+    }
+    
     .book-card-wrapper {
         position: relative;
         margin: 10px; /* Adjust spacing between cards */

@@ -25,6 +25,7 @@ const FilterElement = ({className, categories, selected, setSelected, filtertype
                     })}
                 </form>
                 <Button 
+                    className={"clear-btn"}
                     children={<>Clear All</>}
                     onClick={handleClearAll}
                 />

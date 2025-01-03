@@ -37,18 +37,20 @@ const LoginPage = () => {
                 password,
                 confirmPassword
             })
+            resetValues()
         } catch (err) {
             console.error("In signup page error: ", err)
             setIsCorrectSignup(false)
             setErrMsgs(err)
         } finally {
-            resetValues()
+            //resetValues()
         }
     }
 
     const handleLogin = async () => {
         try {
             const result = await login("http://localhost:8000/api/login/", username, password);            
+            resetValues()
             if (result?.tokens?.access) {
                 console.log("Login successful, navigating to homepage...");
                 navigate("/")
@@ -58,7 +60,7 @@ const LoginPage = () => {
             setIsCorrectLogin(false)
             setErrMsgs(err)
         } finally {
-            resetValues()
+            //resetValues()
         }
     }
 

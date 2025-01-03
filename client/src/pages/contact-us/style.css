@@ -99,7 +99,7 @@
     background-color: rgb(54, 120, 61);
     color: white;
     border: none;
-    padding: 25px; /* Add horizontal padding to prevent text overlap */
+    padding: 25px;
     height: 35px;
     border-radius: 10px;
     margin-top: 20px;

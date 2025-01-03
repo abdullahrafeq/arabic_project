@@ -36,7 +36,7 @@ const useFetch = (url, { headers, body } = {}) => {
             console.log(err)
         })
         .finally(() => {
-            setIsLoading(false)
+            setIsLoading(false); // Stop the loader
         })
     }
 

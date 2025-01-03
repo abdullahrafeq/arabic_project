@@ -18,9 +18,10 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
         setFormData((prevFormData) => ({
           ...prevFormData,
           author: value, // Update with selected object or empty
-        }));
+        }))
       } else if (name === "category") {
         // Get selected category IDs
+        console.log(formData?.categories)
         const selectedCategoryIds = Array.from(options)
           .filter((option) => option.selected)
           .map((option) => parseInt(option.value, 10)) // Extract IDs as integers
@@ -33,14 +34,9 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
         setFormData((prevFormData) => ({
           ...prevFormData,
           [name]: value,
-        }));
+        }))
       }
     }
-    
-    // Pass updated data back on save
-    const handleSubmit = () => {
-        onSave(formData);
-    };
 
     useEffect(() => {
       console.log("Authors in EditModal:", authors);
@@ -52,6 +48,7 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
 
     useEffect(() => {
       if (modalMode === "edit" && editedElement) {
+        console.log("in edit")
         if (type === "scholar") {
           setFormData({
             name: editedElement?.name,
@@ -65,7 +62,15 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             name: editedElement?.name,
             arabic_name: editedElement?.arabic_name,
             author: editedElement?.author,
-            categories: editedElement?.categories?.map((category) => category.id), // Convert to array of IDs
+            categories: editedElement?.categories,
+            is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
+          })
+        } else if (type === "quote") {
+          console.log(editedElement)
+          setFormData({
+            quote: editedElement?.quote,
+            arabic_quote: editedElement?.arabic_quote,
+            author: editedElement?.author,
             is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
           })
         }
@@ -86,9 +91,16 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             categories: [],
             is_on_home_page: "false",
           })
+        } else if (type === "quote") {
+          setFormData({
+            quote: "",
+            arabic_quote: "",
+            author: "",
+            is_on_home_page: "false",
+          })
         }
       }
-    }, [editedElement, type]);
+    }, [editedElement, type, modalMode]);
 
   if (!isOpen) return null;
   
@@ -111,11 +123,19 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             categories={categories}
             bookName={editedElement?.name}
           />
+        ) : type === "quote" ? (
+          <QuoteModal 
+            formData={formData} 
+            handleChange={handleChange}
+            modalMode={modalMode}
+            authors={authors}
+            quoteName={editedElement?.quote}
+          />
         ) : (
           <></>
         )}
         <div className="modal-footer">
-          <button className="btn btn-save" onClick={handleSubmit}>
+          <button className="btn btn-save" onClick={() => onSave(formData)}>
             {modalMode === "delete" ? <>Yes</> : <>Save</>}
           </button>
           <button className="btn btn-cancel" onClick={onClose}>
@@ -256,6 +276,7 @@ const BookModal = ({ formData, handleChange, modalMode, authors, categories, boo
           <select
             id="author"
             name="author"
+            value={formData.author}
             onChange={handleChange}
           >
             <option value="select">
@@ -274,11 +295,99 @@ const BookModal = ({ formData, handleChange, modalMode, authors, categories, boo
             id="category"
             name="category"
             onChange={handleChange} // Allow changes
+            value={formData.categories || []}
+            multiple
           >
             <option value="">Select category</option>
             {categories?.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Is on home page</label>
+          <div className="radio-buttons-container">
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="true"
+                checked={formData.is_on_home_page === "true"}
+                onChange={handleChange}
+              />
+              Yes
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="is_on_home_page"
+                value="false"
+                checked={formData.is_on_home_page === "false"}
+                onChange={handleChange}
+              />
+              No
+            </label>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+
+const QuoteModal = ({ formData, handleChange, modalMode, authors, quoteName }) => {
+
+  if (modalMode === "delete") {
+    return (
+      <>
+        <h2>
+          Delete quote
+        </h2>
+        <p>Are you sure you want to delete the quote: <b>{quoteName}</b>?</p>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <h2 className="modal-header">{modalMode === "add" ? <>Add</> : <>Edit</>} Quote</h2>
+      <div className="modal-body">
+        <div className="form-group">
+          <label htmlFor="quote">Quote</label>
+          <input
+            type="text"
+            id="quote"
+            name="quote"
+            value={formData.quote} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="arabic_quote">Arabic Quote</label>
+          <input
+            type="text"
+            id="arabic_quote"
+            name="arabic_quote"
+            value={formData.arabic_quote} // Pre-populated value
+            onChange={handleChange} // Allow changes
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="author">Author</label>
+          <select
+            id="author"
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+          >
+            <option value="select">
+              Select author
+            </option>
+            {authors?.map((author) => (
+              <option key={author.id} value={author.id}>
+                {author.name}
               </option>
             ))}
           </select>

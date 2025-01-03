@@ -140,7 +140,7 @@ const BookDetailPage = () => {
                                     onClick={handleFavouriteClick}
                                 />
                             </div>
-                            <p>Author: {author?.name} <em className="author-title"><CustomLink to={`/scholar-detail/${book.author.id}`} children={<>{book.author.name}</>}/></em></p>
+                            <p>Author: <em className="author-title"><CustomLink to={`/scholar-detail/${author?.id}`} children={<>{author?.name}</>}/></em></p>
                             <p>Categories: {categories.map((category, index) => {
                                 return (
                                     <em key={index}>{category.name}{index !== book.categories.length -1 && <>, </>} </em>

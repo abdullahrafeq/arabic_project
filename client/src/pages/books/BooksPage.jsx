@@ -8,7 +8,6 @@ import useAuth from "../../hooks/useAuth";
 import EditModal from "../../components/modal/EditModal"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle";
 
 const BooksPage = () => {
     const { isAdmin } = useAuth()
@@ -38,8 +37,6 @@ const BooksPage = () => {
           'Content-Type': 'application/json',
         },
     })
-
-
 
     useEffect(() => {
         console.log(scholarsData)
@@ -75,6 +72,9 @@ const BooksPage = () => {
 
     const { query, setSearch } = useSearch()
 
+    useEffect(() => {
+        setSearch("")
+    }, [])
 
     useEffect(() => {
         setBooks(booksData?.books || [])
@@ -95,7 +95,6 @@ const BooksPage = () => {
         if (modalMode === "edit" && selectedBook) {
             const url = `http://127.0.0.1:8000/api/books/${selectedBook.id}/`;
             try {
-    
                 await updateBook(url, updatedData, { token: localStorage.getItem("accessToken") });
                 setIsModalOpen(false)
                 setSelectedBook(null)

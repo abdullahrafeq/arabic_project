@@ -72,11 +72,14 @@
 
     .quotes {
         width: 60%;
-        text-align: center;
         margin-bottom: 80px;
         display: flex;
         flex-direction: column;
         gap: 30px;
+    }
+
+    .quotes h1 {
+        text-align: center;
     }
 
     .quotes .quotes-card-container {
@@ -89,13 +92,85 @@
     .quotes .quote-container {
         background-color: rgb(123, 192, 122);
         color: rgb(19, 79, 18);
-        width: 100%;
+        width: 50vw;
         padding: 20px;
         border-radius: 8px; /* Optional: adds rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
         text-align: center; /* Center align text */
         overflow-wrap: break-word; /* Ensure long words break and do not overflow */
     }
-    
 
+    .quotes .add-quote-container {
+        background-color: lightgray;
+        color: rgb(100, 100, 100);
+        width: 50vw;
+        padding: 20px;
+        border-radius: 8px; /* Optional: adds rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow */
+        text-align: center; /* Center align text */
+        overflow-wrap: break-word; /* Ensure long words break and do not overflow */
+        transition: transform 0.3s ease;
+    } 
+
+    .quotes .add-quote-container button {
+        all: unset;
+    }
+
+    .quotes .add-quote-container .fa-plus {
+        font-size: 30px;
+        transition: font-size 0.3s ease;
+    }
+
+    .quotes .add-quote-container:hover {
+        cursor: pointer;
+        .fa-plus {
+            font-size: 48px;
+        }
+    }
+
+    .quote-wrapper {
+        position: relative;
+    }
+
+    .edit-btn {
+        position: absolute;
+        top: 10px; /* Adjust to align with the top */
+        right: 10px; /* Align to the right */
+        display: none; /* Hide by default */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 20px;
+        height: fit-content;
+        color: rgb(76, 76, 76);
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 10px; /* Adjust to align with the top */
+        left: 10px; /* Align to the right */
+        display: none; /* Hide by default */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 20px;
+        height: fit-content;
+        color: rgb(143, 28, 28);
+    }
+
+    .edit-btn:hover, .delete-btn:hover {
+        background-color: #f0f0f0; /* Change color on hover */
+    }
+
+    .quote-wrapper:hover .edit-btn, .quote-wrapper:hover .delete-btn {
+        display: block; /* Show on hover */
+    }
 }

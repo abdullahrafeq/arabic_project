@@ -115,7 +115,11 @@ def quotes(request):
         serializer = QuoteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'quotes': serializer.data}, status=status.HTTP_201_CREATED)
+            data = Quote.objects.all()
+            updated_serializer = QuoteSerializer(data, many=True, context={'request': request})
+            print("updated_serializer: ", updated_serializer)
+            return Response({'quotes': updated_serializer.data})
+            #return Response({'quotes': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])

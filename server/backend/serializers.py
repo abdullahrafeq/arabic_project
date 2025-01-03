@@ -30,8 +30,7 @@ class BookSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuoteSerializer(serializers.ModelSerializer):
-    author = ScholarSerializer(read_only=True)
-
+    author = serializers.PrimaryKeyRelatedField(queryset=Scholar.objects.all())  # Accepts author ID
     class Meta:
         model = Quote
         fields = '__all__'
