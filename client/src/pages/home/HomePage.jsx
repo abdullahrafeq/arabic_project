@@ -173,7 +173,7 @@ const HomePage = () => {
             <div className="quotes">
                 <h1>Inspirational Quotes</h1>
                 <div className="quotes-card-container">
-                    {true && 
+                    {isAdmin && 
                         <div class="add-quote-container">
                             <button onClick={() => setModalMode("add")}>
                                 <p className="add-quote"><strong><FontAwesomeIcon icon={faPlus}/></strong></p>
@@ -185,7 +185,7 @@ const HomePage = () => {
                         return (
                             <div className="quote-wrapper">
                                 <Quote key={index} quote={quote.quote} arabic_quote={quote.arabic_quote} author={author?.name}/>                            
-                                {true && (
+                                {isAdmin && (
                                     <button className="delete-btn" onClick={() => {
                                         setSelectedQuote(quote)
                                         setModalMode("delete")
@@ -193,7 +193,7 @@ const HomePage = () => {
                                         <FontAwesomeIcon icon={faTrashCan} />
                                     </button>
                                 )}
-                                {true && (
+                                {isAdmin && (
                                     <button className="edit-btn" onClick={() => {
                                         setSelectedQuote(quote)
                                         setModalMode("edit")
