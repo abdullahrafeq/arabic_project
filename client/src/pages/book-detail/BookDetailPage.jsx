@@ -124,13 +124,11 @@ const BookDetailPage = () => {
             {book && book.author ? (
                 <>
                     <div className="book-details">
-                        <div className="image-container">
+                        <div className="book-wrapper">
                             <div className="book-card">
                                 <div className="book-cover">
                                     {book.arabic_name}
                                 </div>
-                                <hr />
-                                <p>{author?.name}</p>
                             </div>
                         </div>
                         <div className="description-container">

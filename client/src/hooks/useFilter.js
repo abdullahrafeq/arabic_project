@@ -3,7 +3,7 @@ const useFilter = (categories, selected, setSelected) => {
 
     const [isDefault, setDefault] = useState(true)
     const [isClearAll, setClearAll] = useState(false)
-
+    
     useEffect(() => {        
         console.log(selected)
     }, [selected])
