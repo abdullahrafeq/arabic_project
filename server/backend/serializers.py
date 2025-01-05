@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile, Review
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -28,6 +28,11 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
+        fields = '__all__'
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
         fields = '__all__'
 
 class QuoteSerializer(serializers.ModelSerializer):
@@ -92,10 +97,11 @@ class UserSerializer(serializers.ModelSerializer):
         required=False
     )
     '''
+    id = serializers.IntegerField(read_only=True)  # Include the ID field explicitly
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 
+        fields = ['id', 'username', 'email', 'password', 
                   'is_superuser', 'confirm_password', 'old_password', 
                   'new_password', 'profile']
 

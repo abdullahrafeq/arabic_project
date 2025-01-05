@@ -36,6 +36,9 @@ urlpatterns = [
     path('api/register/', views.register, name='register'),
     path('api/logout/', views.logout, name='logout'),
     path('api/login/', views.login, name='login'),
+    path('api/reviews/', views.reviews, name='reviews'),
+    path('api/reviews/<int:id>/', views.review, name='reviews'),
+    path('api/all-users/', views.all_users, name='all_users'),
     path('api/current-user/', views.current_user, name='current_user'),
     path('api/user-profile/', views.user_profile, name='user_profile'),
 

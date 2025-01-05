@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer, UserProfileSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile, Review
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer, UserProfileSerializer, ReviewSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,9 +34,6 @@ def scholars(request):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def scholar(request, id):
-    print("the request is: ", request)
-    print("User:", request.user)  # Outputs the user instance
-    print("is super user:", request.user.is_superuser)  # Outputs the user instance
     try:
         scholar = Scholar.objects.get(pk=id)
     except Scholar.DoesNotExist:
@@ -66,6 +63,39 @@ def book_categories(request):
     serializer = BookCategorySerializer(data, many=True, context={'request': request})
     return JsonResponse({'book_categories': serializer.data})
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+
+@api_view(['GET', 'POST'])
+def reviews(request):
+    if request.method == 'GET':
+        data = Review.objects.all()
+        serializer = ReviewSerializer(data, many=True, context={'request': request})
+        return Response({'reviews': serializer.data})
+    elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            raise PermissionDenied("Authentication is required to post reviews.")
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+@api_view(['GET', 'DELETE'])
+def review(request, id):
+    try:
+        review = Review.objects.get(pk=id)
+    except Review.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = ReviewSerializer(review, context={'request': request})
+        return Response({'review': serializer.data})
+    elif request.method == 'DELETE':
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can edit reviews.'}, status=status.HTTP_403_FORBIDDEN)
+        review.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 @api_view(['GET', 'POST'])
 def books(request):
     if request.method == 'GET':
@@ -73,6 +103,9 @@ def books(request):
         serializer = BookSerializer(data, many=True, context={'request': request})
         return Response({'books': serializer.data})
     elif request.method == 'POST':
+        # Restrict adding books to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can add books.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -112,14 +145,15 @@ def quotes(request):
         serializer = QuoteSerializer(data, many=True, context={'request': request})
         return Response({'quotes': serializer.data})
     elif request.method == 'POST':
+        # Restrict adding quotes to admins only
+        if not request.user.is_superuser:
+            return Response({'error': 'Permission denied. Only admins can add quotes.'}, status=status.HTTP_403_FORBIDDEN)
         serializer = QuoteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             data = Quote.objects.all()
             updated_serializer = QuoteSerializer(data, many=True, context={'request': request})
-            print("updated_serializer: ", updated_serializer)
             return Response({'quotes': updated_serializer.data})
-            #return Response({'quotes': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -253,3 +287,17 @@ def user_profile(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def all_users(request):
+    """
+    Retrieve a list of all users.
+    """
+    try:
+        # Fetch all user records
+        users = User.objects.all()
+        # Serialize the user data
+        serializer = UserSerializer(users, many=True, context={'request': request})
+        return Response({'users': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

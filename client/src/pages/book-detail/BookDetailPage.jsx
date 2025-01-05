@@ -7,7 +7,6 @@ import { useParams, useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
-import BookCard from "../home/components/book-card/BookCard"
 
 const BookDetailPage = () => {
     const { isLoggedIn } = useAuth()
@@ -15,6 +14,7 @@ const BookDetailPage = () => {
     const [loaded, setLoaded] = useState(false)
     const [author, setAuthor] = useState()
     const [categories, setCategories] = useState([])
+    const [reviewText, setReviewText] = useState("")
 
     const { id } = useParams()
     const {
@@ -64,9 +64,40 @@ const BookDetailPage = () => {
         },
     })
 
+    const { 
+        data: reviewsData,
+        request: requestReviews,
+        appendData: addReview
+    } = useFetch("http://localhost:8000/api/reviews/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const { 
+        data: usersData,
+        request: requestUsers,
+    } = useFetch("http://localhost:8000/api/all-users/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const { 
+        data: currentUserData,
+        request: requestCurrentUser,
+    } = useFetch("http://localhost:8000/api/current-user/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
     useEffect(() => {
         requestBook()
         requestUserProfile({ token: localStorage.getItem("accessToken") })
+        requestReviews()
+        requestUsers()
+        requestCurrentUser({ token: localStorage.getItem("accessToken") })
     }, [])
 
     useEffect(() => {
@@ -79,10 +110,15 @@ const BookDetailPage = () => {
 
     useEffect(() => {
         if (errorStatusFavouriteBook !== null) {
-            console.log("error: " + errorStatusFavouriteBook)
             navigate("/login")
         }
     }, [errorStatusFavouriteBook])
+
+    useEffect(() => {
+        if (currentUserData) {
+            console.log(currentUserData)
+        }
+    }, [currentUserData])
 
     const handleFavouriteClick = () => {
         if (isLoggedIn) {
@@ -97,17 +133,34 @@ const BookDetailPage = () => {
         }
     }
 
+    const handleSubmit = async (review, book) => {
+        if (!currentUserData) {
+            return
+        }
+        if (isLoggedIn) {
+            await addReview("http://localhost:8000/api/reviews/", 
+                { 
+                    review: review,
+                    user: currentUserData?.user?.id,
+                    book: book?.id
+                }, 
+                { token: localStorage.getItem("accessToken") })
+            await requestReviews()
+            setReviewText("");
+        } else {
+            navigate("/login")
+        }
+    }
+
     useEffect(() => {
         if (book.author) {
             requestScholars()
             requestCategories()
-            console.log("book: ", book)
         }
     }, [book.author])
 
     useEffect(() => {
         if (scholarsData?.scholars && book.author) {
-            console.log("scholarsData: ", scholarsData)
             const matchedAuthor = scholarsData.scholars.find((scholar) => scholar.id === book.author) 
             setAuthor(matchedAuthor || null)
         }
@@ -115,21 +168,12 @@ const BookDetailPage = () => {
 
     useEffect(() => {
         if (categoriesData?.book_categories && book.categories) {
-            console.log("categoriesData: ", categoriesData)
-            console.log("book.categories: ", book.categories)
             const bookCategories = book.categories.map((categoryID) => categoriesData.book_categories.find((category) => {
                 return category.id === categoryID
             }))
             setCategories(bookCategories)
-            console.log(bookCategories)
         }
     }, [categoriesData])
-
-    useEffect(() => {
-        if (author) {
-            console.log("author: ", author)
-        }
-    }, [author])
     
     return (
         <main className="book-details-page">
@@ -160,30 +204,35 @@ const BookDetailPage = () => {
                             })}
 
                             </p>
-                            <strong>Reviews: 27</strong>
-                            <hr />
                             <p> 
                                 <strong>Description: </strong>
                                 {book.description}
                             </p>
+                            <strong>
+                                Reviews: {reviewsData?.reviews?.filter((review) => review.book === book.id).length || 0}
+                            </strong>
+
+                            <hr />
                         </div>
                     </div>
                     <h2 className="reviews-title">Reviews</h2>
                     <hr />
                     <div className="reviews-container">
                         <div className="previous-reviews">
-                            <Review/>
-                            <Review/>
-                            <Review/>
-                            <Review/>
-                            <Review/>
-                            <Review/>
+                            {usersData && reviewsData?.reviews?.map((review, index) => {
+                                if (review.book === book.id) {
+                                    return (
+                                        <Review key={index} review={review} users={usersData?.users}/>
+                                    )
+                                }
+                            })}
+                            
                         </div>
                         <form action="">
                             <label htmlFor="">Submit review:</label>
-                            <textarea name="" id="" rows={5}></textarea>
+                            <textarea value={reviewText} name="" id="" rows={5} onChange={(event) => setReviewText(event.target.value)}></textarea>
                         </form>
-                        <Button className="submit-button" children={<>Submit</>}/>
+                        <Button className="submit-button" children={<>Submit</>} onClick={() => handleSubmit(reviewText, book)}/>
                     </div>
                 </>
             ) : 
@@ -194,11 +243,13 @@ const BookDetailPage = () => {
     )
 }
 
-const Review = () => {
+const Review = ({ users, review }) => {
+    const user = users?.find((user) => user.id === review.user)
+    console.log(users)
     return (
         <div className="review">
-            <p>Username</p>
-            <p>Review...</p>
+            <p><strong>{user?.username}</strong></p>
+            <p>{review?.review}</p>
         </div>
     )
 }

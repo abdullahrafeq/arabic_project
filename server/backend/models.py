@@ -71,6 +71,11 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         super(Book, self).save(*args, **kwargs)
 
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    review = models.CharField(max_length=1000, default="", blank=True, null=True)
+
 class Quote(models.Model):
     quote = models.CharField(max_length=200)
     arabic_quote = models.CharField(max_length=200)
