@@ -23,7 +23,7 @@ const AdminGuidePage = () => {
                             <strong>Discover:</strong> Explore a vast collection of books and scholars, carefully curated to represent the breadth and depth of Arabic scholarship.
                         </li>
                         <li>
-                            <strong>Save and Share:</strong> Create a personalized library by marking your favorite books and scholars, ensuring that your most valued resources are always at your fingertips.
+                            <strong>Save and Share:</strong> Create a personalized library by marking your favourite books and scholars, ensuring that your most valued resources are always at your fingertips.
                         </li>
                     </ul>
                 </section>

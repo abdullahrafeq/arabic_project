@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
 import re
 
 
@@ -35,6 +36,24 @@ class QuoteSerializer(serializers.ModelSerializer):
         model = Quote
         fields = '__all__'
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    favourite_scholars = serializers.PrimaryKeyRelatedField(
+        queryset=Scholar.objects.all(), many=True, required=False
+    )  # Writable field to accept scholar IDs
+    favourite_books = serializers.PrimaryKeyRelatedField(
+        queryset=Book.objects.all(), many=True, required=False
+    )  # Writable field to accept book IDs
+
+    # Add read-only nested serializers for detailed output
+    #favourite_scholars_detail = ScholarSerializer(many=True, read_only=True)
+    #favourite_books_detail = BookSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields =  [
+            'favourite_scholars', 'favourite_books',
+        ]
+
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
     old_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
@@ -58,9 +77,27 @@ class UserSerializer(serializers.ModelSerializer):
         validators = [], # Disable any validation on password
     )
 
+    profile = UserProfileSerializer(read_only=True)
+    '''
+    favourite_scholars = serializers.PrimaryKeyRelatedField(
+        source='profile.favourite_scholars',  # Link to UserProfile
+        queryset=Scholar.objects.all(),
+        many=True,
+        required=False
+    )
+    favourite_books = serializers.PrimaryKeyRelatedField(
+        source='profile.favourite_books',  # Link to UserProfile
+        queryset=Book.objects.all(),
+        many=True,
+        required=False
+    )
+    '''
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'is_superuser', 'confirm_password', 'old_password', 'new_password']
+        fields = ['username', 'email', 'password', 
+                  'is_superuser', 'confirm_password', 'old_password', 
+                  'new_password', 'profile']
 
     def get_is_superuser(self, obj):
         # Access the request from context and check if the user is a superuser
@@ -218,4 +255,3 @@ class UserSerializer(serializers.ModelSerializer):
             instance.save()
 
         return instance
-    

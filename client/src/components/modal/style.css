@@ -19,12 +19,14 @@
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         width: 500px;
+        height: 90vh;
+        overflow: scroll;
     }
     
     .modal-content input {
         width: 100%;
-        margin: 10px 0;
         padding: 8px;
+        margin-bottom: 10px;
     }
     
     .modal-content button {
@@ -33,7 +35,10 @@
     }
     
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column; /* Stack child elements vertically */
+        gap: 10px;
     }
 
     /* Style for Yes/No radio buttons */

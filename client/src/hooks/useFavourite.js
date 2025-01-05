@@ -1,6 +1,6 @@
 import useFetch from "./useFetch"
 
-const useFavourite = (url, favouriteItem) => {
+const useFavourite = (url, item) => {
     const { updateData, errorStatus } = useFetch(url, {
         method: 'GET',
         headers: {
@@ -9,12 +9,43 @@ const useFavourite = (url, favouriteItem) => {
         },
     })
 
-    const addToFavourite = () => {
-        updateData(url+favouriteItem.id, {...favouriteItem, is_favourite: true})
+    const { 
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const addToFavourite = async (favouriteItem) => {
+        const response = await requestUserProfile({ token: localStorage.getItem("accessToken") })
+        if (item === "scholar") {
+            
+            if (response) {
+                console.log(response)
+            }
+            updateData(url, {
+                favourite_scholars: [...response.favourite_scholars, favouriteItem.id],
+            })
+        } else if (item === "book") {
+            updateData(url, {
+                favourite_books: [...response.favourite_books, favouriteItem.id],
+            })
+        }
     }
 
-    const removeFromFavourite = () => {
-        updateData(url+favouriteItem.id, {...favouriteItem, is_favourite: false})
+    const removeFromFavourite = async (favouriteItem) => {
+        const response = await requestUserProfile({ token: localStorage.getItem("accessToken") });
+        if (response) {
+            console.log("Fetched user profile for removal:", response);
+            if (item === "scholar") {
+                const updatedScholars = response.favourite_scholars.filter(id => id !== favouriteItem.id);
+                updateData(url, { favourite_scholars: updatedScholars });
+            } else if (item === "book") {
+                const updatedBooks = response.favourite_books.filter(id => id !== favouriteItem.id);
+                updateData(url, { favourite_books: updatedBooks });
+            }
+        }
     }
 
     return { addToFavourite, removeFromFavourite, errorStatus }

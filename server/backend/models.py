@@ -1,8 +1,8 @@
-from django.conf import settings
 from django.db import models
-from urllib.parse import urljoin
 from .utils import convert_to_arabic_numerals
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class ScholarYearCategory(models.Model):
     start_year = models.IntegerField()
@@ -18,6 +18,13 @@ class ScholarYearCategory(models.Model):
         self.arabic_name = f"{convert_to_arabic_numerals(self.start_year)} - {convert_to_arabic_numerals(self.end_year)}"
         super(ScholarYearCategory, self).save(*args, **kwargs)
 
+class BookCategory(models.Model):
+    name = models.CharField(max_length=200)
+    arabic_name = models.CharField(max_length=200, default="")
+
+    def __str__(self):
+        return self.name
+
 class Scholar(models.Model):
     name = models.CharField(max_length=200)
     arabic_name = models.CharField(max_length=200, default="")
@@ -27,9 +34,10 @@ class Scholar(models.Model):
     arabic_death_year = models.CharField(max_length=200, blank=True, null=True)
     year_category = models.ForeignKey(ScholarYearCategory, on_delete=models.CASCADE, related_name="scholars", blank=True, null=True)
     arabic_year_category = models.CharField(max_length=200, blank=True, null=True)
-    is_favourite = models.BooleanField(default=False)
     is_on_home_page = models.BooleanField(default=False)
-    
+    specialized_sciences = models.ManyToManyField(BookCategory, related_name='scholars', blank=True)
+    description = models.CharField(max_length=1000, default="", blank=True)
+
     def __str__(self):
         return self.name
     
@@ -48,31 +56,20 @@ class Scholar(models.Model):
 
         super(Scholar, self).save(*args, **kwargs)
 
-class BookCategory(models.Model):
-    name = models.CharField(max_length=200)
-    arabic_name = models.CharField(max_length=200, default="")
-
-    def __str__(self):
-        return self.name
 
 class Book(models.Model):
     name = models.CharField(max_length=200)
     arabic_name = models.CharField(max_length=200, default="")
     author = models.ForeignKey(Scholar, on_delete=models.CASCADE, related_name='books')
     categories = models.ManyToManyField(BookCategory, related_name='books', blank=True)
-    is_favourite = models.BooleanField(default=False, blank=True, null=True)
     is_on_home_page = models.BooleanField(default=False, blank=True, null=True)
-    
+    description = models.CharField(max_length=1000, default="", blank=True)
+
     def __str__(self):
         return self.name
     
     def save(self, *args, **kwargs):
         super(Book, self).save(*args, **kwargs)
-        #if self.image:
-        #    full_url = urljoin(settings.BASE_DIR, self.image.url)
-        #    print(full_url)
-        #    self.image_url = full_url
-        #    super(Book, self).save(update_fields=['image_url'])
 
 class Quote(models.Model):
     quote = models.CharField(max_length=200)
@@ -86,3 +83,18 @@ class Quote(models.Model):
 
 # Fix custom user model to store the favourite scholar in the user
 # so that when a user logs out the favourite scholars is not stored in the page itself rather in the user model 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    favourite_scholars = models.ManyToManyField('Scholar', related_name='favourited_by', blank=True)
+    favourite_books = models.ManyToManyField('Book', related_name='favourited_by', blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+    
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:  # For new users
+        UserProfile.objects.create(user=instance)
+    else:  # For existing users without a profile
+        if not hasattr(instance, 'profile'):  # Check if the user already has a profile
+            UserProfile.objects.create(user=instance)

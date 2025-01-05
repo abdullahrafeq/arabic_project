@@ -30,6 +30,17 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
           ...prevFormData,
           categories: selectedCategoryIds, // Store IDs in the array
         }))
+      } else if (name === "specialized_science") {
+        // Get selected category IDs
+        console.log(formData?.specialized_scieces)
+        const selectedScienceIds = Array.from(options)
+          .filter((option) => option.selected)
+          .map((option) => parseInt(option.value, 10)) // Extract IDs as integers
+
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          specialized_sciences: selectedScienceIds, // Store IDs in the array
+        }))
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -56,6 +67,8 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             birth_year: editedElement?.birth_year,
             death_year: editedElement?.death_year,
             is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
+            specialized_sciences: editedElement?.specialized_sciences,
+            description: editedElement?.description
           })
         } else if (type === "book") {
           setFormData({
@@ -64,6 +77,7 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             author: editedElement?.author,
             categories: editedElement?.categories,
             is_on_home_page: editedElement?.is_on_home_page ? "true" : "false",
+            description: editedElement?.description
           })
         } else if (type === "quote") {
           console.log(editedElement)
@@ -82,6 +96,8 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             birth_year: "",
             death_year: "",
             is_on_home_page: "false",
+            specialized_sciences: "",
+            description: ""
           })
         } else if (type === "book") {
           setFormData({
@@ -90,6 +106,7 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             author: "",
             categories: [],
             is_on_home_page: "false",
+            description: ""
           })
         } else if (type === "quote") {
           setFormData({
@@ -112,7 +129,9 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             formData={formData} 
             handleChange={handleChange} 
             modalMode={modalMode}
+            categories={categories}
             scholarName={editedElement?.name}
+            specialized_sciences={editedElement?.specialized_sciences}
           />
         ) : type === "book" ? (
           <BookModal 
@@ -147,7 +166,7 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
   );
 };
 
-const ScholarModal = ({ formData, handleChange, modalMode, scholarName }) => {
+const ScholarModal = ({ formData, handleChange, modalMode, categories, scholarName, specialized_sciences }) => {
 
   if (modalMode === "delete") {
     return (
@@ -203,6 +222,34 @@ const ScholarModal = ({ formData, handleChange, modalMode, scholarName }) => {
             value={formData.death_year} // Pre-populated value
             onChange={handleChange} // Allow changes
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="specialized_science">Specialized Sciences</label>
+          <select
+            id="specialized_science"
+            name="specialized_science"
+            onChange={handleChange} // Allow changes
+            value={formData.specialized_sciences || []}
+            multiple
+          >
+            <option value="">Select science</option>
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            onChange={handleChange} // Allow changes
+            value={formData.description}
+            rows={5}
+          >
+          </textarea>
         </div>
         <div className="form-group">
           <label>Is on home page</label>
@@ -305,6 +352,17 @@ const BookModal = ({ formData, handleChange, modalMode, authors, categories, boo
               </option>
             ))}
           </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            onChange={handleChange} // Allow changes
+            value={formData.description}
+            rows={5}
+          >
+          </textarea>
         </div>
         <div className="form-group">
           <label>Is on home page</label>

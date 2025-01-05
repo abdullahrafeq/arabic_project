@@ -12,38 +12,83 @@ const ScholarDetailPage = () => {
     const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
+    const [specialized_sciences, setSpecializedSciences] = useState([])
+
     const { id } = useParams()
     const {
-        request: requestScholar, 
+        request: requestScholar,
         data: scholarData,
         errorStatus: errorStatusScholars,
-      } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}/`, {
+    } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}/`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
     })
 
+    const {
+        request: requestCategories,
+        data: categoriesData,
+        errorStatus: errorStatusCategories
+    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    useEffect(() => {
+    }, [])
+
+
     const scholar = scholarData?.scholar || {}
+    useEffect(() => {
+        if (categoriesData && scholar) {
+            console.log(categoriesData)
+            const scholarCategories = categoriesData?.book_categories?.filter(category =>
+                scholar.specialized_sciences?.includes(category.id)
+            )
+            console.log(scholarCategories)
+            setSpecializedSciences(scholarCategories);
+        }
+    }, [categoriesData])
+
     const navigate = useNavigate()
 
-    const { 
-        addToFavourite: addToFavouriteScholar, 
+    const {
+        addToFavourite: addToFavouriteScholar,
         removeFromFavourite: removeFromFavouriteScholar,
         errorStatus: errorStatusFavouriteScholar
-    } = useFavourite("http://127.0.0.1:8000/api/scholars/", scholar)
+    } = useFavourite("http://localhost:8000/api/user-profile/", "scholar")
+
+    const { 
+        data: userProfileData,
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
 
     useEffect(() => {
         requestScholar()
+        requestCategories()
+        requestUserProfile({ token: localStorage.getItem("accessToken") })
     }, [])
 
     useEffect(() => {
+        if (userProfileData) {
+            console.log(userProfileData)
+        }
+    }, [userProfileData])
+
+
+    useEffect(() => {
         if (errorStatusFavouriteScholar === null) {
-            const isFavourite = scholar.is_favourite
+            const isFavourite = userProfileData?.favourite_scholars?.includes(scholar.id)
             setHeart(isFavourite)
             setLoaded(true)
         }
-    }, [scholar, errorStatusFavouriteScholar])
+    }, [scholar, userProfileData, errorStatusFavouriteScholar])
 
     useEffect(() => {
         if (errorStatusFavouriteScholar !== null) {
@@ -55,13 +100,13 @@ const ScholarDetailPage = () => {
     const handleFavouriteClick = () => {
         if (isLoggedIn) {
             setHeart(!isHeart)
+            if (isHeart) {
+                removeFromFavouriteScholar(scholar)
+            } else {
+                addToFavouriteScholar(scholar)
+            }
         } else {
             navigate("/login")
-        }
-        if (isHeart) {
-            removeFromFavouriteScholar()
-        } else {
-            addToFavouriteScholar()
         }
     }
 
@@ -70,27 +115,42 @@ const ScholarDetailPage = () => {
             {scholar ? (
                 <div className="scholar-details">
                     <div className="image-container">
-                        <ZigZagCircle children={<>{scholar.arabic_name}</>}/>
+                        <ZigZagCircle children={<>{scholar.arabic_name}</>} />
                     </div>
                     <div className="description-container">
                         <div className="title-container">
                             <h2>{scholar.name}</h2>
-                            <Button 
-                                className={isHeart ? "add-scholar-focus" : "add-scholar"} 
-                                children={<HeartIcon/>}
+                            <Button
+                                className={isHeart ? "add-scholar-focus" : "add-scholar"}
+                                children={<HeartIcon />}
                                 onClick={handleFavouriteClick}
                             />
                         </div>
                         <p><strong>Born: </strong>{scholar.birth_year}</p>
                         <p><strong>Died: </strong>{scholar.death_year}</p>
-                        <p><strong>Specialized Science:</strong> Science...</p>
-                        <p>Description...</p>
+                        <p>
+                            <strong>Specialized Science: </strong>
+                            {scholar.specialized_sciences && scholar.specialized_sciences.length > 0 ? (
+                                specialized_sciences?.map((science, index) => (
+                                    <span key={index}>
+                                        {science.name}
+                                        {index < specialized_sciences.length - 1 && ", "}
+                                    </span>
+                                ))
+                            ) : (
+                                "No specialized science"
+                            )}
+                        </p>
+                        <p>
+                            <strong>Description: </strong>
+                            {scholar.description}
+                        </p>
                     </div>
 
-                </div>):
+                </div>) :
                 (<h1>Scholar not found</h1>)
-                }
-        </main>        
+            }
+        </main>
     )
 }
 

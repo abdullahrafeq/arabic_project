@@ -21,19 +21,41 @@ const FavouriteBooksPage = () => {
 
     const books = booksData?.books || []
     
-    const removeBookFromFavorites = (bookToRemove) => {
-        setFavBooks((prevFavBooks) =>
-            prevFavBooks.filter((book) => book.id !== bookToRemove.id))
+    const removeBookFromFavourites = async (bookToRemove) => {
+        await removeFromFavouriteBook(bookToRemove);
+        // Refetch data to update the list
+        await requestUserProfile({ token: localStorage.getItem("accessToken") });
+        request() // Refetch books        
     }
+    
+    const { 
+        data: userProfileData,
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
 
-    useEffect(() => {
-        const favoriteBooks = books?.filter((book) => book.is_favourite) || []
-        setFavBooks(favoriteBooks)
-    }, [books])
+    const {
+        removeFromFavourite: removeFromFavouriteBook,
+        errorStatus: errorStatusFavouriteScholar
+    } = useFavourite("http://localhost:8000/api/user-profile/", "book")
 
+    
     useEffect(() => {
         request()
+        requestUserProfile({ token: localStorage.getItem("accessToken") })
     }, [])
+    
+    useEffect(() => {
+        if (userProfileData && books) {
+            console.log(books)
+            console.log(userProfileData)
+            const favouriteBooks = books?.filter((book) => userProfileData?.favourite_books?.includes(book.id)) || []
+            setFavBooks(favouriteBooks)
+        }
+    }, [books, userProfileData])
 
     return (
         <main className="favourite-books-page">
@@ -44,7 +66,7 @@ const FavouriteBooksPage = () => {
                         <BookCard 
                             key={index}
                             book={book}
-                            onRemove={() => removeBookFromFavorites(book)}
+                            onRemove={() => removeBookFromFavourites(book)}
                         />
                     )
                 })}
@@ -60,29 +82,26 @@ const BookCard = ({ book, onRemove }) => {
 }
 
 const Content = ({ book, onRemove }) => {
-    const { 
-        removeFromFavourite
-    } = useFavourite("http://127.0.0.1:8000/api/books/", book)
-    
-    const handleRemove = () => {
-        removeFromFavourite()
-        onRemove()
-    }
-
     return (
         <div className="card">
             <CustomLink to={`/book-detail/${book.id}`} 
                 children={
                     <div className="link-container">
-                        <img src={"http://127.0.0.1:8000/"+book.image_url} alt="" />
-                        <p>{book.name}</p>
+                        <div className="book-wrapper">
+                            <div className="book-card">
+                                <div className="book-cover">
+                                    {book.arabic_name}
+                                </div>
+                                <p>{book.name}</p>
+                            </div>
+                        </div>
                     </div>
                 }
             />
             <Button 
                 className="remove-button" 
                 children={<FontAwesomeIcon icon={faX}/>}
-                onClick={handleRemove}
+                onClick={onRemove}
             />
         </div>
     )

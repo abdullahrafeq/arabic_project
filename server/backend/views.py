@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote
-from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer
+from backend.models import ScholarYearCategory, Scholar, BookCategory, Book, Quote, UserProfile
+from backend.serializers import ScholarYearCategorySerializer, ScholarSerializer, BookCategorySerializer, BookSerializer, QuoteSerializer, UserSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
@@ -229,3 +229,27 @@ def current_user(request):
 # handle the login
 # login is handled by jwt
 
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    """
+    Retrieve or update the user's profile.
+    """
+    try:
+        # Fetch the authenticated user's profile
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'Profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        # Serialize and return the profile data
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+
+    elif request.method in ['PUT']:
+        # Update the profile
+        serializer = UserProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

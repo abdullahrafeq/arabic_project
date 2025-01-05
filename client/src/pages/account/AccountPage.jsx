@@ -4,6 +4,7 @@ import Button from "../../components/button/Button"
 import { useEffect, useState } from "react"
 import useAuth from "../../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
+import useFetch from "../../hooks/useFetch"
 
 const AccountPage = () => {
     const { 
@@ -16,6 +17,29 @@ const AccountPage = () => {
     const [fadeOut, setFadeOut] = useState(false) // State to control fade-out effect
     const [errMsgs, setErrMsgs] = useState({})
     const navigate = useNavigate()
+    const [favScholars, setFavScholars] = useState(0)
+    const [favBooks, setFavBooks] = useState(0)
+    
+    const { 
+        data: userProfileData,
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    useEffect(() => {
+        requestUserProfile({ token: localStorage.getItem("accessToken") })
+    }, [])
+
+    useEffect(() => {
+        if (userProfileData) {
+            console.log(userProfileData)
+            setFavScholars(userProfileData.favourite_scholars?.length)
+            setFavBooks(userProfileData.favourite_books?.length)
+        }
+    }, [userProfileData])
 
     const handleUpdate = async () => {
         try {
@@ -67,11 +91,11 @@ const AccountPage = () => {
                         <ul>
                             <li>
                                 <p>Favourite scholars</p>
-                                <p>3</p>
+                                <p>{favScholars}</p>
                             </li>
                             <li>
                                 <p>Favourite books</p>
-                                <p>3</p>
+                                <p>{favBooks}</p>
                             </li>
                         </ul>
                     </div>

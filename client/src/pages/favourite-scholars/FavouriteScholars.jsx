@@ -19,19 +19,40 @@ const FavouriteScholarsPage = () => {
         errorStatus
     } = useFetch("http://127.0.0.1:8000/api/scholars/")    
     
-    const removeScholarFromFavorites = (scholarToRemove) => {
-        setFavScholars((prevFavScholars) =>
-            prevFavScholars.filter((scholar) => scholar.id !== scholarToRemove.id))
+    const removeScholarFromFavourites = async (scholarToRemove) => {
+        await removeFromFavouriteScholar(scholarToRemove);
+        // Refetch data to update the list
+        await requestUserProfile({ token: localStorage.getItem("accessToken") });
+        request() // Refetch books      
     }
     const scholars = scholarsData?.scholars || [];
 
+    const { 
+        data: userProfileData,
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const {
+        removeFromFavourite: removeFromFavouriteScholar,
+        errorStatus: errorStatusFavouriteScholar
+    } = useFavourite("http://localhost:8000/api/user-profile/", "scholar")
+
     useEffect(() => {
-        const favoriteScholars = scholars?.filter((scholar) => scholar.is_favourite) || []
-        setFavScholars(favoriteScholars)
-    }, [scholars])
+        if (userProfileData && scholars) {
+            console.log(scholars)
+            console.log(userProfileData)
+            const favouriteScholars = scholars?.filter((scholar) => userProfileData?.favourite_scholars?.includes(scholar.id)) || []
+            setFavScholars(favouriteScholars)
+        }
+    }, [scholars, userProfileData])
 
     useEffect(() => {
         request()
+        requestUserProfile({ token: localStorage.getItem("accessToken") })
     }, [])
 
     return (
@@ -43,7 +64,7 @@ const FavouriteScholarsPage = () => {
                         <ScholarCard 
                             key={index} 
                             scholar={scholar}
-                            onRemove={() => removeScholarFromFavorites(scholar)}
+                            onRemove={() => removeScholarFromFavourites(scholar)}
                         />
                     )
                 })}
@@ -60,15 +81,6 @@ const ScholarCard = ({ scholar, onRemove }) => {
 }
 
 const Content = ({ scholar, onRemove }) => {
-    const { 
-        removeFromFavourite
-    } = useFavourite("http://127.0.0.1:8000/api/scholars/", scholar)
-
-    const handleRemove = () => {
-        removeFromFavourite()
-        onRemove()
-    }
-
     return (
         <div className="card">
             <CustomLink to={`/scholar-detail/${scholar.id}`} children={
@@ -82,7 +94,7 @@ const Content = ({ scholar, onRemove }) => {
             <Button 
                 className="remove-button" 
                 children={<FontAwesomeIcon icon={faX}/>}
-                onClick={() => handleRemove(scholar)}
+                onClick={onRemove}
             />
         </div>
     )

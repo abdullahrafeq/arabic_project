@@ -52,9 +52,23 @@ const ScholarsPage = () => {
     const [selected, setSelected] = useState([])
     const { query, setSearch } = useSearch()
     
+    
+    const {
+        request: requestBookCategories, 
+        data: bookCategoriesData,
+        errorStatus: errorStatusBookCategories
+    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    
     useEffect(() => {
         setSearch("")
+        requestBookCategories()
     }, [])
+
+    const book_categories = bookCategoriesData?.book_categories || []
 
     useEffect(() => {
         setScholars(scholarsData?.scholars || [])
@@ -115,6 +129,7 @@ const ScholarsPage = () => {
         requestScholars()
     }, [isModalOpen])
     
+
 
     useEffect(() => {
         if (selectedScholar && modalMode === "edit") {
@@ -197,6 +212,7 @@ const ScholarsPage = () => {
                 onSave={handleSave}
                 type="scholar"
                 modalMode={modalMode}
+                categories={book_categories}
             />
         </div>
     )

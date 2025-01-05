@@ -19,7 +19,6 @@ const BookDetailPage = () => {
     const { id } = useParams()
     const {
         request: requestBook, 
-        appendData: appendFavouriteBook, 
         data: bookData,
         errorStatus: errorStatusBooks
       } = useFetch(`http://127.0.0.1:8000/api/books/${id}/`, {
@@ -54,16 +53,29 @@ const BookDetailPage = () => {
         addToFavourite: addToFavouriteBook, 
         removeFromFavourite: removeFromFavouriteBook,
         errorStatus: errorStatusFavouriteBook
-    } = useFavourite("http://127.0.0.1:8000/api/books/", book)
+    } = useFavourite("http://localhost:8000/api/user-profile/", "book")
     
+    const { 
+        data: userProfileData,
+        request: requestUserProfile
+    } = useFetch("http://localhost:8000/api/user-profile/", {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
     useEffect(() => {
         requestBook()
+        requestUserProfile({ token: localStorage.getItem("accessToken") })
     }, [])
 
     useEffect(() => {
-        const isFavourite = book.is_favourite
-        setHeart(isFavourite)
-    }, [book])
+        if (errorStatusFavouriteBook === null) {
+            const isFavourite = userProfileData?.favourite_books?.includes(book.id)
+            setHeart(isFavourite)
+            setLoaded(true)
+        }
+    }, [book, userProfileData, errorStatusBooks])
 
     useEffect(() => {
         if (errorStatusFavouriteBook !== null) {
@@ -75,13 +87,13 @@ const BookDetailPage = () => {
     const handleFavouriteClick = () => {
         if (isLoggedIn) {
             setHeart(!isHeart)
+            if (isHeart) {
+                removeFromFavouriteBook(book)
+            } else {
+                addToFavouriteBook(book)
+            }
         } else {
             navigate("/login")
-        }
-        if (isHeart) {
-            removeFromFavouriteBook()
-        } else {
-            addToFavouriteBook()
         }
     }
 
@@ -150,7 +162,10 @@ const BookDetailPage = () => {
                             </p>
                             <strong>Reviews: 27</strong>
                             <hr />
-                            <p>Description of the book...</p>
+                            <p> 
+                                <strong>Description: </strong>
+                                {book.description}
+                            </p>
                         </div>
                     </div>
                     <h2 className="reviews-title">Reviews</h2>
