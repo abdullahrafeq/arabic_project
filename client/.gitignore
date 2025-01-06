@@ -18,8 +18,9 @@
 .env.test.local
 .env.production.local
 
-# Environments 
-.env 
+# Environment Variables
+.env
+
 
 npm-debug.log*
 yarn-debug.log*
