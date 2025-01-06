@@ -2,30 +2,99 @@ import './style.css';
 
 const AdminGuidePage = () => {
     return (
-        <main className='about-us-page'>
+        <main className='admin-guide-page'>
             <section className='container'>
-                <section className='about-us-title'>
-                    <h1>About Us</h1>
-                    <p>Welcome to Arabic Scholar Book, your ultimate online destination for exploring and cherishing the rich world of Arabic scholarship. Whether you are a student of the Arabic language, a researcher, or simply an enthusiast of Arabic literature and scholarly works, our platform is designed to cater to your needs with ease and precision.</p>
-                </section>
-                <section className='team'>
-                    <h2>Who We Are</h2>
-                    <p>Arabic Scholar Book was founded by a passionate student of the Arabic language, driven by a deep appreciation for the profound knowledge and cultural heritage embedded in Arabic scholarly works. Our mission is to make these treasures accessible to everyone, fostering a deeper understanding and appreciation of Arabic literature and scholarship.</p>
-                </section>
-                <section className='mission'>
-                <h2>Our Mission</h2>
-                    <p>Our mission is to provide a comprehensive and user-friendly platform where users can:</p>
+                <section className='admin-guide'>
+                    <h1>Admin Guide: Manage Scholars, Books, and Quotes</h1>
+                    <p>As an admin, you can manage scholars, books, and quotes in the system by following these steps:</p>
+                    <h2>Scholar</h2>
                     <ul>
-                        <li>
-                            <strong>Search:</strong> Easily find books and scholars through our advanced search functionalities, tailored to meet the needs of both novice learners and seasoned researchers.
+                        <li><strong>Adding a Scholar:</strong>
+                            <ol>
+                                <li>Navigate to <b>Scholar</b> in the <b>navigation bar</b>.</li>
+                                <li>Click the "Add New Scholar" button which is a card with <b>"+"</b> sign.</li>
+                                <li>Fill in the required details.</li>
+                                <li>Click "Save" to add the scholar to the system.</li>
+                            </ol>
                         </li>
-                        <li>
-                            <strong>Discover:</strong> Explore a vast collection of books and scholars, carefully curated to represent the breadth and depth of Arabic scholarship.
+                        <li><strong>Editing a Scholar:</strong>
+                            <ol>
+                                <li>Navigate to <b>Scholar</b> in the <b>navigation bar</b>.</li>
+                                <li>Hover over the scholar you want to edit in the list.</li>
+                                <li>Click the "Edit" button which is displayed as a <b>gear</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>Update the scholar's information as needed.</li>
+                                <li>Click "Save" to apply the changes.</li>
+                            </ol>
                         </li>
-                        <li>
-                            <strong>Save and Share:</strong> Create a personalized library by marking your favourite books and scholars, ensuring that your most valued resources are always at your fingertips.
+                        <li><strong>Deleting a Scholar:</strong>
+                            <ol>
+                                <li>Navigate to <b>Scholar</b> in the <b>navigation bar</b>.</li>
+                                <li>Hover over the scholar you want to edit in the list.</li>
+                                <li>Click the "Delete" button which is displayed as a <b>trash can</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>You will be shown a warning before you completely delete the scholar.</li>
+                                <li>Click "Delete" to delete the scholar.</li>
+                            </ol>
                         </li>
                     </ul>
+                    <h2>Book</h2>
+                    <ul>
+                        <li><strong>Adding a Book:</strong>
+                            <ol>
+                                <li>Navigate to <b>Book</b> in the <b>navigation bar</b>.</li>
+                                <li>Click the "Add New Book" button which is a card with <b>"+"</b> sign.</li>
+                                <li>Fill in the required details.</li>
+                                <li>Click "Save" to add the book to the system.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Editing a Book:</strong>
+                            <ol>
+                                <li>Navigate to <b>Book</b> in the <b>navigation bar</b>.</li>
+                                <li>Hover over the book you want to edit in the list.</li>
+                                <li>Click the "Edit" button which is displayed as a <b>gear</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>Update the book's information as needed.</li>
+                                <li>Click "Save" to apply the changes.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Deleting a Book:</strong>
+                            <ol>
+                                <li>Navigate to <b>Book</b> in the <b>navigation bar</b>.</li>
+                                <li>Hover over the book you want to edit in the list.</li>
+                                <li>Click the "Delete" button which is displayed as a <b>trash can</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>You will be shown a warning before you completely delete the book.</li>
+                                <li>Click "Delete" to delete the book.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <h2>Quote</h2>
+                    <ul>
+                        <li><strong>Adding a Quote:</strong>
+                            <ol>
+                                <li>Navigate to <b>Home</b> in the <b>navigation bar or by clicking the logo at the top of the page</b>.</li>
+                                <li>Click the "Add New Quote" button which is a card with <b>"+"</b> sign.</li>
+                                <li>Fill in the required details.</li>
+                                <li>Click "Save" to add the book to the system.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Editing a Quote:</strong>
+                            <ol>
+                                <li>Navigate to <b>Home</b> in the <b>navigation bar or by clicking the logo at the top of the page</b>.</li>
+                                <li>Hover over the quote you want to edit in the list.</li>
+                                <li>Click the "Edit" button which is displayed as a <b>gear</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>Update the quote's information as needed.</li>
+                                <li>Click "Save" to apply the changes.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Deleting a Quote:</strong>
+                            <ol>
+                                <li>Navigate to <b>Quote</b> in the <b>navigation bar</b>.</li>
+                                <li>Hover over the qupte you want to edit in the list.</li>
+                                <li>Click the "Delete" button which is displayed as a <b>trash can</b> at the <b>top right</b> of the scholar card.</li>
+                                <li>You will be shown a warning before you completely delete the book.</li>
+                                <li>Click "Delete" to delete the quote.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <p>For further assistance, please refer to the admin documentation or contact technical support which u can find at the bottom of the page.</p>
                 </section>
             </section>
         </main>

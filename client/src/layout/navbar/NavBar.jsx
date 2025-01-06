@@ -2,6 +2,8 @@ import "./style.css"
 import CustomLink from "../../components/custom-link/CustomLink";
 import useAuth from "../../hooks/useAuth";
 import { useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 const NavBar = () => {
     const { isLoggedIn, logout, isAdmin } = useAuth()
@@ -21,7 +23,7 @@ const NavBar = () => {
     return (
         <nav className="navbar">
             <div className="navbar-title">
-                <CustomLink to="/" children={<>Logo</>}/>
+                <CustomLink to="/" children={<FontAwesomeIcon icon={faBook}/>}/>
             </div>
             <div className="navbar-info">
                 <ul>

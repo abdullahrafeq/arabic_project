@@ -134,7 +134,6 @@ const HomePage = () => {
         <div className="home-page">
             <div className="search">
                 <h1>Learn About Our Scholars</h1>
-                <input type="text" placeholder="Search..." />
             </div>
             <div className="scholars">
                 <h1>Famous Scholars</h1>

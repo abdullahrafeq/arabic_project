@@ -1,0 +1,73 @@
+/* General Layout */
+.admin-guide-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Admin Guide Section */
+.admin-guide h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.admin-guide h2 {
+    font-size: 1.5rem;
+    margin: 20px 0 10px;
+    color: #34495e;
+}
+
+.admin-guide p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.admin-guide ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.admin-guide ul > li {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    border: 1px solid #dcdde1;
+}
+
+.admin-guide ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+}
+
+.admin-guide ol li {
+    margin-bottom: 10px;
+}
+
+.admin-guide ul li strong {
+    color: #2980b9;
+    display: inline-block; /* Allows margin properties to work */
+    margin-bottom: 10px;
+}
+
+/* Highlights */
+.admin-guide ul > li:hover {
+    background-color: #dfe6e9;
+    transition: background-color 0.3s ease;
+}
+
+.admin-guide p strong {
+    color: #e74c3c;
+}

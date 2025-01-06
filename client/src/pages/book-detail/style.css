@@ -114,8 +114,8 @@
             font-weight: normal;
             box-shadow: none;
             border-radius: 5px;
-            width: 150px;
-            padding: 20px 0;
+            width: fit-content;
+            padding: 20px;
             cursor: pointer;
         }
     }

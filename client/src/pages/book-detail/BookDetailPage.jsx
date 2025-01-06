@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
+import { Oval } from 'react-loader-spinner'
 
 const BookDetailPage = () => {
     const { isLoggedIn } = useAuth()
@@ -67,7 +68,8 @@ const BookDetailPage = () => {
     const { 
         data: reviewsData,
         request: requestReviews,
-        appendData: addReview
+        appendData: addReview,
+        isLoading
     } = useFetch("http://localhost:8000/api/reviews/", {
         headers: {
             'Content-Type': 'application/json',
@@ -232,7 +234,21 @@ const BookDetailPage = () => {
                             <label htmlFor="">Submit review:</label>
                             <textarea value={reviewText} name="" id="" rows={5} onChange={(event) => setReviewText(event.target.value)}></textarea>
                         </form>
-                        <Button className="submit-button" children={<>Submit</>} onClick={() => handleSubmit(reviewText, book)}/>
+                        <Button className="submit-button" children={
+                            <>
+                                <>Submit</>
+                                {isLoading &&
+                                    <Oval
+                                        height={30} 
+                                        width={30} 
+                                        color="#fff" /* Neutral gray or preferred color */
+                                        strokeWidth={4} // Primary stroke width (thicker lines)
+                                        secondaryColor="#ddd" /* Optional lighter color */
+                                        ariaLabel="oval-loading"
+                                    />
+                                }
+                            </>
+                        } onClick={() => handleSubmit(reviewText, book)}/>
                     </div>
                 </>
             ) : 
