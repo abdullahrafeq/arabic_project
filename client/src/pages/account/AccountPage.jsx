@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import useAuth from "../../hooks/useAuth"
 import { useNavigate } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
+import { useBaseUrl } from "../../contexts/BaseUrlContext"
 
 const AccountPage = () => {
     const { 
@@ -19,11 +20,13 @@ const AccountPage = () => {
     const navigate = useNavigate()
     const [favScholars, setFavScholars] = useState(0)
     const [favBooks, setFavBooks] = useState(0)
+    const BASE_URL = useBaseUrl()
+    console.log('Backend URL:', BASE_URL);
     
     const { 
         data: userProfileData,
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -43,7 +46,7 @@ const AccountPage = () => {
 
     const handleUpdate = async () => {
         try {
-            await updateUser("http://localhost:8000/api/current-user/", {
+            await updateUser(BASE_URL+"/api/current-user/", {
                 username,
                 email,
                 oldPassword,
@@ -151,7 +154,6 @@ const AccountPage = () => {
                             children={<>Update</>}
                             onClick={() => {
                                 handleUpdate()
-                                /*handleUpdateValues(currentUser)*/
                             }}
                         />
                     </div>

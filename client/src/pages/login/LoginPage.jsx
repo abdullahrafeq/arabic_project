@@ -6,7 +6,7 @@ import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom"
 import { Oval } from 'react-loader-spinner'
-
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const LoginPage = () => {
     const [username, setUsername] = useState()
@@ -20,7 +20,7 @@ const LoginPage = () => {
     const [errMsgs, setErrMsgs] = useState({})
     const { login, signup, isLoading } = useAuth()
     const navigate = useNavigate()
-
+    const BASE_URL = useBaseUrl()
 
     const resetValues = () => {
         setUsername("")
@@ -31,7 +31,7 @@ const LoginPage = () => {
 
     const handleSignUp = async () => {
         try {
-            await signup("http://localhost:8000/api/register/", { 
+            await signup(BASE_URL+"/api/register/", { 
                 email, 
                 username, 
                 password,
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            const result = await login("http://localhost:8000/api/login/", username, password);            
+            const result = await login(BASE_URL+"/api/login/", username, password);            
             resetValues()
             if (result?.tokens?.access) {
                 console.log("Login successful, navigating to homepage...");

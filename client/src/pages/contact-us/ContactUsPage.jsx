@@ -14,7 +14,7 @@ const ContactUsPage = () => {
         email: "",
         subject: "",
         message: "",
-    });
+    })
 
     const handleSubmit = (e) => {
         e.preventDefault()

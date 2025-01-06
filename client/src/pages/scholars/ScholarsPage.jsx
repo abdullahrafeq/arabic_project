@@ -9,6 +9,7 @@ import useAuth from "../../hooks/useAuth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle";
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const ScholarsPage = () => {
     const { isAdmin } = useAuth()
@@ -17,13 +18,14 @@ const ScholarsPage = () => {
     const [modalMode, setModalMode] = useState("")
     const [scholars, setScholars] = useState([])
     const [filtered, setFiltered] = useState([])
+    const BASE_URL = useBaseUrl()
 
     const {
         request: requestScholars, 
         appendData: addScholars,
         data: scholarsData,
         errorStatus: errorStatusScholars
-    } = useFetch("http://127.0.0.1:8000/api/scholars/", {
+    } = useFetch(BASE_URL+"/api/scholars/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -42,7 +44,7 @@ const ScholarsPage = () => {
         request: requestCategories, 
         data: categoriesData,
         errorStatus: errorStatusCategories
-    } = useFetch("http://127.0.0.1:8000/api/scholar-year-categories/", {
+    } = useFetch(BASE_URL+"/api/scholar-year-categories/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -57,7 +59,7 @@ const ScholarsPage = () => {
         request: requestBookCategories, 
         data: bookCategoriesData,
         errorStatus: errorStatusBookCategories
-    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+    } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -85,7 +87,7 @@ const ScholarsPage = () => {
     
     const handleSave = async (updatedData) => {
         if (modalMode === "edit" && selectedScholar) {
-            const url = `http://127.0.0.1:8000/api/scholars/${selectedScholar.id}/`;
+            const url = BASE_URL+`/api/scholars/${selectedScholar.id}/`;
             try {
                 await updateScholar(url, updatedData, { token: localStorage.getItem("accessToken") });
                 setIsModalOpen(false);
@@ -97,7 +99,7 @@ const ScholarsPage = () => {
         } else if (modalMode === "add") {
             try {
                 const newScholar = await addScholars(
-                    "http://127.0.0.1:8000/api/scholars/",
+                    BASE_URL+"/api/scholars/",
                     updatedData,
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
@@ -110,7 +112,7 @@ const ScholarsPage = () => {
             }
         } else if (modalMode === "delete") {
             try {
-                const url = `http://127.0.0.1:8000/api/scholars/${selectedScholar.id}/`;
+                const url = BASE_URL+`/api/scholars/${selectedScholar.id}/`;
                 await deleteScholar(url, { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setSelectedScholar(null)

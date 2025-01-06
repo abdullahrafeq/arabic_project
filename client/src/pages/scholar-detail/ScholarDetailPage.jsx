@@ -7,19 +7,21 @@ import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle"
 import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
+import { useBaseUrl } from "../../contexts/BaseUrlContext"
 
 const ScholarDetailPage = () => {
     const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const [specialized_sciences, setSpecializedSciences] = useState([])
+    const BASE_URL = useBaseUrl()
 
     const { id } = useParams()
     const {
         request: requestScholar,
         data: scholarData,
         errorStatus: errorStatusScholars,
-    } = useFetch(`http://127.0.0.1:8000/api/scholars/${id}/`, {
+    } = useFetch(BASE_URL+`/api/scholars/${id}/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ const ScholarDetailPage = () => {
         request: requestCategories,
         data: categoriesData,
         errorStatus: errorStatusCategories
-    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+    } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -58,12 +60,12 @@ const ScholarDetailPage = () => {
         addToFavourite: addToFavouriteScholar,
         removeFromFavourite: removeFromFavouriteScholar,
         errorStatus: errorStatusFavouriteScholar
-    } = useFavourite("http://localhost:8000/api/user-profile/", "scholar")
+    } = useFavourite(BASE_URL+"/api/user-profile/", "scholar")
 
     const { 
         data: userProfileData,
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },

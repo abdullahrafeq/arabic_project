@@ -1,6 +1,8 @@
 import useFetch from "./useFetch"
+import { useBaseUrl } from "../contexts/BaseUrlContext"
 
 const useFavourite = (url, item) => {
+    const BASE_URL = useBaseUrl()
     const { updateData, errorStatus } = useFetch(url, {
         method: 'GET',
         headers: {
@@ -11,7 +13,7 @@ const useFavourite = (url, item) => {
 
     const { 
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },

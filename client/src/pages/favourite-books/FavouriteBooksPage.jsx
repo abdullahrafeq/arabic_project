@@ -7,17 +7,19 @@ import { useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import useFavourite from "../../hooks/useFavourite";
 import { useEffect } from "react";
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const FavouriteBooksPage = () => {
     const [favBooks, setFavBooks] = useState([]);
- 
+    const BASE_URL = useBaseUrl()
+
     const { 
         request, 
         deleteData, 
         data: booksData, 
         isLoading, 
         errorStatus
-    } = useFetch("http://127.0.0.1:8000/api/books/")    
+    } = useFetch(BASE_URL+"/api/books/")    
 
     const books = booksData?.books || []
     
@@ -31,7 +33,7 @@ const FavouriteBooksPage = () => {
     const { 
         data: userProfileData,
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -40,7 +42,7 @@ const FavouriteBooksPage = () => {
     const {
         removeFromFavourite: removeFromFavouriteBook,
         errorStatus: errorStatusFavouriteScholar
-    } = useFavourite("http://localhost:8000/api/user-profile/", "book")
+    } = useFavourite(BASE_URL+"/api/user-profile/", "book")
 
     
     useEffect(() => {

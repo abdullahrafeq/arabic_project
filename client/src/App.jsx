@@ -16,7 +16,9 @@ import AdminGuidePage from './pages/admin-guide/AdminGuidePage';
 import './App.css';
 import { SearchProvider } from './contexts/SearchContext';
 import { AuthProvider, AuthContext } from './contexts/AuthContext';
+import { BaseUrlProvider } from './contexts/BaseUrlContext';
 import { useContext, useEffect } from 'react';
+import React from 'react';
 
 function AppContent() {
   const { isAdmin } = useContext(AuthContext);
@@ -53,9 +55,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <BaseUrlProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BaseUrlProvider>
   );
 }
 

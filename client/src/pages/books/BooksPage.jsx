@@ -8,6 +8,7 @@ import useAuth from "../../hooks/useAuth";
 import EditModal from "../../components/modal/EditModal"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const BooksPage = () => {
     const { isAdmin } = useAuth()
@@ -17,13 +18,14 @@ const BooksPage = () => {
     const [books, setBooks] = useState([])
     const [filtered, setFiltered] = useState([])
     const [authors, setAuthors] = useState([])
-
+    const BASE_URL = useBaseUrl()
+    console.log('Backend URL:', BASE_URL);
     const {
         request: requestBooks, 
         appendData: addBooks, 
         data: booksData,
         errorStatus: errorStatusBooks
-      } = useFetch("http://127.0.0.1:8000/api/books/", {
+      } = useFetch(BASE_URL+"/api/books/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -32,7 +34,7 @@ const BooksPage = () => {
     const {
         request: requestScholars, 
         data: scholarsData,
-    } = useFetch("http://127.0.0.1:8000/api/scholars/", {
+    } = useFetch(BASE_URL+"/api/scholars/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,7 +53,7 @@ const BooksPage = () => {
         request: requestCategories, 
         data: categoriesData,
         errorStatus: errorStatusCategories
-      } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+      } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -93,7 +95,7 @@ const BooksPage = () => {
 
     const handleSave = async (updatedData) => {
         if (modalMode === "edit" && selectedBook) {
-            const url = `http://127.0.0.1:8000/api/books/${selectedBook.id}/`;
+            const url = BASE_URL+`/api/books/${selectedBook.id}/`;
             try {
                 await updateBook(url, updatedData, { token: localStorage.getItem("accessToken") });
                 setIsModalOpen(false)
@@ -106,7 +108,7 @@ const BooksPage = () => {
             try {
                 console.log(updatedData)
                 const newBook = await addBooks(
-                    "http://127.0.0.1:8000/api/books/",
+                    BASE_URL+"/api/books/",
                     updatedData,
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
@@ -119,7 +121,7 @@ const BooksPage = () => {
             }
         } else if (modalMode === "delete") {
             try {
-                const url = `http://127.0.0.1:8000/api/books/${selectedBook.id}/`;
+                const url = BASE_URL+`/api/books/${selectedBook.id}/`;
                 await deleteBook(url, { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setSelectedBook(null)

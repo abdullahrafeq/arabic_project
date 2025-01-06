@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import EditModal from "../../components/modal/EditModal";
 import { useState } from "react";
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const HomePage = () => {
     const { isAdmin } = useAuth()
@@ -17,27 +18,30 @@ const HomePage = () => {
     const [modalMode, setModalMode] = useState("")
     const [selectedQuote, setSelectedQuote] = useState(null);
     const [authors, setAuthors] = useState([])
-
+    
+    const BASE_URL = useBaseUrl()
+    console.log('Backend URL:', BASE_URL);
+    
     const { 
         request: requestScholars, 
         data: scholarsData, 
         isLoading: isLoadingScholars, 
         errorStatus: errorStatusScholars
-    } = useFetch("http://127.0.0.1:8000/api/scholars/");
+    } = useFetch(BASE_URL+"/api/scholars/");
 
     const { 
         request: requestBooks, 
         data: booksData, 
         isLoading: isLoadingBooks, 
         errorStatus: errorStatusBooks
-    } = useFetch("http://127.0.0.1:8000/api/books/");
+    } = useFetch(BASE_URL+"/api/books/");
     
     const {
         request: requestQuotes, 
         appendData: addQuotes, 
         data: quotesData,
         errorStatus: errorStatusQuotes
-      } = useFetch("http://127.0.0.1:8000/api/quotes/", {
+      } = useFetch(BASE_URL+"/api/quotes/", {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -90,7 +94,7 @@ const HomePage = () => {
 
     const handleSave = async (updatedData) => {
         if (modalMode === "edit" && selectedQuote) {
-            const url = `http://127.0.0.1:8000/api/quotes/${selectedQuote.id}/`;
+            const url = BASE_URL+`/api/quotes/${selectedQuote.id}/`;
             try {
                 await updateQuote(url, updatedData, { token: localStorage.getItem("accessToken") });
                 setIsModalOpen(false)
@@ -103,7 +107,7 @@ const HomePage = () => {
             try {
                 console.log(updatedData)
                 const newQuote = await addQuotes(
-                    "http://127.0.0.1:8000/api/quotes/",
+                    BASE_URL+"/api/quotes/",
                     updatedData,
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
@@ -115,7 +119,7 @@ const HomePage = () => {
             }
         } else if (modalMode === "delete") {
             try {
-                const url = `http://127.0.0.1:8000/api/quotes/${selectedQuote.id}/`;
+                const url = BASE_URL+`/api/quotes/${selectedQuote.id}/`;
                 await deleteQuote(url, { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setSelectedQuote(null)

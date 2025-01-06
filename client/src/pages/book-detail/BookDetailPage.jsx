@@ -8,6 +8,7 @@ import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
 import { Oval } from 'react-loader-spinner'
+import { useBaseUrl } from "../../contexts/BaseUrlContext"
 
 const BookDetailPage = () => {
     const { isLoggedIn } = useAuth()
@@ -16,13 +17,14 @@ const BookDetailPage = () => {
     const [author, setAuthor] = useState()
     const [categories, setCategories] = useState([])
     const [reviewText, setReviewText] = useState("")
-
+    const BASE_URL = useBaseUrl()
+    console.log('Backend URL:', BASE_URL);
     const { id } = useParams()
     const {
         request: requestBook, 
         data: bookData,
         errorStatus: errorStatusBooks
-      } = useFetch(`http://127.0.0.1:8000/api/books/${id}/`, {
+      } = useFetch(BASE_URL+`/api/books/${id}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +34,7 @@ const BookDetailPage = () => {
     const {
         request: requestScholars,
         data: scholarsData
-    } = useFetch("http://127.0.0.1:8000/api/scholars/", {
+    } = useFetch(BASE_URL+"/api/scholars/", {
         headers: {
         'Content-Type': 'application/json',
         }
@@ -41,7 +43,7 @@ const BookDetailPage = () => {
     const {
         request: requestCategories,
         data: categoriesData
-    } = useFetch("http://127.0.0.1:8000/api/book-categories/", {
+    } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
         'Content-Type': 'application/json',
         }
@@ -54,12 +56,12 @@ const BookDetailPage = () => {
         addToFavourite: addToFavouriteBook, 
         removeFromFavourite: removeFromFavouriteBook,
         errorStatus: errorStatusFavouriteBook
-    } = useFavourite("http://localhost:8000/api/user-profile/", "book")
+    } = useFavourite(BASE_URL+"/api/user-profile/", "book")
     
     const { 
         data: userProfileData,
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -70,7 +72,7 @@ const BookDetailPage = () => {
         request: requestReviews,
         appendData: addReview,
         isLoading
-    } = useFetch("http://localhost:8000/api/reviews/", {
+    } = useFetch(BASE_URL+"/api/reviews/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -79,7 +81,7 @@ const BookDetailPage = () => {
     const { 
         data: usersData,
         request: requestUsers,
-    } = useFetch("http://localhost:8000/api/all-users/", {
+    } = useFetch(BASE_URL+"/api/all-users/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -88,7 +90,7 @@ const BookDetailPage = () => {
     const { 
         data: currentUserData,
         request: requestCurrentUser,
-    } = useFetch("http://localhost:8000/api/current-user/", {
+    } = useFetch(BASE_URL+"/api/current-user/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -140,7 +142,7 @@ const BookDetailPage = () => {
             return
         }
         if (isLoggedIn) {
-            await addReview("http://localhost:8000/api/reviews/", 
+            await addReview(BASE_URL+"/api/reviews/", 
                 { 
                     review: review,
                     user: currentUserData?.user?.id,

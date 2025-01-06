@@ -7,17 +7,19 @@ import useFetch from "../../hooks/useFetch";
 import { useEffect, useState } from "react";
 import useFavourite from "../../hooks/useFavourite";
 import ZigZagCircle from "../../components/zig-zag-circle/ZigZagCircle";
+import { useBaseUrl } from "../../contexts/BaseUrlContext";
 
 const FavouriteScholarsPage = () => {   
     const [favScholars, setFavScholars] = useState([]);
- 
+    const BASE_URL = useBaseUrl()
+
     const { 
         request, 
         deleteData, 
         data: scholarsData, 
         isLoading, 
         errorStatus
-    } = useFetch("http://127.0.0.1:8000/api/scholars/")    
+    } = useFetch(BASE_URL+"/api/scholars/")    
     
     const removeScholarFromFavourites = async (scholarToRemove) => {
         await removeFromFavouriteScholar(scholarToRemove);
@@ -30,7 +32,7 @@ const FavouriteScholarsPage = () => {
     const { 
         data: userProfileData,
         request: requestUserProfile
-    } = useFetch("http://localhost:8000/api/user-profile/", {
+    } = useFetch(BASE_URL+"/api/user-profile/", {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -39,7 +41,7 @@ const FavouriteScholarsPage = () => {
     const {
         removeFromFavourite: removeFromFavouriteScholar,
         errorStatus: errorStatusFavouriteScholar
-    } = useFavourite("http://localhost:8000/api/user-profile/", "scholar")
+    } = useFavourite(BASE_URL+"/api/user-profile/", "scholar")
 
     useEffect(() => {
         if (userProfileData && scholars) {

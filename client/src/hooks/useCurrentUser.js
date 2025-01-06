@@ -1,6 +1,9 @@
 import useFetch from "./useFetch";
+import { useBaseUrl } from "../contexts/BaseUrlContext";
 
 const useCurrentUser = () => {
+    const BASE_URL = useBaseUrl()
+    console.log(BASE_URL)
     const { 
         data: currentUser,
         request: requestCurrentUser,
@@ -10,7 +13,7 @@ const useCurrentUser = () => {
         setSuccessful: setSuccessfulUpdate,
         isError: isFailedUpdate,
         setError: setFailedUpdate 
-    } = useFetch("http://localhost:8000/api/current-user/", {
+    } = useFetch(BASE_URL+"/api/current-user/", {
             headers: {
                 'Content-Type': 'application/json',
             },

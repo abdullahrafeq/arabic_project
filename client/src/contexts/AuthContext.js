@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import useCurrentUser from "../hooks/useCurrentUser";
 import useFetch from "../hooks/useFetch";
+import { useBaseUrl } from "./BaseUrlContext";
 
 const AuthContext = React.createContext()
 
@@ -13,6 +14,7 @@ const AuthProvider = ({ children }) => {
         isSuccessfulUpdate, isFailedUpdate, setSuccessfulUpdate, setFailedUpdate, updateHeaders } = useCurrentUser()
     const [token, setToken] = useState(localStorage.getItem('accessToken'))
     const [isAdmin, setAdmin] = useState(false)
+    const BASE_URL = useBaseUrl()
 
     const { 
         data: userData, 
@@ -21,7 +23,7 @@ const AuthProvider = ({ children }) => {
         errorStatus: errorStatusUser,
         setErrorStatus: setErrorStatusUser,
         isLoading
-    } = useFetch("http://localhost:8000/api/register/", {
+    } = useFetch(BASE_URL+"/api/register/", {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -101,7 +103,7 @@ const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            await registerUser("http://localhost:8000/api/logout/", { 
+            await registerUser(BASE_URL+"/api/logout/", { 
                 refresh_token: refreshToken 
             })
             console.log("User successfully logged out");
