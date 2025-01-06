@@ -25,9 +25,9 @@ print("BASE_DIR: ", BASE_DIR)
 SECRET_KEY = 'django-insecure-9cpptt+k3tc1r0a8ger16xgb-0(n46x&focu5!lwn+fp@74kqg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['arabicexplorerproject.onrender.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -112,7 +112,6 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
-    "https://arabicexplorerproject.netlify.app",  # Deployed Netlify frontend
 ]
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
