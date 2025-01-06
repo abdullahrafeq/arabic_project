@@ -112,6 +112,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    "https://arabicexplorerproject.netlify.app",  # Deployed Netlify frontend
 ]
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
