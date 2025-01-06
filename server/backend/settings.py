@@ -25,9 +25,9 @@ print("BASE_DIR: ", BASE_DIR)
 SECRET_KEY = 'django-insecure-9cpptt+k3tc1r0a8ger16xgb-0(n46x&focu5!lwn+fp@74kqg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['your-app-name.onrender.com']
 
 
 # Application definition
