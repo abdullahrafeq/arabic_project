@@ -12,7 +12,6 @@ import { useBaseUrl } from "../../contexts/BaseUrlContext"
 const ScholarDetailPage = () => {
     const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
-    const [loaded, setLoaded] = useState(false)
     const [specialized_sciences, setSpecializedSciences] = useState([])
     const BASE_URL = useBaseUrl()
 
@@ -20,7 +19,6 @@ const ScholarDetailPage = () => {
     const {
         request: requestScholar,
         data: scholarData,
-        errorStatus: errorStatusScholars,
     } = useFetch(BASE_URL+`/api/scholars/${id}/`, {
         method: 'GET',
         headers: {
@@ -31,28 +29,23 @@ const ScholarDetailPage = () => {
     const {
         request: requestCategories,
         data: categoriesData,
-        errorStatus: errorStatusCategories
     } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
             'Content-Type': 'application/json',
         },
     })
 
-    useEffect(() => {
-    }, [])
 
 
     const scholar = scholarData?.scholar || {}
     useEffect(() => {
         if (categoriesData && scholar) {
-            console.log(categoriesData)
             const scholarCategories = categoriesData?.book_categories?.filter(category =>
                 scholar.specialized_sciences?.includes(category.id)
             )
-            console.log(scholarCategories)
             setSpecializedSciences(scholarCategories);
         }
-    }, [categoriesData])
+    }, [categoriesData, scholar])
 
     const navigate = useNavigate()
 
@@ -78,23 +71,14 @@ const ScholarDetailPage = () => {
     }, [])
 
     useEffect(() => {
-        if (userProfileData) {
-            console.log(userProfileData)
-        }
-    }, [userProfileData])
-
-
-    useEffect(() => {
         if (errorStatusFavouriteScholar === null) {
             const isFavourite = userProfileData?.favourite_scholars?.includes(scholar.id)
             setHeart(isFavourite)
-            setLoaded(true)
         }
     }, [scholar, userProfileData, errorStatusFavouriteScholar])
 
     useEffect(() => {
         if (errorStatusFavouriteScholar !== null) {
-            console.log("error: " + errorStatusFavouriteScholar)
             navigate("/login")
         }
     }, [errorStatusFavouriteScholar])

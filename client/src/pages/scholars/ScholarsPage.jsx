@@ -24,7 +24,6 @@ const ScholarsPage = () => {
         request: requestScholars, 
         appendData: addScholars,
         data: scholarsData,
-        errorStatus: errorStatusScholars
     } = useFetch(BASE_URL+"/api/scholars/", {
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +42,6 @@ const ScholarsPage = () => {
     const {
         request: requestCategories, 
         data: categoriesData,
-        errorStatus: errorStatusCategories
     } = useFetch(BASE_URL+"/api/scholar-year-categories/", {
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +56,6 @@ const ScholarsPage = () => {
     const {
         request: requestBookCategories, 
         data: bookCategoriesData,
-        errorStatus: errorStatusBookCategories
     } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
             'Content-Type': 'application/json',
@@ -104,8 +101,6 @@ const ScholarsPage = () => {
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setModalMode("")
-                console.log("newScholar: ", newScholar)
-                console.log("newScholar inside: ", newScholar?.scholars)
                 setScholars(newScholar?.scholars)
             } catch (err) {
                 console.error("Error during adding scholar: ", err)

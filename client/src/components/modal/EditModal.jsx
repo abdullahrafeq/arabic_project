@@ -9,19 +9,15 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
     // Update state on input change
     const handleChange = (e) => {
       const { name, value, options } = e.target;
-    
-      console.log(`Handling change for ${name}:`, value);
-    
+        
       if (name === "author") {
-        const selectedAuthor = authors.find((author) => author.id === parseInt(value));
-        console.log("Selected Author:", selectedAuthor);
+        //const selectedAuthor = authors.find((author) => author.id === parseInt(value));
         setFormData((prevFormData) => ({
           ...prevFormData,
           author: value, // Update with selected object or empty
         }))
       } else if (name === "category") {
         // Get selected category IDs
-        console.log(formData?.categories)
         const selectedCategoryIds = Array.from(options)
           .filter((option) => option.selected)
           .map((option) => parseInt(option.value, 10)) // Extract IDs as integers
@@ -32,7 +28,6 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
         }))
       } else if (name === "specialized_science") {
         // Get selected category IDs
-        console.log(formData?.specialized_scieces)
         const selectedScienceIds = Array.from(options)
           .filter((option) => option.selected)
           .map((option) => parseInt(option.value, 10)) // Extract IDs as integers
@@ -49,17 +44,9 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
       }
     }
 
-    useEffect(() => {
-      console.log("Authors in EditModal:", authors);
-    }, [authors]);
-
-    useEffect(() => {
-      console.log("formData:", formData);
-    }, [formData]);
 
     useEffect(() => {
       if (modalMode === "edit" && editedElement) {
-        console.log("in edit")
         if (type === "scholar") {
           setFormData({
             name: editedElement?.name,
@@ -80,7 +67,6 @@ const EditModal = ({ isOpen, onClose, editedElement, onSave, type, modalMode, au
             description: editedElement?.description
           })
         } else if (type === "quote") {
-          console.log(editedElement)
           setFormData({
             quote: editedElement?.quote,
             arabic_quote: editedElement?.arabic_quote,

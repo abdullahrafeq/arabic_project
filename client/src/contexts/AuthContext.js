@@ -31,7 +31,6 @@ const AuthProvider = ({ children }) => {
 
     const updateUser = async (url, {email, username, oldPassword, newPassword}) => {
         try {
-            console.log(localStorage.getItem("accessToken"))
             await updateCurrentUser(url, {
                 username: username || authUser?.user?.username, 
                 email: email || authUser?.user?.email,         
@@ -55,7 +54,6 @@ const AuthProvider = ({ children }) => {
                 confirm_password: confirmPassword || "", 
             })
 
-            console.log(response)
             return response;
         } catch (err) {
             console.log("Error during signup: ", err)
@@ -71,17 +69,14 @@ const AuthProvider = ({ children }) => {
     }
 
     const login = async (url, username, password) => {
-        console.log("in auth login2")
         try {
             const response = await getTokens(url, { username, password })
-            console.log(response)
             if (response?.tokens?.access) {
                 localStorage.setItem("accessToken", response.tokens.access);
                 setToken(response.tokens.access);
                 setIsLoggedIn(true);
                 const user = await requestCurrentUser({ token: response.tokens.access }); // Fetch user details immediately
                 setAuthUser(user)
-                console.log(user)
                 console.log("User successfully logged in");
                 return response;
             }
@@ -118,19 +113,14 @@ const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        console.log("AuthProvider mounted!");
-        console.log("currentUser:", currentUser);
         localStorage.clear()
     }, [])
     
     useEffect(() => {
         if (authUser) {
             setAdmin(authUser?.user?.is_superuser || false)
-            console.log(authUser)
-            console.log("isAdmin: ", isAdmin)
         } else {
             setAdmin(false)
-            console.log("here")
         }
     }, [authUser, isAdmin])
 

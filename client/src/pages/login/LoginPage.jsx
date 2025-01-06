@@ -52,7 +52,6 @@ const LoginPage = () => {
             const result = await login(BASE_URL+"/api/login/", username, password);            
             resetValues()
             if (result?.tokens?.access) {
-                console.log("Login successful, navigating to homepage...");
                 navigate("/")
             }
         } catch (err) {

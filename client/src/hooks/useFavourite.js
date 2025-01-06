@@ -22,10 +22,6 @@ const useFavourite = (url, item) => {
     const addToFavourite = async (favouriteItem) => {
         const response = await requestUserProfile({ token: localStorage.getItem("accessToken") })
         if (item === "scholar") {
-            
-            if (response) {
-                console.log(response)
-            }
             updateData(url, {
                 favourite_scholars: [...response.favourite_scholars, favouriteItem.id],
             })

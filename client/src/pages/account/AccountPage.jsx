@@ -11,8 +11,6 @@ const AccountPage = () => {
     const { 
         authUser, isLoggedIn, updateUser, isSuccessfulUpdate, isFailedUpdate, 
         setSuccessfulUpdate, setFailedUpdate, isLoading } = useAuth()
-    const [username, setUsername] = useState()
-    const [email, setEmail] = useState()
     const [oldPassword, setOldPassword] = useState()
     const [newPassword, setNewPassword] = useState()
     const [fadeOut, setFadeOut] = useState(false) // State to control fade-out effect
@@ -21,7 +19,6 @@ const AccountPage = () => {
     const [favScholars, setFavScholars] = useState(0)
     const [favBooks, setFavBooks] = useState(0)
     const BASE_URL = useBaseUrl()
-    console.log('Backend URL:', BASE_URL);
     
     const { 
         data: userProfileData,
@@ -34,11 +31,10 @@ const AccountPage = () => {
 
     useEffect(() => {
         requestUserProfile({ token: localStorage.getItem("accessToken") })
-    }, [])
+    }, [requestUserProfile])
 
     useEffect(() => {
         if (userProfileData) {
-            console.log(userProfileData)
             setFavScholars(userProfileData.favourite_scholars?.length)
             setFavBooks(userProfileData.favourite_books?.length)
         }
@@ -47,8 +43,6 @@ const AccountPage = () => {
     const handleUpdate = async () => {
         try {
             await updateUser(BASE_URL+"/api/current-user/", {
-                username,
-                email,
                 oldPassword,
                 newPassword
             })
@@ -66,8 +60,6 @@ const AccountPage = () => {
                 setSuccessfulUpdate(false);
             }, 2000); // Match the duration of the fade-out CSS transition
         } catch (err) {
-            console.error("Error in accounts page", err)
-            console.log(isFailedUpdate)
             setSuccessfulUpdate(false)
             setErrMsgs(err)
         }
@@ -77,8 +69,7 @@ const AccountPage = () => {
         if (!isLoggedIn) {
             navigate("/login")
         }
-        console.log(authUser)
-    }, [])
+    }, [isLoggedIn])
 
     return (
         <div className="account-page">

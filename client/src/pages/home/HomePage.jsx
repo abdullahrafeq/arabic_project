@@ -1,7 +1,6 @@
 import ScholarCard from "./components/scholar-card/ScholarCard";
 import "./style.css"
 import BookCard from "./components/book-card/BookCard";
-import AlKitab from "../../assets/alkitab.jpg"
 import Quote from "./components/quote/Quote";
 import useFetch from "../../hooks/useFetch";
 import { useEffect } from "react";
@@ -20,27 +19,21 @@ const HomePage = () => {
     const [authors, setAuthors] = useState([])
     
     const BASE_URL = useBaseUrl()
-    console.log('Backend URL:', BASE_URL);
     
     const { 
         request: requestScholars, 
         data: scholarsData, 
-        isLoading: isLoadingScholars, 
-        errorStatus: errorStatusScholars
     } = useFetch(BASE_URL+"/api/scholars/");
 
     const { 
         request: requestBooks, 
         data: booksData, 
-        isLoading: isLoadingBooks, 
-        errorStatus: errorStatusBooks
     } = useFetch(BASE_URL+"/api/books/");
     
     const {
         request: requestQuotes, 
         appendData: addQuotes, 
         data: quotesData,
-        errorStatus: errorStatusQuotes
       } = useFetch(BASE_URL+"/api/quotes/", {
         headers: {
           'Content-Type': 'application/json',
@@ -57,20 +50,14 @@ const HomePage = () => {
     })
 
     useEffect(() => {
-        console.log("init homepage")
         requestScholars();
         requestBooks();
         requestQuotes();
     }, []);
 
     useEffect(() => {
-        console.log(scholarsData)
         setAuthors(scholarsData?.scholars)
     }, [scholarsData])
-
-    useEffect(() => {
-        console.log(authors)
-    }, [authors])
 
     useEffect(() => {
         if (selectedQuote && modalMode === "edit") {
@@ -88,10 +75,6 @@ const HomePage = () => {
     const books = booksData?.books || [];
     const quotes = quotesData?.quotes || [];
 
-    useEffect(() => {
-        console.log(books)
-    }, [books])
-
     const handleSave = async (updatedData) => {
         if (modalMode === "edit" && selectedQuote) {
             const url = BASE_URL+`/api/quotes/${selectedQuote.id}/`;
@@ -105,15 +88,12 @@ const HomePage = () => {
             }
         } else if (modalMode === "add") {
             try {
-                console.log(updatedData)
                 const newQuote = await addQuotes(
                     BASE_URL+"/api/quotes/",
                     updatedData,
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setModalMode("")
-                console.log("newQuote: ", newQuote)
-                console.log("newQuote inside: ", newQuote?.quotes)
             } catch (err) {
                 console.error("Error during adding quote: ", err)
             }

@@ -15,10 +15,7 @@ const FavouriteBooksPage = () => {
 
     const { 
         request, 
-        deleteData, 
         data: booksData, 
-        isLoading, 
-        errorStatus
     } = useFetch(BASE_URL+"/api/books/")    
 
     const books = booksData?.books || []
@@ -48,12 +45,10 @@ const FavouriteBooksPage = () => {
     useEffect(() => {
         request()
         requestUserProfile({ token: localStorage.getItem("accessToken") })
-    }, [])
+    }, [request, requestUserProfile])
     
     useEffect(() => {
         if (userProfileData && books) {
-            console.log(books)
-            console.log(userProfileData)
             const favouriteBooks = books?.filter((book) => userProfileData?.favourite_books?.includes(book.id)) || []
             setFavBooks(favouriteBooks)
         }

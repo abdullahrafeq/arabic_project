@@ -1,24 +1,18 @@
 import "./style.css"
 import CustomLink from "../../components/custom-link/CustomLink";
 import useAuth from "../../hooks/useAuth";
-import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 
 const NavBar = () => {
     const { isLoggedIn, logout, isAdmin } = useAuth()
-    const handleLogout = async (event) => {
+    const handleLogout = async () => {
         try {
-            //event.preventDefault()
             await logout()
         } catch (err) {
             console.error("Error during logout: err")
         }
     }
-    
-    useEffect(() => {
-        console.log("isLoggedIn: " + isLoggedIn)
-    }, [isLoggedIn])
     
     return (
         <nav className="navbar">

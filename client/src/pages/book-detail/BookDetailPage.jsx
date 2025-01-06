@@ -13,12 +13,10 @@ import { useBaseUrl } from "../../contexts/BaseUrlContext"
 const BookDetailPage = () => {
     const { isLoggedIn } = useAuth()
     const [isHeart, setHeart] = useState(false)
-    const [loaded, setLoaded] = useState(false)
     const [author, setAuthor] = useState()
     const [categories, setCategories] = useState([])
     const [reviewText, setReviewText] = useState("")
     const BASE_URL = useBaseUrl()
-    console.log('Backend URL:', BASE_URL);
     const { id } = useParams()
     const {
         request: requestBook, 
@@ -108,9 +106,8 @@ const BookDetailPage = () => {
         if (errorStatusFavouriteBook === null) {
             const isFavourite = userProfileData?.favourite_books?.includes(book.id)
             setHeart(isFavourite)
-            setLoaded(true)
         }
-    }, [book, userProfileData, errorStatusBooks])
+    }, [book, userProfileData, errorStatusBooks, errorStatusFavouriteBook])
 
     useEffect(() => {
         if (errorStatusFavouriteBook !== null) {
@@ -118,11 +115,6 @@ const BookDetailPage = () => {
         }
     }, [errorStatusFavouriteBook])
 
-    useEffect(() => {
-        if (currentUserData) {
-            console.log(currentUserData)
-        }
-    }, [currentUserData])
 
     const handleFavouriteClick = () => {
         if (isLoggedIn) {
@@ -157,11 +149,11 @@ const BookDetailPage = () => {
     }
 
     useEffect(() => {
-        if (book.author) {
+        if (book?.author) {
             requestScholars()
             requestCategories()
         }
-    }, [book.author])
+    }, [book])
 
     useEffect(() => {
         if (scholarsData?.scholars && book.author) {
@@ -263,7 +255,6 @@ const BookDetailPage = () => {
 
 const Review = ({ users, review }) => {
     const user = users?.find((user) => user.id === review.user)
-    console.log(users)
     return (
         <div className="review">
             <p><strong>{user?.username}</strong></p>

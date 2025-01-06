@@ -15,10 +15,7 @@ const FavouriteScholarsPage = () => {
 
     const { 
         request, 
-        deleteData, 
         data: scholarsData, 
-        isLoading, 
-        errorStatus
     } = useFetch(BASE_URL+"/api/scholars/")    
     
     const removeScholarFromFavourites = async (scholarToRemove) => {
@@ -40,13 +37,10 @@ const FavouriteScholarsPage = () => {
 
     const {
         removeFromFavourite: removeFromFavouriteScholar,
-        errorStatus: errorStatusFavouriteScholar
     } = useFavourite(BASE_URL+"/api/user-profile/", "scholar")
 
     useEffect(() => {
         if (userProfileData && scholars) {
-            console.log(scholars)
-            console.log(userProfileData)
             const favouriteScholars = scholars?.filter((scholar) => userProfileData?.favourite_scholars?.includes(scholar.id)) || []
             setFavScholars(favouriteScholars)
         }

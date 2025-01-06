@@ -20,20 +20,17 @@ const useFetch = (url, { headers, body } = {}) => {
             body: body,
         })
         .then((response) => {
-            console.log(response)
             if (!response.ok) {
                 throw response.status
             }
             return response.json()
         })
         .then((data) => {
-            console.log(data)
             setData(data)
             return data
         })
         .catch((err) => {
             setErrorStatus(err)
-            console.log(err)
         })
         .finally(() => {
             setIsLoading(false); // Stop the loader
@@ -41,23 +38,19 @@ const useFetch = (url, { headers, body } = {}) => {
     }
 
     const appendData = async (url, newData, { token } = {}) => {
-        console.log("inside appendData", newData)
         setIsLoading(true)
         const finalHeaders = {
             ...headers,
             ...(token && { 'Authorization': `Bearer ${token}` }),
         }
-        console.log(finalHeaders)
         return fetch(url, {
             method: 'POST',
             headers: finalHeaders,
             body: JSON.stringify(newData)
         })
         .then(async (response) => {
-            console.log("in first then...", response)
             if (!response.ok) {
                 return response.json().then(err => {
-                    console.log(err)
                     setErrorStatus(err)
                     throw err
                 })
@@ -67,12 +60,10 @@ const useFetch = (url, { headers, body } = {}) => {
         })
         .then((data) => {
             setData(data)
-            console.log("in the second then...", data)
             return data
         })
         .catch((err) => {
             setErrorStatus(err)
-            console.log(err)
             throw err
         })
         .finally(() => {
@@ -81,15 +72,11 @@ const useFetch = (url, { headers, body } = {}) => {
     }
 
     const updateData = async (url, updatedData, { token } = {}) => {
-        console.log(headers)
-        console.log(updatedData)
         setIsLoading(true)
-        console.log("isLoading: ", isLoading)
         const finalHeaders = {
             ...headers,
             ...(token && { 'Authorization': `Bearer ${token}` }),
         }
-        console.log(finalHeaders)
         return fetch(url, {
             method: 'PUT',
             headers: finalHeaders,
@@ -98,7 +85,6 @@ const useFetch = (url, { headers, body } = {}) => {
         .then(async (response) => {
             if (!response.ok) {
                 return response.json().then(err => {
-                    console.log(err)
                     setErrorStatus(err)
                     setError(true)
                     throw err
@@ -109,12 +95,10 @@ const useFetch = (url, { headers, body } = {}) => {
         .then((data) => {
             setData(data)
             setSuccessful(true)
-            console.log('Update successful:', data);
             return data
         })
         .catch((err) => {
             setErrorStatus(err)
-            console.log(err);
             throw err
         })
         .finally(() => {
@@ -134,17 +118,14 @@ const useFetch = (url, { headers, body } = {}) => {
         })
         .then((response) => {
             if (response.status === 204) {
-                console.log('Delete successful: No content returned');
                 return null; // Return null or an empty object
             }
             return response.json()
         })
         .then((data) => {
-            console.log("In second then: ", data)
-            console.log('Delete successful:', data); // Log success message or data
+
         })    
         .catch((err) => {
-            console.log(err)
             throw err
         })
         .finally(() => {

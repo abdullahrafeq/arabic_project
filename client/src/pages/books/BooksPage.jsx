@@ -19,7 +19,6 @@ const BooksPage = () => {
     const [filtered, setFiltered] = useState([])
     const [authors, setAuthors] = useState([])
     const BASE_URL = useBaseUrl()
-    console.log('Backend URL:', BASE_URL);
     const {
         request: requestBooks, 
         appendData: addBooks, 
@@ -41,18 +40,12 @@ const BooksPage = () => {
     })
 
     useEffect(() => {
-        console.log(scholarsData)
         setAuthors(scholarsData?.scholars)
     }, [scholarsData])
-
-    useEffect(() => {
-        console.log(authors)
-    }, [authors])
 
     const {
         request: requestCategories, 
         data: categoriesData,
-        errorStatus: errorStatusCategories
       } = useFetch(BASE_URL+"/api/book-categories/", {
         headers: {
           'Content-Type': 'application/json',
@@ -106,15 +99,12 @@ const BooksPage = () => {
             }
         } else if (modalMode === "add") {
             try {
-                console.log(updatedData)
                 const newBook = await addBooks(
                     BASE_URL+"/api/books/",
                     updatedData,
                     { token: localStorage.getItem("accessToken") })
                 setIsModalOpen(false)
                 setModalMode("")
-                console.log("newBook: ", newBook)
-                console.log("newBook inside: ", newBook?.books)
                 setBooks(newBook?.books)
             } catch (err) {
                 console.error("Error during adding scholar: ", err)

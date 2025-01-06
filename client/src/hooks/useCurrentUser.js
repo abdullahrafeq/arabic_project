@@ -3,7 +3,6 @@ import { useBaseUrl } from "../contexts/BaseUrlContext";
 
 const useCurrentUser = () => {
     const BASE_URL = useBaseUrl()
-    console.log(BASE_URL)
     const { 
         data: currentUser,
         request: requestCurrentUser,

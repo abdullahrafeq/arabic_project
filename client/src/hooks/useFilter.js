@@ -3,16 +3,12 @@ const useFilter = (categories, selected, setSelected) => {
 
     const [isDefault, setDefault] = useState(true)
     const [isClearAll, setClearAll] = useState(false)
-    
-    useEffect(() => {        
-        console.log(selected)
-    }, [selected])
 
     useEffect(() => {
         if (categories.length > 0) {
             setSelected(categories);
         }
-    }, [categories]);
+    }, [categories, setSelected]);
 
     
     const handleChange = (event, selectedCategory) => {
