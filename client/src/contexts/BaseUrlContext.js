@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 const BaseUrlContext = createContext();
 
 export const BaseUrlProvider = ({ children }) => {
-  const apiUrl = /choreo-apis/arabicexplorerproject/server/v1
+  const apiUrl = "/choreo-apis/arabicexplorerproject/server/v1"
 
   const BASE_URL = process.env.REACT_APP_BACKEND_URL ? process.env.REACT_APP_BACKEND_URL : apiUrl;
 
