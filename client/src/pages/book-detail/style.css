@@ -69,6 +69,10 @@
                 border-color: grey;
                 width: 100%;
             }
+
+            .description-text-container .description {
+                line-height: 30px;
+            }
         }
     }
 
@@ -81,7 +85,7 @@
         background-color: white;
         .previous-reviews {
             margin-top: 30px;
-            height: 200px;
+            height: fit-content;
             overflow-y: scroll;
             display: flex;
             flex-direction: column;
@@ -105,8 +109,10 @@
             
             label {
                 margin-bottom: 15px;
+                font-weight: bold;
             }
         }
+
 
         .submit-button {
             background-color: green;

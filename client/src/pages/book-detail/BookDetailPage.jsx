@@ -201,26 +201,21 @@ const BookDetailPage = () => {
                                     onClick={handleFavouriteClick}
                                 />
                             </div>
-                            <p>Author: <em className="author-title"><CustomLink to={`/scholar-detail/${author?.id}`} children={<>{author?.name}</>}/></em></p>
-                            <p>Categories: {categories.map((category, index) => {
+                            <p><strong>Author: </strong><em className="author-title"><CustomLink to={`/scholar-detail/${author?.id}`} children={<>{author?.name}</>}/></em></p>
+                            <p><strong>Categories: </strong>{categories.map((category, index) => {
                                 return (
                                     <em key={index}>{category.name}{index !== book.categories.length -1 && <>, </>} </em>
                                 )
                             })}
 
                             </p>
-                            <p> 
+                            <p className="description-text-container"> 
                                 <strong>Description: </strong>
-                                {book.description}
+                                <p className="description">{book.description}</p>
                             </p>
-                            <strong>
-                                Reviews: {reviewsData?.reviews?.filter((review) => review.book === book.id).length || 0}
-                            </strong>
-
-                            <hr />
                         </div>
                     </div>
-                    <h2 className="reviews-title">Reviews</h2>
+                    <h2 className="reviews-title">Reviews ({reviewsData?.reviews?.filter((review) => review.book === book.id).length || 0})</h2>
                     <hr />
                     <div className="reviews-container">
                         <div className="previous-reviews">
