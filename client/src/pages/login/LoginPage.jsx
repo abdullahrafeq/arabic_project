@@ -69,6 +69,7 @@ const LoginPage = () => {
         if (action !== clickAction) {
             setAction(clickAction);
             setHasAttemptedSubmit(false); // Reset submit trigger
+            resetValues()
             return // Prevent fetching when switching modes
         }
         if (clickAction === "signup") {
@@ -102,10 +103,11 @@ const LoginPage = () => {
                             placeholder="Username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            className={`${(hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "username" in errMsgs ? 'error' : '') || ((hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "username" in errMsgs ? 'error' : ''))}`}
                         />
-                        {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "username" in errMsgs && <p>{errMsgs?.username}</p>}
-                        {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "username" in errMsgs && <p>{errMsgs?.username}</p>}
                     </div>
+                    {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "username" in errMsgs && <p className="err-msg">{errMsgs?.username}</p>}
+                    {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "username" in errMsgs && <p className="err-msg">{errMsgs?.username}</p>}
                     {action === "signup" &&
                         <div className="input">
                             <FontAwesomeIcon icon={faEnvelope} />
@@ -114,34 +116,49 @@ const LoginPage = () => {
                                 placeholder="E-mail"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                            />
-                            {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "email" in errMsgs && <p>{errMsgs?.email}</p>}
+                                className={`${(hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "email" in errMsgs ? 'error' : '') || ((hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "email" in errMsgs ? 'error' : ''))}`}
+                             />
                         </div>
                     }
+                    {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "email" in errMsgs && <p className="err-msg">{errMsgs?.email}</p>}
                     <div className="input">
                         <FontAwesomeIcon icon={faLock} />
                         <input 
-                            type ="text" 
+                            type ="password" 
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            className={`${(hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "password" in errMsgs ? 'error' : '') || ((hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "password" in errMsgs ? 'error' : ''))}`}
                         />
-                        {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "password" in errMsgs && <p>{errMsgs?.password}</p>}
-                        {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "password" in errMsgs && <p>{errMsgs?.password}</p>}
                     </div>
+                    {hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "password" in errMsgs && <p className="err-msg">{errMsgs?.password}</p>}
+                    {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "password" in errMsgs && <p className="err-msg">{errMsgs?.password}</p>}
                     {action==="signup" &&
                         <div className="input">
                             <FontAwesomeIcon icon={faLock} />
                             <input 
-                                type ="text" 
+                                type ="password" 
                                 placeholder="Confirm Password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
+                                className={`${(hasAttemptedSubmit && action === 'login' && !isCorrectLogin && "confirm_password" in errMsgs ? 'error' : '') || ((hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "confirm_password" in errMsgs ? 'error' : ''))}`}
                             />
-                            {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "confirm_password" in errMsgs && <p>{errMsgs?.confirm_password}</p>}
                         </div>
                     }
+                    {hasAttemptedSubmit && action === 'signup' && !isCorrectSignup && "confirm_password" in errMsgs && <p className="err-msg">{errMsgs?.confirm_password}</p>}
                 </div>
+                {isLoading &&
+                    <div className="loading-oval">
+                        <Oval
+                            height={70} 
+                            width={70} 
+                            color="#555" /* Neutral gray or preferred color */
+                            secondaryColor="#ddd" /* Optional lighter color */
+                            ariaLabel="oval-loading"
+                            strokeWidth={3}
+                        />
+                    </div>
+                }
                 <div className="submit-container">
                     <Button 
                         className={action==="signup"?"submit-active":"submit-gray"} 
@@ -154,17 +171,6 @@ const LoginPage = () => {
                         onClick={(event) => handleClick(event, "login")}
                     />
                 </div>
-                {isLoading &&
-                    <div>
-                        <Oval
-                            height={40} 
-                            width={40} 
-                            color="#555" /* Neutral gray or preferred color */
-                            secondaryColor="#ddd" /* Optional lighter color */
-                            ariaLabel="oval-loading"
-                        />
-                    </div>
-                }
             </div>
         </div>
     )

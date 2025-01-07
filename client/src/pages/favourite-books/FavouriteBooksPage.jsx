@@ -8,14 +8,20 @@ import useFetch from "../../hooks/useFetch";
 import useFavourite from "../../hooks/useFavourite";
 import { useEffect } from "react";
 import { useBaseUrl } from "../../contexts/BaseUrlContext";
+import { Oval } from 'react-loader-spinner'
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const FavouriteBooksPage = () => {
     const [favBooks, setFavBooks] = useState([]);
     const BASE_URL = useBaseUrl()
-
+    const { isLoggedIn } = useAuth()
+    const navigate = useNavigate()
     const { 
         request, 
         data: booksData, 
+        isLoading: isLoadingBooks,
+        errorStatus: errorStatusFavouriteBooks
     } = useFetch(BASE_URL+"/api/books/")    
 
     const books = booksData?.books || []
@@ -38,15 +44,20 @@ const FavouriteBooksPage = () => {
 
     const {
         removeFromFavourite: removeFromFavouriteBook,
-        errorStatus: errorStatusFavouriteScholar
+        errorStatus: errorStatusFavouriteBook
     } = useFavourite(BASE_URL+"/api/user-profile/", "book")
 
     
     useEffect(() => {
         request()
         requestUserProfile({ token: localStorage.getItem("accessToken") })
-    }, [request, requestUserProfile])
-    
+    }, [])
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/login")
+        }
+    }, [isLoggedIn])
     useEffect(() => {
         if (userProfileData && books) {
             const favouriteBooks = books?.filter((book) => userProfileData?.favourite_books?.includes(book.id)) || []
@@ -57,17 +68,31 @@ const FavouriteBooksPage = () => {
     return (
         <main className="favourite-books-page">
             <h2>Favourite Books</h2>
-            <section className="grid-container">
-                {favBooks?.map((book, index) => {
-                    return (
+            {isLoadingBooks ? (
+                <Oval
+                    height={50}
+                    width={50}
+                    color="#4fa94d" // Your preferred color
+                    strokeWidth={4} // Primary stroke width (thicker lines)
+                    secondaryColor="#ddd" // Optional lighter color
+                    ariaLabel="loading"
+                />
+            ) : favBooks.length === 0 ? (
+                <p>No favorite books available.</p>
+            ) : (
+                <section className="grid-container">
+                    {favBooks.map((book) => (
                         <BookCard 
-                            key={index}
-                            book={book}
-                            onRemove={() => removeBookFromFavourites(book)}
+                            key={book.id} 
+                            book={book} 
+                            onRemove={() => removeBookFromFavourites(book)} 
                         />
-                    )
-                })}
-            </section>
+                    ))}
+                </section>
+            )}
+            {errorStatusFavouriteBooks && (
+                <p className="error-message">Error: {errorStatusFavouriteBooks}</p>
+            )}
         </main>
     )
 }

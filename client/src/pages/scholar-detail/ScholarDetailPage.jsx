@@ -8,6 +8,7 @@ import useFetch from "../../hooks/useFetch"
 import useFavourite from "../../hooks/useFavourite"
 import useAuth from "../../hooks/useAuth"
 import { useBaseUrl } from "../../contexts/BaseUrlContext"
+import { Oval } from 'react-loader-spinner'
 
 const ScholarDetailPage = () => {
     const { isLoggedIn } = useAuth()
@@ -19,6 +20,7 @@ const ScholarDetailPage = () => {
     const {
         request: requestScholar,
         data: scholarData,
+        isLoading: isLoadingScholar
     } = useFetch(BASE_URL+`/api/scholars/${id}/`, {
         method: 'GET',
         headers: {
@@ -34,8 +36,6 @@ const ScholarDetailPage = () => {
             'Content-Type': 'application/json',
         },
     })
-
-
 
     const scholar = scholarData?.scholar || {}
     useEffect(() => {
@@ -98,7 +98,18 @@ const ScholarDetailPage = () => {
 
     return (
         <main className="scholar-details-page">
-            {scholar ? (
+            {isLoadingScholar ? (
+                <div className="loading-spinner">
+                    <Oval
+                        height={50}
+                        width={50}
+                        color="#4fa94d" // Your preferred color
+                        strokeWidth={4} // Primary stroke width (thicker lines)
+                        secondaryColor="#ddd" // Optional lighter color
+                        ariaLabel="loading"
+                    />
+                </div>
+            ) : scholar ? (
                 <div className="scholar-details">
                     <div className="image-container">
                         <ZigZagCircle children={<>{scholar.arabic_name}</>} />

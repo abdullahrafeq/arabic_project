@@ -4,94 +4,112 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Optionally, set a height to ensure it covers the viewport height */
-    background-color: rgb(91, 93, 181);
-}
+    /*background-color: rgb(91, 93, 181);*/
+    background-color: rgb(46, 139, 50);
 
-.login-container {
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px 20px;
-    width: 500px;
-}
+    .login-container {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 50px 20px;
+        width: 500px;
+    }
 
-.login-header {
-    margin-bottom: 50px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
+    .login-header {
+        margin-bottom: 50px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
 
-.login-header h1 {
-    padding: 0;
-    margin: 0;
-}
+    .login-header h1 {
+        padding: 0;
+        margin: 0;
+    }
 
-.login-header .login-underline {
-    width : 61px;
-    height: 6px;
-    background: rgb(91, 93, 181);
-    border-radius: 9px;
-    margin-top: 10px;
-}
+    .login-header .login-underline {
+        width : 61px;
+        height: 6px;
+        background: rgb(46, 139, 50);
+        border-radius: 9px;
+        margin-top: 10px;
+    }
 
-.login-inputs-container {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
+    .login-inputs-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-.login-inputs-container .input {
-    position: relative;
-}
+    .login-inputs-container .input {
+        position: relative;
+    }
 
-.login-inputs-container .input input {
-    width: 400px;
-    height: 50px;
-    outline: none;
-    border: none;
-    background-color: rgb(210, 210, 210);
-    color: gray;
-    border-radius: 5px;
-    padding-left: 50px;
-}
+    .login-inputs-container .input input {
+        width: 400px;
+        height: 50px;
+        outline: none;
+        border: none;
+        background-color: rgb(210, 210, 210);
+        color: black;
+        font-weight: bold;
+        border-radius: 5px;
+        padding-left: 50px;
+    }
 
-.login-inputs-container .input svg {
-    position: absolute;
-    left: 20px; /* Adjust the left position to place the icon properly */
-    top: 50%;
-    transform: translateY(-50%);
-    color: gray; /* Adjust the color of the icon */
-}
+    .login-inputs-container .input .error {
+        border-style: solid;
+        border-color: red;
+        border-width: 1.5px;
+    }
 
-.submit-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 50px;
-    margin-top: 50px;
-}
+    .login-inputs-container .input svg {
+        position: absolute;
+        left: 20px; /* Adjust the left position to place the icon properly */
+        top: 50%;
+        transform: translateY(-50%);
+        color: gray; /* Adjust the color of the icon */
+    }
 
-.submit-container * {
-    border: none;
-    width: 150px;
-    height: 50px;
-    border-radius: 25px;
-    font-weight: bold;
-    font-size: 16px;
-}
+    .submit-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 50px;
+        margin-top: 50px;
+    }
 
-.submit-container *:hover {
-    cursor: pointer;
-}
+    .submit-container * {
+        border: none;
+        width: 150px;
+        height: 50px;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 16px;
+    }
 
-.submit-container .submit-gray {
-    background-color: rgb(210, 210, 210);
-    color: gray;
-}
+    .submit-container *:hover {
+        cursor: pointer;
+    }
 
-.submit-container .submit-active {
-    background-color: rgb(91, 93, 181);
-    color: white;
+    .submit-container .submit-gray {
+        background-color: rgb(210, 210, 210);
+        color: gray;
+    }
+
+    .submit-container .submit-active {
+        background-color: rgb(46, 139, 50);
+        color: white;
+    }
+
+    .err-msg {
+        color: rgb(255, 0, 0);
+        margin: 0px;
+        margin-top: -20px;
+    }
+
+    .loading-oval {
+        margin-top: 20px;
+    }
 }

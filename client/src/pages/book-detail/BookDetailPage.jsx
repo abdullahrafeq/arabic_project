@@ -21,7 +21,8 @@ const BookDetailPage = () => {
     const {
         request: requestBook, 
         data: bookData,
-        errorStatus: errorStatusBooks
+        errorStatus: errorStatusBooks,
+        isLoading: isLoadingBook
       } = useFetch(BASE_URL+`/api/books/${id}/`, {
         method: 'GET',
         headers: {
@@ -69,7 +70,7 @@ const BookDetailPage = () => {
         data: reviewsData,
         request: requestReviews,
         appendData: addReview,
-        isLoading
+        isLoading: isLoadingReviews
     } = useFetch(BASE_URL+"/api/reviews/", {
         headers: {
             'Content-Type': 'application/json',
@@ -130,9 +131,6 @@ const BookDetailPage = () => {
     }
 
     const handleSubmit = async (review, book) => {
-        if (!currentUserData) {
-            return
-        }
         if (isLoggedIn) {
             await addReview(BASE_URL+"/api/reviews/", 
                 { 
@@ -173,7 +171,18 @@ const BookDetailPage = () => {
     
     return (
         <main className="book-details-page">
-            {book && book.author ? (
+            {isLoadingBook ? (
+                <div className="loading-spinner">
+                    <Oval
+                        height={50}
+                        width={50}
+                        color="#4fa94d" // Your preferred color
+                        strokeWidth={4} // Primary stroke width (thicker lines)
+                        secondaryColor="#ddd" // Optional lighter color
+                        ariaLabel="loading"
+                    />
+                </div>
+            ) : book && book.author ? (
                 <>
                     <div className="book-details">
                         <div className="book-wrapper">
@@ -231,7 +240,7 @@ const BookDetailPage = () => {
                         <Button className="submit-button" children={
                             <>
                                 <>Submit</>
-                                {isLoading &&
+                                {isLoadingReviews &&
                                     <Oval
                                         height={30} 
                                         width={30} 
