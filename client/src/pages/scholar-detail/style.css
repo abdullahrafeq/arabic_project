@@ -62,6 +62,10 @@
                 border-color: grey;
                 width: 100%;
             }
+
+            .description-text-container .description {
+                line-height: 30px;
+            }
         }
     }
 }

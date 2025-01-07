@@ -138,9 +138,9 @@ const ScholarDetailPage = () => {
                                 "No specialized science"
                             )}
                         </p>
-                        <p>
+                        <p className="description-text-container">
                             <strong>Description: </strong>
-                            {scholar.description}
+                            <p className="description">{scholar.description}</p>
                         </p>
                     </div>
 
