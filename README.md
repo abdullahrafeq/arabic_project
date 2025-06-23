@@ -1,7 +1,7 @@
 # arabic_project
 A web app to explore inspiring quotes, books, and profiles of scholars — with account creation, favorites, and reviews.
 
-🎥 **Demo video**: 
+🎥 **Demo video**: <br />
 https://github.com/user-attachments/assets/0870b515-279b-472c-9e97-aa63a7c1fe96
 
 ## 🛠 Tech Stack
