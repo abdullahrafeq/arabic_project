@@ -40,7 +40,7 @@ cd client
 npm install
 npm start
 ```
-The frontend will run on: ```http://localhost:3000``` <br/>
+The frontend will run on: ```http://localhost:3000``` <br/><br/>
 ✅ You can now visit the app at: http://localhost:3000 and interact with both frontend and backend locally.
 
 ## 👤 Author
